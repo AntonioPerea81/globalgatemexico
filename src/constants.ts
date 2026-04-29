@@ -68,7 +68,7 @@ export const SERVICES: (Service & { titleEs?: string; descriptionEs?: string })[
 ];
 
 export const STATS: (Stat & { id: string })[] = [
-  { id: 'experience', label: 'Years of Experience', value: 20, suffix: '+' },
+  { id: 'experience', label: 'Years of Experience', value: 20, suffix: '' },
   { id: 'companies', label: 'Clients Served', value: 150, suffix: '+' },
   { id: 'acceptance', label: 'Shipment Acceptance', value: 98, suffix: '%' },
   { id: 'training', label: 'Training Sessions', value: 1200, suffix: '+' },

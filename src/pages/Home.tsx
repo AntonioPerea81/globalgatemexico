@@ -184,6 +184,7 @@ export const Home = () => {
     "WCA-Dangerous-Goods_for-white-background.png",
     "IATA-CBTA_Provider_RGB.png"
   ];
+  const logoBasePath = (import.meta as any).env?.BASE_URL || '/';
 
   return (
     <>
@@ -296,7 +297,7 @@ export const Home = () => {
               {[...logos, ...logos].map((logo, idx) => (
                 <div key={`${logo}-${idx}`} className="flex items-center justify-center px-6">
                   <img
-                    src={`/${logo}`}
+                    src={`${logoBasePath}${logo}`}
                     alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
                     className="h-[80px] w-auto object-contain"
                     loading="lazy"
