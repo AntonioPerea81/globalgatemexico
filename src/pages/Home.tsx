@@ -173,7 +173,16 @@ export const Home = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const logos = [
-    "STAR", "GARCÍA MILLÁN", "Liebig", "MRS CHENG'S", "Grand'Italia", "BONGS", "Blå Band", "YATEKOMO"
+    "IATA_CARGO_AGENT__1_.png",
+    "ANIQ__1_.png",
+    "Logo_AMACARGA_firma.png",
+    "Distintivo.png",
+    "COSTHA_NewLogoCMYK_Sm.png",
+    "FIATA_Logo.png",
+    "TIACA_OFFICIAL_LOGO-Blue-2024_24__46__68__94__96_.png",
+    "aws.png",
+    "WCA-Dangerous-Goods_for-white-background.png",
+    "IATA-CBTA_Provider_RGB.png"
   ];
 
   return (
@@ -285,11 +294,13 @@ export const Home = () => {
               }}
             >
               {[...logos, ...logos].map((logo, idx) => (
-                <div key={idx} className="flex items-center gap-12 group">
-                  <span className="text-2xl font-black italic text-secondary/30 group-hover:text-primary/40 transition-colors uppercase tracking-tighter">
-                    {logo}
-                  </span>
-                  <div className="w-1.5 h-1.5 bg-accent/20 rounded-full" />
+                <div key={`${logo}-${idx}`} className="flex items-center justify-center px-6">
+                  <img
+                    src={`/${logo}`}
+                    alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
+                    className="h-[80px] w-auto object-contain"
+                    loading="lazy"
+                  />
                 </div>
               ))}
             </motion.div>
