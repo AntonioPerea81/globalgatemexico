@@ -285,22 +285,29 @@ export const Home = () => {
       <div className="bg-white py-12 overflow-hidden border-b border-black/5">
         <Reveal>
           <div className="relative flex overflow-x-hidden">
-            <motion.div 
-              className="flex gap-16 items-center whitespace-nowrap px-8"
+            <motion.div
+              className="flex shrink-0 gap-16 items-center whitespace-nowrap px-8 will-change-transform"
               animate={{ x: ["0%", "-50%"] }}
               transition={{
-                duration: 20,
+                duration: 38,
                 repeat: Infinity,
-                ease: "linear"
+                repeatType: "loop",
+                repeatDelay: 0,
+                ease: "linear",
               }}
             >
               {[...logos, ...logos].map((logo, idx) => (
-                <div key={`${logo}-${idx}`} className="flex items-center justify-center px-6">
+                <div
+                  key={`${logo}-${idx}`}
+                  className="flex shrink-0 items-center justify-center px-6"
+                >
                   <img
                     src={`${logoBasePath}${logo}`}
                     alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
-                    className="h-[80px] w-auto object-contain"
+                    className="h-[80px] w-auto max-w-none object-contain"
                     loading="lazy"
+                    decoding="async"
+                    draggable={false}
                   />
                 </div>
               ))}
