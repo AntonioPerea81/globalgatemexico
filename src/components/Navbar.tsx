@@ -31,7 +31,7 @@ export const Navbar = () => {
       <div className="bg-dark text-white py-2 px-10 text-[11px] tracking-[0.05em] uppercase flex justify-between items-center hidden md:flex">
         <div>{t('nav.excellence')}</div>
         <div className="flex items-center gap-6">
-          <span className="flex items-center gap-1">{t('nav.contact')}: +52 (55) 8956-2000</span>
+          <span className="flex items-center gap-1">{t('nav.contact')}: +52 812 165 4040</span>
           <div className="flex items-center gap-2 border-l border-white/10 pl-4 ml-4">
             <button 
               onClick={() => setLanguage('ES')}
@@ -57,9 +57,8 @@ export const Navbar = () => {
           isScrolled ? 'bg-white shadow-sm' : 'bg-white'
         )}
       >
-        <Link to="/" className="flex items-center gap-1 font-extrabold text-xl tracking-tighter">
-          <span className="text-primary">GLOBALGATE</span>
-          <span className="text-dark">MEXICO</span>
+        <Link to="/" className="flex items-center">
+          <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '44px', width: 'auto' }} />
         </Link>
 
         {/* Desktop Links */}
@@ -119,7 +118,7 @@ export const Navbar = () => {
             className="fixed inset-0 bg-dark z-50 flex flex-col p-8 lg:hidden"
           >
             <div className="flex justify-between items-center mb-12">
-              <span className="text-white font-bold text-2xl italic">GLOBAL GATE</span>
+              <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '44px', width: 'auto' }} />
               <button 
                 className="text-white p-2 border border-white/10 rounded-full"
                 onClick={() => setIsMobileMenuOpen(false)}
