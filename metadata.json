@@ -1,0 +1,12 @@
+{
+  "name": "Global Gate Mexico",
+  "description": "Premium logistics and dangerous goods compliance services in Mexico and North America.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "Logistics",
+    "Compliance",
+    "Training"
+  ]
+}
