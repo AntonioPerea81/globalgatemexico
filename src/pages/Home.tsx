@@ -348,10 +348,9 @@ export const Home = () => {
             <Reveal direction="left" delay={0.2}>
               <div className="relative group p-1 bg-white shadow-2xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800" 
-                  alt="Specialized Shipment Preparation" 
-                  className="relative z-10 w-full grayscale contrast-125"
-                  referrerPolicy="no-referrer"
+                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('Regulatory Picture.jpeg')}`}
+                  alt="Regulatory Compliance"
+                  className="relative z-10 w-full object-cover"
                 />
               </div>
             </Reveal>
