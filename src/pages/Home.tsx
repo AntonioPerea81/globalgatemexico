@@ -181,10 +181,11 @@ export const Home = () => {
     "FIATA_Logo.png",
     "TIACA_OFFICIAL_LOGO-Blue-2024_24__46__68__94__96_.png",
     "aws.png",
-    "WCA-Dangerous-Goods_for-white-background.png",
+    "WCA DGs.png",
     "IATA-CBTA_Provider_RGB.png"
   ];
-  const logoBasePath = (import.meta as any).env?.BASE_URL || '/';
+  const logoBasePath = ((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/');
+  const logoSrc = (file: string) => `${logoBasePath}${encodeURIComponent(file)}`;
 
   return (
     <>
@@ -302,7 +303,7 @@ export const Home = () => {
                   className="flex shrink-0 items-center justify-center px-6"
                 >
                   <img
-                    src={`${logoBasePath}${logo}`}
+                    src={logoSrc(logo)}
                     alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
                     className="h-[80px] w-auto max-w-none object-contain"
                     loading="lazy"
