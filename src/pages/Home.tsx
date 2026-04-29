@@ -186,6 +186,10 @@ export const Home = () => {
   ];
   const logoBasePath = ((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/');
   const logoSrc = (file: string) => `${logoBasePath}${encodeURIComponent(file)}`;
+  /** Some official badges ship with large empty margins in the PNG; scale up so the mark reads at ~80px row height. */
+  const marqueeLogoScale: Record<string, number> = {
+    'IATA-CBTA_Provider_RGB.png': 1.95,
+  };
 
   return (
     <>
@@ -305,7 +309,18 @@ export const Home = () => {
                   <img
                     src={logoSrc(logo)}
                     alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
-                    className="h-[80px] w-auto max-w-none object-contain"
+                    className={cn(
+                      'h-[80px] w-auto max-w-none object-contain',
+                      marqueeLogoScale[logo] && 'will-change-transform'
+                    )}
+                    style={
+                      marqueeLogoScale[logo]
+                        ? {
+                            transform: `scale(${marqueeLogoScale[logo]})`,
+                            transformOrigin: 'center center',
+                          }
+                        : undefined
+                    }
                     loading="lazy"
                     decoding="async"
                     draggable={false}
