@@ -181,15 +181,10 @@ export const Home = () => {
     "FIATA_Logo.png",
     "TIACA_OFFICIAL_LOGO-Blue-2024_24__46__68__94__96_.png",
     "aws.png",
-    "WCA DGs.png",
-    "IATA-CBTA_Provider_RGB.png"
+    "WCA DGs.png"
   ];
   const logoBasePath = ((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/');
   const logoSrc = (file: string) => `${logoBasePath}${encodeURIComponent(file)}`;
-  /** Some official badges ship with large empty margins in the PNG; scale up so the mark reads at ~80px row height. */
-  const marqueeLogoScale: Record<string, number> = {
-    'IATA-CBTA_Provider_RGB.png': 1.95,
-  };
 
   return (
     <>
@@ -309,18 +304,7 @@ export const Home = () => {
                   <img
                     src={logoSrc(logo)}
                     alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
-                    className={cn(
-                      'h-[80px] w-auto max-w-none object-contain',
-                      marqueeLogoScale[logo] && 'will-change-transform'
-                    )}
-                    style={
-                      marqueeLogoScale[logo]
-                        ? {
-                            transform: `scale(${marqueeLogoScale[logo]})`,
-                            transformOrigin: 'center center',
-                          }
-                        : undefined
-                    }
+                    className="h-[80px] w-auto max-w-none object-contain"
                     loading="lazy"
                     decoding="async"
                     draggable={false}
