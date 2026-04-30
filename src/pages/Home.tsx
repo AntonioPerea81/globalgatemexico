@@ -409,11 +409,11 @@ export const Home = () => {
         <Container>
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <Reveal direction="right">
-              <div className="aspect-[4/5] overflow-hidden shadow-2xl">
+              <div className="overflow-hidden shadow-2xl">
                 <img
                   src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('transportes.jpeg')}`}
                   alt="Logistics Operations"
-                  className="w-full h-full object-cover"
+                  className="w-full h-auto object-contain"
                 />
               </div>
             </Reveal>
