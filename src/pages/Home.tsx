@@ -533,14 +533,14 @@ export const Home = () => {
       </Section>
 
       {/* 6. COMPLIANCE PILLARS */}
-      <Section id="compliance" className="bg-dark text-white">
+      <Section id="compliance" className="bg-slate-100 border-y border-black/5">
         <Container>
           <Reveal>
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4">
+              <h2 className="text-3xl md:text-5xl font-extrabold text-dark leading-tight mb-4">
                 {t('compliance.heading')}
               </h2>
-              <p className="text-white/60 text-base max-w-xl mx-auto mb-5">
+              <p className="text-secondary text-base max-w-xl mx-auto mb-5">
                 {t('compliance.subheading')}
               </p>
               <div className="w-12 h-1 bg-accent mx-auto" />
@@ -556,15 +556,15 @@ export const Home = () => {
                 { icon: Lock,           key: 'cred6' },
               ].map(({ icon: Icon, key }, idx) => (
                 <Reveal key={key} delay={idx * 0.07}>
-                  <div className="flex gap-4 items-start bg-white/5 border border-white/10 p-6 hover:border-accent/40 transition-colors duration-300">
-                    <div className="w-10 h-10 bg-white/10 flex items-center justify-center shrink-0">
-                      <Icon size={20} className="text-accent" />
+                  <div className="flex gap-4 items-start bg-white border border-black/8 p-6 hover:shadow-md transition-shadow duration-300">
+                    <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0">
+                      <Icon size={20} className="text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-[14px] font-black text-white mb-1">
+                      <h3 className="text-[14px] font-semibold text-dark mb-1">
                         {t(`compliance.${key}.title`)}
                       </h3>
-                      <p className="text-white/50 text-[13px] leading-relaxed">
+                      <p className="text-secondary text-[13px] leading-relaxed">
                         {t(`compliance.${key}.desc`)}
                       </p>
                     </div>
@@ -574,7 +574,7 @@ export const Home = () => {
             </div>
 
             <div className="mt-10 text-center">
-              <p className="text-accent font-black text-[13px] uppercase tracking-widest">
+              <p className="text-secondary font-black text-[11px] uppercase tracking-[0.3em]">
                 {t('authority.closing')}
               </p>
             </div>
