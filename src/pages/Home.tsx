@@ -363,17 +363,17 @@ export const Home = () => {
         <Container>
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <Reveal direction="right">
-              <div className="aspect-[4/5] bg-bg-light relative overflow-hidden group">
-                <img 
-                  src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&q=80&w=800" 
-                  alt="Delayed Cargo" 
-                  className="w-full h-full object-cover grayscale opacity-80"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-dark/60 to-transparent" />
-                <div className="absolute bottom-8 left-8 right-8">
-                  <p className="text-white text-xl font-bold leading-tight">{t('consequences.closing')}</p>
+              <div className="flex flex-col gap-4">
+                <div className="aspect-[4/5] bg-bg-light overflow-hidden">
+                  <img
+                    src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('books rejections.jpeg')}`}
+                    alt="Compliance Books"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
+                <p className="text-primary font-black text-lg leading-snug border-l-4 border-primary pl-4">
+                  {t('consequences.closing')}
+                </p>
               </div>
             </Reveal>
             <Reveal direction="left" delay={0.2}>
