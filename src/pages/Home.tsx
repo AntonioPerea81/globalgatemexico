@@ -4,7 +4,8 @@ import {
   ChevronRight, ArrowRight, Play, Users, MapPin,
   ShieldAlert, BookOpen, Quote, Sparkles, Send,
   Upload, CheckCircle, FileText, Camera, Info,
-  Search, Package, Tag, Route, Truck, Layers
+  Search, Package, Tag, Route, Truck, Layers,
+  Award, Globe, BadgeCheck, Shield, GraduationCap, Lock
 } from 'lucide-react';
 import { Section, Container, Button } from '../components/UI';
 import { Icon } from '../components/Icon';
@@ -532,24 +533,48 @@ export const Home = () => {
       </Section>
 
       {/* 6. COMPLIANCE PILLARS */}
-      <Section id="compliance" className="bg-slate-100 border-y border-black/8">
+      <Section id="compliance" className="bg-dark text-white">
         <Container>
           <Reveal>
-            <div className="grid lg:grid-cols-3 gap-6">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4">
+                {t('compliance.heading')}
+              </h2>
+              <p className="text-white/60 text-base max-w-xl mx-auto mb-5">
+                {t('compliance.subheading')}
+              </p>
+              <div className="w-12 h-1 bg-accent mx-auto" />
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[
-                { icon: ShieldAlert, title: t('compliance.pillar1.title'), desc: t('compliance.pillar1.desc') },
-                { icon: Users, title: t('compliance.pillar2.title'), desc: t('compliance.pillar2.desc') },
-                { icon: BookOpen, title: t('compliance.pillar3.title'), desc: t('compliance.pillar3.desc') }
-              ].map((pillar, idx) => (
-                <div key={pillar.title} className="bg-white p-10 border border-black/8 group/pillar hover:bg-dark hover:text-white transition-all duration-500">
-                  <pillar.icon size={36} className="text-primary group-hover/pillar:text-accent transition-colors mb-6" />
-                  <h3 className="text-[15px] font-black uppercase tracking-tighter mb-3">{pillar.title}</h3>
-                  <p className="text-inherit opacity-70 text-[14px] leading-relaxed">{pillar.desc}</p>
-                </div>
+                { icon: Award,          key: 'cred1' },
+                { icon: Globe,          key: 'cred2' },
+                { icon: BadgeCheck,     key: 'cred3' },
+                { icon: Shield,         key: 'cred4' },
+                { icon: GraduationCap,  key: 'cred5' },
+                { icon: Lock,           key: 'cred6' },
+              ].map(({ icon: Icon, key }, idx) => (
+                <Reveal key={key} delay={idx * 0.07}>
+                  <div className="flex gap-4 items-start bg-white/5 border border-white/10 p-6 hover:border-accent/40 transition-colors duration-300">
+                    <div className="w-10 h-10 bg-white/10 flex items-center justify-center shrink-0">
+                      <Icon size={20} className="text-accent" />
+                    </div>
+                    <div>
+                      <h3 className="text-[14px] font-black text-white mb-1">
+                        {t(`compliance.${key}.title`)}
+                      </h3>
+                      <p className="text-white/50 text-[13px] leading-relaxed">
+                        {t(`compliance.${key}.desc`)}
+                      </p>
+                    </div>
+                  </div>
+                </Reveal>
               ))}
             </div>
+
             <div className="mt-10 text-center">
-              <p className="text-[11px] font-black uppercase tracking-[0.3em] text-secondary">
+              <p className="text-accent font-black text-[13px] uppercase tracking-widest">
                 {t('authority.closing')}
               </p>
             </div>
