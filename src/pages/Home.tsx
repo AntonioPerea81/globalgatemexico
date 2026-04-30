@@ -435,9 +435,9 @@ export const Home = () => {
                 </div>
                 <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">
                   {language === 'EN' ? (
-                    <>Authority in <span className="text-primary italic">Controlled Logistics</span>.</>
+                    <>Authority in <span className="text-primary italic">Dangerous Goods Logistics</span>.</>
                   ) : (
-                    <>Autoridad en <span className="text-primary italic">Logística Controlada</span>.</>
+                    <>Autoridad en <span className="text-primary italic">Logística de Mercancías Peligrosas</span>.</>
                   )}
                 </h2>
                 <p className="text-lg text-secondary leading-relaxed">

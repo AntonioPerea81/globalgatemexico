@@ -65,7 +65,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'about.item2': 'Certified packaging',
     'about.item3': 'Complete documentation',
     'about.item4': 'Logistics coordination',
-    'about.cta': 'Review Our Strategy',
+    'about.cta': 'How We Work',
     'about.quote': '"We don\'t just move cargo; we manage the risks that others avoid."',
     'about.quote.author': '— Industrial Compliance Board',
 
@@ -247,7 +247,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'about.item2': 'Embalaje certificado',
     'about.item3': 'Documentación completa',
     'about.item4': 'Coordinación logística',
-    'about.cta': 'Revisar Nuestra Estrategia',
+    'about.cta': 'Cómo Trabajamos',
     'about.quote': '"No solo movemos carga; gestionamos los riesgos que otros evitan."',
     'about.quote.author': '— Junta de Cumplimiento Industrial',
 
