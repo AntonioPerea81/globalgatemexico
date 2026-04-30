@@ -181,15 +181,10 @@ export const Home = () => {
     "FIATA_Logo.png",
     "TIACA_OFFICIAL_LOGO-Blue-2024_24__46__68__94__96_.png",
     "aws.png",
-    "WCA DGs.png",
-    "IATA-CBTA_Provider_RGB.png"
+    "WCA DGs.png"
   ];
   const logoBasePath = ((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/');
   const logoSrc = (file: string) => `${logoBasePath}${encodeURIComponent(file)}`;
-  /** Some official badges ship with large empty margins in the PNG; scale up so the mark reads at ~80px row height. */
-  const marqueeLogoScale: Record<string, number> = {
-    'IATA-CBTA_Provider_RGB.png': 1.95,
-  };
 
   return (
     <>
@@ -309,18 +304,7 @@ export const Home = () => {
                   <img
                     src={logoSrc(logo)}
                     alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
-                    className={cn(
-                      'h-[80px] w-auto max-w-none object-contain',
-                      marqueeLogoScale[logo] && 'will-change-transform'
-                    )}
-                    style={
-                      marqueeLogoScale[logo]
-                        ? {
-                            transform: `scale(${marqueeLogoScale[logo]})`,
-                            transformOrigin: 'center center',
-                          }
-                        : undefined
-                    }
+                    className="h-[80px] w-auto max-w-none object-contain"
                     loading="lazy"
                     decoding="async"
                     draggable={false}
@@ -335,7 +319,7 @@ export const Home = () => {
       {/* NEW: EMPATHY (PROBLEM) SECTION */}
       <div className="bg-dark/5 py-24 relative overflow-hidden">
         <Container>
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-16 items-stretch">
             <Reveal direction="right">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold text-dark mb-6 leading-tight">
@@ -362,12 +346,11 @@ export const Home = () => {
               </div>
             </Reveal>
             <Reveal direction="left" delay={0.2}>
-              <div className="relative group p-1 bg-white shadow-2xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800" 
-                  alt="Specialized Shipment Preparation" 
-                  className="relative z-10 w-full grayscale contrast-125"
-                  referrerPolicy="no-referrer"
+              <div className="relative h-full min-h-[400px] bg-white shadow-2xl overflow-hidden">
+                <img
+                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('Regulatory Picture.jpeg')}`}
+                  alt="Regulatory Compliance"
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
             </Reveal>
@@ -380,17 +363,17 @@ export const Home = () => {
         <Container>
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <Reveal direction="right">
-              <div className="aspect-[4/5] bg-bg-light relative overflow-hidden group">
-                <img 
-                  src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&q=80&w=800" 
-                  alt="Delayed Cargo" 
-                  className="w-full h-full object-cover grayscale opacity-80"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-dark/60 to-transparent" />
-                <div className="absolute bottom-8 left-8 right-8">
-                  <p className="text-white text-xl font-bold leading-tight">{t('consequences.closing')}</p>
+              <div className="flex flex-col gap-4">
+                <div className="aspect-[4/5] bg-bg-light overflow-hidden">
+                  <img
+                    src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('books rejections.jpeg')}`}
+                    alt="Compliance Books"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
+                <p className="text-primary font-black text-lg leading-snug border-l-4 border-primary pl-4">
+                  {t('consequences.closing')}
+                </p>
               </div>
             </Reveal>
             <Reveal direction="left" delay={0.2}>
@@ -452,30 +435,23 @@ export const Home = () => {
                 </div>
                 <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">
                   {language === 'EN' ? (
-                    <>Authority in <span className="text-primary italic">Controlled Logistics</span>.</>
+                    <>Authority in <span className="text-primary italic">Dangerous Goods Logistics</span>.</>
                   ) : (
-                    <>Autoridad en <span className="text-primary italic">Logística Controlada</span>.</>
+                    <>Autoridad en <span className="text-primary italic">Logística de Mercancías Peligrosas</span>.</>
                   )}
                 </h2>
-                <p className="text-lg text-secondary leading-relaxed">
-                  {t('about.subtitle')}
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                  {[
-                    t('about.item1'),
-                    t('about.item2'),
-                    t('about.item3'),
-                    t('about.item4')
-                  ].map((item) => (
-                    <div key={item} className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center">
-                        <ChevronRight size={14} className="text-primary" />
-                      </div>
-                      <span className="font-semibold text-sm uppercase tracking-wide">{item}</span>
-                    </div>
-                  ))}
+                <div className="pt-2 space-y-4">
+                  <span className="text-primary text-xs font-bold uppercase tracking-widest">
+                    {language === 'EN' ? 'Our Solution' : 'Nuestra Solución'}
+                  </span>
+                  <p className="text-2xl md:text-3xl font-extrabold text-dark leading-tight">
+                    {t('about.title')}
+                  </p>
+                  <p className="text-base text-secondary leading-relaxed">
+                    {t('about.subtitle')}
+                  </p>
+                  <div className="w-12 h-1 bg-accent mt-4" />
                 </div>
-                <Button variant="primary" className="mt-8">{t('about.cta')}</Button>
               </div>
             </Reveal>
           </div>
