@@ -1,9 +1,10 @@
 import { useState, useEffect, ReactNode, FC } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
-import { 
-  ChevronRight, ArrowRight, Play, Users, MapPin, 
+import {
+  ChevronRight, ArrowRight, Play, Users, MapPin,
   ShieldAlert, BookOpen, Quote, Sparkles, Send,
-  Upload, CheckCircle, FileText, Camera, Info
+  Upload, CheckCircle, FileText, Camera, Info,
+  Search, Package, Tag, Route
 } from 'lucide-react';
 import { Section, Container, Button } from '../components/UI';
 import { Icon } from '../components/Icon';
@@ -466,20 +467,42 @@ export const Home = () => {
               <h2 className="text-xl md:text-2xl font-bold uppercase tracking-widest text-dark">{t('services.title')}</h2>
               <Link to="/services" className="text-xs font-bold text-primary hover:underline">{t('services.viewAll')}</Link>
             </div>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-x-20 gap-y-16">
-              {[1, 2, 3, 4].map((i) => (
-                <Reveal key={i} delay={i * 0.1}>
-                  <div className="flex flex-col gap-5 group">
-                    <div className="w-12 h-12 bg-white flex items-center justify-center rounded-none text-primary font-black group-hover:bg-primary group-hover:text-white transition-all duration-300 border border-black/5 shadow-sm">
-                      <span className="text-lg">0{i}</span>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { icon: Search },
+                { icon: Package },
+                { icon: Tag },
+                { icon: FileText },
+                { icon: Route },
+              ].map(({ icon: Icon }, idx) => {
+                const i = idx + 1;
+                const num = i < 10 ? `0${i}` : `${i}`;
+                return (
+                  <Reveal key={i} delay={idx * 0.08}>
+                    <div className="flex flex-col gap-4 bg-white border border-black/5 p-8 group hover:shadow-lg transition-shadow duration-300 h-full">
+                      <div className="w-12 h-12 bg-primary/10 flex items-center justify-center">
+                        <Icon size={22} className="text-primary" />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-primary font-black text-sm">{num}</span>
+                      </div>
+                      <h3 className="text-[17px] font-black text-dark tracking-tight">
+                        {t(`about.item${i}`)}
+                      </h3>
+                      <p className="text-secondary text-[13px] leading-relaxed flex-1">
+                        {t(`about.item${i}.desc`)}
+                      </p>
+                      <Link
+                        to="/services"
+                        className="text-primary text-[13px] font-bold flex items-center gap-1 hover:gap-2 transition-all duration-200 mt-2"
+                      >
+                        {language === 'EN' ? 'Learn More' : 'Ver más'} <ArrowRight size={14} />
+                      </Link>
                     </div>
-                    <h3 className="text-[19px] font-black text-dark tracking-tight uppercase">
-                      {t(`about.item${i}`)}
-                    </h3>
-                  </div>
-                </Reveal>
-              ))}
+                  </Reveal>
+                );
+              })}
             </div>
           </Reveal>
         </Container>
