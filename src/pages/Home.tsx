@@ -4,7 +4,7 @@ import {
   ChevronRight, ArrowRight, Play, Users, MapPin,
   ShieldAlert, BookOpen, Quote, Sparkles, Send,
   Upload, CheckCircle, FileText, Camera, Info,
-  Search, Package, Tag, Route
+  Search, Package, Tag, Route, Truck, Layers
 } from 'lucide-react';
 import { Section, Container, Button } from '../components/UI';
 import { Icon } from '../components/Icon';
@@ -464,23 +464,22 @@ export const Home = () => {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { icon: Search },
+                { icon: ShieldAlert },
+                { icon: Layers },
                 { icon: Package },
                 { icon: Tag },
                 { icon: FileText },
-                { icon: Route },
+                { icon: Truck },
               ].map(({ icon: Icon }, idx) => {
                 const i = idx + 1;
                 const num = i < 10 ? `0${i}` : `${i}`;
                 return (
-                  <Reveal key={i} delay={idx * 0.08}>
+                  <Reveal key={i} delay={idx * 0.07}>
                     <div className="flex flex-col gap-4 bg-white border border-black/5 p-8 group hover:shadow-lg transition-shadow duration-300 h-full">
                       <div className="w-12 h-12 bg-primary/10 flex items-center justify-center">
                         <Icon size={22} className="text-primary" />
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-primary font-black text-sm">{num}</span>
-                      </div>
+                      <span className="text-primary font-black text-sm">{num}</span>
                       <h3 className="text-[17px] font-black text-dark tracking-tight">
                         {t(`about.item${i}`)}
                       </h3>
