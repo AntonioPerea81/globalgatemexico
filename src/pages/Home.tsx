@@ -412,19 +412,12 @@ export const Home = () => {
         <Container>
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <Reveal direction="right">
-              <div className="relative">
-                <div className="absolute -top-10 -left-10 w-40 h-40 bg-accent/10 rounded-full blur-3xl -z-10" />
-                <img 
-                  src="https://picsum.photos/seed/cargo-truck/800/1000" 
-                  alt="Logistics Operations" 
-                  className="rounded-sm shadow-2xl relative z-10 w-full"
-                  referrerPolicy="no-referrer"
+              <div className="aspect-[4/5] overflow-hidden shadow-2xl">
+                <img
+                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('transportes.jpeg')}`}
+                  alt="Logistics Operations"
+                  className="w-full h-full object-cover"
                 />
-                <div className="absolute -bottom-10 -right-10 bg-primary p-8 text-white max-w-xs z-20 shadow-xl hidden md:block">
-                  <Quote className="text-accent mb-4" size={32} />
-                  <p className="text-lg italic font-light mb-4">{t('about.quote')}</p>
-                  <span className="text-xs uppercase font-bold tracking-widest">{t('about.quote.author')}</span>
-                </div>
               </div>
             </Reveal>
             
