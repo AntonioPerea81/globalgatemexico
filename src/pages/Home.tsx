@@ -319,7 +319,7 @@ export const Home = () => {
       {/* NEW: EMPATHY (PROBLEM) SECTION */}
       <div className="bg-dark/5 py-24 relative overflow-hidden">
         <Container>
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-16 items-stretch">
             <Reveal direction="right">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold text-dark mb-6 leading-tight">
@@ -346,11 +346,11 @@ export const Home = () => {
               </div>
             </Reveal>
             <Reveal direction="left" delay={0.2}>
-              <div className="relative group p-1 bg-white shadow-2xl">
-                <img 
+              <div className="relative h-full min-h-[400px] bg-white shadow-2xl overflow-hidden">
+                <img
                   src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('Regulatory Picture.jpeg')}`}
                   alt="Regulatory Compliance"
-                  className="relative z-10 w-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
             </Reveal>
