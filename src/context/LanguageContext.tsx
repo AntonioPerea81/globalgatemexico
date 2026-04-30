@@ -108,7 +108,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'compliance.cred5.desc': 'Authorized IATA Competency-Based Training and Assessment provider for dangerous goods personnel certification.',
     'compliance.cred6.title': 'IATA Cargo Agent',
     'compliance.cred6.desc': 'Certified IATA Cargo Agent, authorized to handle and coordinate international air freight shipments.',
-    'authority.closing': 'These combined credentials are unique in Mexico.',
+    'authority.closing': 'No one has these credentials as a DG Authority in Mexico.',
 
     // Reach (Process)
     'reach.label': 'NO MARGIN FOR ERROR',
@@ -306,7 +306,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'compliance.cred5.desc': 'Proveedor autorizado IATA de Capacitación y Evaluación Basada en Competencias para la certificación de personal DG.',
     'compliance.cred6.title': 'IATA Cargo Agent',
     'compliance.cred6.desc': 'Agente de Carga IATA certificado, autorizado para gestionar y coordinar envíos internacionales de carga aérea.',
-    'authority.closing': 'Estas credenciales combinadas son únicas en México.',
+    'authority.closing': 'Nadie tiene estas credenciales como Autoridad DG en México.',
 
     // Reach (Process)
     'reach.label': 'SIN MARGEN DE ERROR',
