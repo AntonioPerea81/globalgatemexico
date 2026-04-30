@@ -532,26 +532,26 @@ export const Home = () => {
       </Section>
 
       {/* 6. COMPLIANCE PILLARS */}
-      <Section id="compliance" className="relative group bg-slate-50/50">
+      <Section id="compliance" className="bg-slate-100 border-y border-black/8">
         <Container>
           <Reveal>
-            <div className="grid lg:grid-cols-3 gap-0 shadow-3xl rounded-none border border-black/10 bg-white -mt-32 relative z-20">
+            <div className="grid lg:grid-cols-3 gap-6">
               {[
                 { icon: ShieldAlert, title: t('compliance.pillar1.title'), desc: t('compliance.pillar1.desc') },
                 { icon: Users, title: t('compliance.pillar2.title'), desc: t('compliance.pillar2.desc') },
                 { icon: BookOpen, title: t('compliance.pillar3.title'), desc: t('compliance.pillar3.desc') }
               ].map((pillar, idx) => (
-                <div key={pillar.title} className="p-12 border-r last:border-r-0 border-black/10 group/pillar hover:bg-dark hover:text-white transition-all duration-500">
-                  <pillar.icon size={40} className="text-primary group-hover/pillar:text-accent transition-colors mb-8" />
-                  <h3 className="text-[17px] font-black uppercase tracking-tighter mb-4">{pillar.title}</h3>
-                  <p className="text-inherit opacity-70 text-[14px] leading-relaxed mb-8">{pillar.desc}</p>
+                <div key={pillar.title} className="bg-white p-10 border border-black/8 group/pillar hover:bg-dark hover:text-white transition-all duration-500">
+                  <pillar.icon size={36} className="text-primary group-hover/pillar:text-accent transition-colors mb-6" />
+                  <h3 className="text-[15px] font-black uppercase tracking-tighter mb-3">{pillar.title}</h3>
+                  <p className="text-inherit opacity-70 text-[14px] leading-relaxed">{pillar.desc}</p>
                 </div>
               ))}
             </div>
-            <div className="mt-12 text-center">
-               <p className="text-[11px] font-black uppercase tracking-[0.3em] text-secondary">
-                  {t('authority.closing')}
-               </p>
+            <div className="mt-10 text-center">
+              <p className="text-[11px] font-black uppercase tracking-[0.3em] text-secondary">
+                {t('authority.closing')}
+              </p>
             </div>
           </Reveal>
         </Container>
