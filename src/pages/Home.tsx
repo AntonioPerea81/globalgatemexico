@@ -521,7 +521,7 @@ export const Home = () => {
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="flex gap-4 items-center">
                     <ChevronRight className="text-primary shrink-0" size={18} />
-                    <span className="font-bold text-[13px] uppercase tracking-widest text-dark/70">
+                    <span className="font-bold text-[15px] uppercase tracking-widest text-dark/70">
                       {t(`target.col1.item${i}`)}
                     </span>
                   </div>
@@ -533,7 +533,7 @@ export const Home = () => {
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="flex gap-4 items-center">
                     <ChevronRight className="text-primary shrink-0" size={18} />
-                    <span className="font-bold text-[13px] uppercase tracking-widest text-dark/70">
+                    <span className="font-bold text-[15px] uppercase tracking-widest text-dark/70">
                       {t(`target.col2.item${i}`)}
                     </span>
                   </div>
