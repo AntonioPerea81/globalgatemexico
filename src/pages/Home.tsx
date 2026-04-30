@@ -440,25 +440,18 @@ export const Home = () => {
                     <>Autoridad en <span className="text-primary italic">Logística de Mercancías Peligrosas</span>.</>
                   )}
                 </h2>
-                <p className="text-lg text-secondary leading-relaxed">
-                  {t('about.subtitle')}
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                  {[
-                    t('about.item1'),
-                    t('about.item2'),
-                    t('about.item3'),
-                    t('about.item4')
-                  ].map((item) => (
-                    <div key={item} className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center">
-                        <ChevronRight size={14} className="text-primary" />
-                      </div>
-                      <span className="font-semibold text-sm uppercase tracking-wide">{item}</span>
-                    </div>
-                  ))}
+                <div className="pt-2 space-y-4">
+                  <span className="text-primary text-xs font-bold uppercase tracking-widest">
+                    {language === 'EN' ? 'Our Solution' : 'Nuestra Solución'}
+                  </span>
+                  <p className="text-2xl md:text-3xl font-extrabold text-dark leading-tight">
+                    {t('about.title')}
+                  </p>
+                  <p className="text-base text-secondary leading-relaxed">
+                    {t('about.subtitle')}
+                  </p>
+                  <div className="w-12 h-1 bg-accent mt-4" />
                 </div>
-                <Button variant="primary" className="mt-8">{t('about.cta')}</Button>
               </div>
             </Reveal>
           </div>
