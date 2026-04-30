@@ -82,6 +82,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'services.viewAll': 'VIEW ALL SERVICES →',
 
     // Industries (Target)
+    'industries.sublabel': 'IS THIS FOR YOU?',
     'industries.label': 'This is for you if:',
     'industries.reach': 'Expertise Areas',
     'industries.mapLabel': 'Global Reach',
@@ -272,6 +273,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'services.viewAll': 'VER TODOS LOS SERVICIOS →',
 
     // Industries (Target)
+    'industries.sublabel': '¿ES ESTO PARA USTED?',
     'industries.label': 'Esto es para usted si:',
     'industries.reach': 'Áreas de Experiencia',
     'industries.mapLabel': 'Alcance Global',

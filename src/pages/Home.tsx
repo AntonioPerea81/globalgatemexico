@@ -499,37 +499,34 @@ export const Home = () => {
       </Section>
 
       {/* 5. TARGET SECTION (Replacing Industries) */}
-      <Section id="industries" className="bg-white relative overflow-hidden group">
-        <div className="absolute top-0 right-1/4 w-px h-full bg-linear-to-b from-transparent via-black/5 to-transparent hidden lg:block" />
+      <Section id="industries" className="bg-white">
         <Container>
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">{t('industries.label')}</h2>
-          </div>
-          <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-            <Reveal>
-              <div className="space-y-6 bg-slate-50 p-8 border border-black/5">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex gap-4 items-center">
-                    <ChevronRight className="text-primary shrink-0" size={18} />
-                    <span className="font-bold text-[15px] uppercase tracking-widest text-dark/70">
-                      {t(`target.col1.item${i}`)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
-            <Reveal delay={0.2}>
-               <div className="space-y-6 bg-slate-50 p-8 border border-black/5">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex gap-4 items-center">
-                    <ChevronRight className="text-primary shrink-0" size={18} />
-                    <span className="font-bold text-[15px] uppercase tracking-widest text-dark/70">
-                      {t(`target.col2.item${i}`)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
+          <Reveal>
+            <div className="text-center mb-12">
+              <span className="text-primary text-xs font-black uppercase tracking-widest">
+                {t('industries.sublabel')}
+              </span>
+              <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mt-3 mb-4">
+                {t('industries.label')}
+              </h2>
+              <div className="w-12 h-1 bg-accent mx-auto" />
+            </div>
+          </Reveal>
+          <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            {[
+              t('target.col1.item1'), t('target.col2.item1'),
+              t('target.col1.item2'), t('target.col2.item2'),
+              t('target.col1.item3'), t('target.col2.item3'),
+            ].map((item, idx) => (
+              <Reveal key={idx} delay={idx * 0.07}>
+                <div className="flex items-center gap-4 border border-black/10 px-6 py-4 hover:border-primary/30 hover:shadow-sm transition-all duration-200">
+                  <CheckCircle size={22} className="text-primary shrink-0" />
+                  <span className="font-semibold text-[15px] text-dark">
+                    {item}
+                  </span>
+                </div>
+              </Reveal>
+            ))}
           </div>
         </Container>
       </Section>
