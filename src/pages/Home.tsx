@@ -364,17 +364,12 @@ export const Home = () => {
         <Container>
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <Reveal direction="right">
-              <div className="flex flex-col gap-4">
-                <div className="aspect-[4/5] bg-bg-light overflow-hidden">
-                  <img
-                    src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('books rejections.jpeg')}`}
-                    alt="Compliance Books"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="text-primary font-black text-lg leading-snug border-l-4 border-primary pl-4">
-                  {t('consequences.closing')}
-                </p>
+              <div className="aspect-[4/5] bg-bg-light overflow-hidden">
+                <img
+                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('books rejections.jpeg')}`}
+                  alt="Compliance Books"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </Reveal>
             <Reveal direction="left" delay={0.2}>
@@ -394,10 +389,16 @@ export const Home = () => {
                     </div>
                   ))}
                 </div>
-                <div className="pt-8 border-t border-black/5">
-                   <Button variant="primary" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
-                      {t('hero.cta.quote')}
-                   </Button>
+                <div className="pt-8 border-t border-black/5 space-y-6">
+                  <Button variant="primary" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
+                    {t('hero.cta.quote')}
+                  </Button>
+                  <div className="flex items-center justify-center gap-3 bg-primary/5 border border-primary/20 px-6 py-4">
+                    <div className="w-1 self-stretch bg-accent shrink-0" />
+                    <p className="text-primary font-black text-base md:text-lg leading-snug text-center italic">
+                      "{t('consequences.closing')}"
+                    </p>
+                  </div>
                 </div>
               </div>
             </Reveal>
