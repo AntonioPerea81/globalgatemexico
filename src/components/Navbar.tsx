@@ -32,10 +32,10 @@ export const Navbar = () => {
         <div>{t('nav.excellence')}</div>
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-3">
-            <a href="https://www.instagram.com/globalgatemexico" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
+            <a href="https://www.instagram.com/globalgatemexico/" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
               <img src={`${import.meta.env.BASE_URL}${encodeURIComponent('Instagram.png')}`} alt="Instagram" style={{ height: '18px', width: 'auto' }} />
             </a>
-            <a href="https://www.linkedin.com/company/globalgatemexico" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
+            <a href="https://www.linkedin.com/company/global-gate-mexico/?viewAsMember=true" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
               <img src={`${import.meta.env.BASE_URL}${encodeURIComponent('LinkedIn.png')}`} alt="LinkedIn" style={{ height: '18px', width: 'auto' }} />
             </a>
           </div>
