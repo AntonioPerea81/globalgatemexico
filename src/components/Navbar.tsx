@@ -22,7 +22,7 @@ export const Navbar = () => {
     { name: t('nav.about'), href: '/about' },
     { name: t('nav.services'), href: '/services' },
     { name: t('nav.training'), href: '/training' },
-    { name: t('nav.industries'), href: '#industries' },
+    { name: t('nav.contact'), href: '#contact' },
   ];
 
   return (
@@ -89,13 +89,6 @@ export const Navbar = () => {
               </Link>
             )
           ))}
-          <Button 
-            variant="primary" 
-            size="sm"
-            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            {t('nav.contact')}
-          </Button>
           <a href="https://portal.globalgatemexico.com/sign-in" target="_blank" rel="noopener noreferrer">
             <Button variant="gold" size="sm">
               {t('nav.quoteBtn')}
