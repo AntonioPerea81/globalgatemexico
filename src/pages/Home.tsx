@@ -689,30 +689,30 @@ export const Home = () => {
         </Container>
       </Section>
 
-      {/* NEW: OBJECTIONS SECTION */}
+      {/* OBJECTIONS SECTION */}
       <Section className="bg-dark text-white py-24">
         <Container>
-           <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-16 text-center">{t('objections.title')}</h2>
-           <div className="grid md:grid-cols-3 gap-8">
-              {[1, 2, 3].map((i) => (
-                <Reveal key={i} delay={i * 0.1}>
-                  <div className="p-8 border border-white/10 hover:border-accent/40 transition-colors group">
-                    <div className="flex gap-4 items-center mb-6">
-                       <span className="text-secondary/30 group-hover:text-accent font-black text-4xl tracking-tighter">?</span>
-                       <h4 className="font-bold text-[13px] uppercase tracking-widest group-hover:text-accent transition-colors">
-                          {t(`objections.item${i}.q`)}
-                       </h4>
-                    </div>
-                    <div className="flex gap-4 items-start">
-                       <div className="mt-1 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
-                       <p className="text-[14px] text-secondary italic">
-                          {t(`objections.item${i}.a`)}
-                       </p>
-                    </div>
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-16 text-center">{t('objections.title')}</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <Reveal key={i} delay={i * 0.1}>
+                <div className="p-8 border border-white/10 hover:border-accent/30 transition-colors group h-full">
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="text-white/20 font-black text-2xl leading-none">?</span>
+                    <h4 className="font-black text-[13px] uppercase tracking-widest text-white group-hover:text-accent transition-colors">
+                      {t(`objections.item${i}.q`)}
+                    </h4>
                   </div>
-                </Reveal>
-              ))}
-           </div>
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1.5 w-2 h-2 rounded-full bg-accent shrink-0" />
+                    <p className="text-[14px] text-white/50 italic leading-relaxed">
+                      {t(`objections.item${i}.a`)}
+                    </p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
         </Container>
       </Section>
 
