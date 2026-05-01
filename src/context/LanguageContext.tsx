@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+﻿import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type Language = 'EN' | 'ES';
 
@@ -121,10 +121,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'reach.hub3.desc': 'We verify compliance before shipping.',
     'reach.hub4.city': '4. Execution',
     'reach.hub4.desc': 'We coordinate transport.',
-    ‘reach.keyline’: "If it doesn’t pass validation, it doesn’t move forward.",
+    'reach.keyline': "If it doesn’t pass validation, it doesn’t move forward.",
 
     // Objections
-    ‘objections.title’: "What you’re probably thinking",
+    'objections.title': "What you’re probably thinking",
     'objections.item1.q': "Too expensive",
     'objections.item1.a': "More expensive is a rejected shipment",
     'objections.item2.q': "We already have a provider",
