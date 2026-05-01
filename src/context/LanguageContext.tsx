@@ -127,10 +127,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'case.title': 'When others say no, we make it happen.',
     'case.story': 'A client in the oil industry needed to export lithium metal batteries. Their global freight forwarder couldn’t solve it.',
     'case.action': 'We handled DG preparation, selected the correct airline, and validated compliance.',
-    'case.result': 'The shipment was successfully accepted and delivered to the United States.',
+    ‘case.result’: ‘The shipment was successfully accepted and delivered to the United States.’,
+    ‘case.badge’: ‘Success Story’,
 
     // Objections
-    'objections.title': 'What you’re probably thinking',
+    ‘objections.title’: ‘What you’re probably thinking’,
     'objections.item1.q': "Too expensive",
     'objections.item1.a': "More expensive is a rejected shipment",
     'objections.item2.q': "We already have a provider",
@@ -326,6 +327,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'case.story': 'Un cliente de la industria petrolera necesitaba exportar baterías de metal de litio. Su agente de carga global no pudo resolverlo.',
     'case.action': 'Nos encargamos de la preparación de DG, seleccionamos la aerolínea correcta y validamos el cumplimiento.',
     'case.result': 'El envío fue aceptado con éxito y entregado en los Estados Unidos.',
+    'case.badge': 'Historia de Éxito',
 
     // Objections
     'objections.title': 'Lo que probablemente esté pensando',
