@@ -648,7 +648,7 @@ export const Home = () => {
                           backgroundPosition: pos,
                         }}
                       >
-                        <div className="absolute inset-0 bg-dark/30" />
+                        <div className="absolute inset-0 bg-dark/10" />
                         <span className="absolute bottom-2 left-2 text-[9px] font-black uppercase text-white tracking-wider leading-tight">
                           {label}
                         </span>
