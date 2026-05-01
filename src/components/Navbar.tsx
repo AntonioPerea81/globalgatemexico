@@ -31,7 +31,14 @@ export const Navbar = () => {
       <div className="bg-dark text-white py-2 px-10 text-[11px] tracking-[0.05em] uppercase flex justify-between items-center hidden md:flex">
         <div>{t('nav.excellence')}</div>
         <div className="flex items-center gap-6">
-          <span className="flex items-center gap-1">{t('nav.contact')}: +52 812 165 4040</span>
+          <div className="flex items-center gap-3">
+            <a href="https://www.instagram.com/globalgatemexico" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
+              <img src={`${import.meta.env.BASE_URL}${encodeURIComponent('Instagram.png')}`} alt="Instagram" style={{ height: '18px', width: 'auto' }} />
+            </a>
+            <a href="https://www.linkedin.com/company/globalgatemexico" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
+              <img src={`${import.meta.env.BASE_URL}${encodeURIComponent('LinkedIn.png')}`} alt="LinkedIn" style={{ height: '18px', width: 'auto' }} />
+            </a>
+          </div>
           <div className="flex items-center gap-2 border-l border-white/10 pl-4 ml-4">
             <button 
               onClick={() => setLanguage('ES')}
