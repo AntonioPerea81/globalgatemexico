@@ -706,14 +706,16 @@ export const Home = () => {
             
             <div className="grid lg:grid-cols-5 gap-12 items-center">
               <div className="lg:col-span-3">
-                <div className="relative aspect-video overflow-hidden border border-black/5 mb-8">
-                   <img 
-                    src="https://images.unsplash.com/photo-1566378246598-5b11a0ef486c?auto=format&fit=crop&q=80&w=1200" 
-                    alt="Success Case" 
-                    className="w-full h-full object-cover grayscale brightness-90"
-                    referrerPolicy="no-referrer"
+                <div className="relative overflow-hidden border border-black/5 mb-6 rounded-sm" style={{ maxHeight: '420px' }}>
+                  <img
+                    src={`${import.meta.env.BASE_URL}${encodeURIComponent('LBUN3090.png')}`}
+                    alt="Success Case — Lithium batteries export"
+                    className="w-full h-full object-cover object-center"
                   />
-                  <div className="absolute bottom-4 left-4 bg-primary px-4 py-2 text-white font-bold text-[10px] tracking-widest uppercase">Success Story</div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                  <div className="absolute bottom-4 left-4 bg-primary px-4 py-2 text-white font-bold text-[10px] tracking-widest uppercase">
+                    {t('case.badge')}
+                  </div>
                 </div>
               </div>
               <div className="lg:col-span-2 space-y-6">
