@@ -121,7 +121,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'reach.hub3.desc': 'We verify compliance before shipping.',
     'reach.hub4.city': '4. Execution',
     'reach.hub4.desc': 'We coordinate transport.',
-    'reach.keyline': 'If it doesn’t pass validation, it doesn’t move forward.',
+    ‘reach.keyline’: "If it doesn’t pass validation, it doesn’t move forward.",
 
     // Case Study
     'case.title': 'When others say no, we make it happen.',
