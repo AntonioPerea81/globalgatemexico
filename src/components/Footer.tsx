@@ -1,50 +1,13 @@
 import { Container } from './UI';
 import { Link } from 'react-router-dom';
-import { useLanguage } from '../context/LanguageContext';
-
-const logosSrc = `${(import.meta as any).env?.BASE_URL || '/'}${encodeURIComponent('Logos SM.png')}`;
-
-const SocialIcon = ({ href, label, position }: { href: string; label: string; position: string }) => (
-  <a
-    href={href}
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label={label}
-    className="hover:opacity-70 transition-opacity"
-  >
-    <div
-      style={{
-        width: '36px',
-        height: '36px',
-        backgroundImage: `url(${logosSrc})`,
-        backgroundSize: '200% 100%',
-        backgroundPosition: position,
-        backgroundRepeat: 'no-repeat',
-      }}
-    />
-  </a>
-);
 
 export const Footer = () => {
-  const { t } = useLanguage();
   return (
     <footer className="bg-dark text-white">
       {/* Main footer body */}
       <div className="border-b border-white/10 py-14">
         <Container>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-
-            {/* Brand column */}
-            <div className="space-y-5">
-              <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '40px', width: 'auto' }} />
-              <p className="text-[13px] text-white/50 leading-relaxed max-w-xs">
-                Specialized dangerous goods logistics and compliance from Mexico to the world.
-              </p>
-              <div className="flex items-center gap-4 pt-2">
-                <SocialIcon href="https://www.instagram.com/globalgatemexico" label="Instagram" position="0% 50%" />
-                <SocialIcon href="https://www.linkedin.com/company/globalgatemexico" label="LinkedIn" position="100% 50%" />
-              </div>
-            </div>
+          <div className="flex flex-col md:flex-row justify-between gap-12">
 
             {/* Contact column */}
             <div className="space-y-4">
