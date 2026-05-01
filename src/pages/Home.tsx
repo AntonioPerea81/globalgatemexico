@@ -618,11 +618,13 @@ export const Home = () => {
                   <p className="text-[11px] font-black uppercase tracking-widest text-primary">
                     {t('reach.keyline')}
                   </p>
-                  <a href="https://portal.globalgatemexico.com/sign-in" target="_blank" rel="noopener noreferrer">
-                    <Button variant="primary" className="uppercase tracking-widest text-[11px]">
-                      {t('hero.cta.secondary')} <ArrowRight size={14} className="ml-2" />
-                    </Button>
-                  </a>
+                  <Button
+                    variant="primary"
+                    className="uppercase tracking-widest text-[11px]"
+                    onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    {t('hero.cta.secondary')} <ArrowRight size={14} className="ml-2" />
+                  </Button>
                 </div>
               </div>
             </Reveal>
