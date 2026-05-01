@@ -125,13 +125,13 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Case Study
     'case.title': 'When others say no, we make it happen.',
-    'case.story': 'A client in the oil industry needed to export lithium metal batteries. Their global freight forwarder couldn’t solve it.',
+    ‘case.story’: "A client in the oil industry needed to export lithium metal batteries. Their global freight forwarder couldn’t solve it.",
     'case.action': 'We handled DG preparation, selected the correct airline, and validated compliance.',
     ‘case.result’: ‘The shipment was successfully accepted and delivered to the United States.’,
     ‘case.badge’: ‘Success Story’,
 
     // Objections
-    ‘objections.title’: ‘What you’re probably thinking’,
+    ‘objections.title’: "What you’re probably thinking",
     'objections.item1.q': "Too expensive",
     'objections.item1.a': "More expensive is a rejected shipment",
     'objections.item2.q': "We already have a provider",
