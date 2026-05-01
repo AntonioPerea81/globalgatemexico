@@ -760,13 +760,13 @@ export const Home = () => {
                       <div className="w-10 h-10 border border-black/5 flex items-center justify-center text-secondary group-hover:text-primary group-hover:border-primary/20 transition-all">
                         <Icon name="Phone" size={18} />
                       </div>
-                      <span className="text-[13px] font-bold text-dark">+52 (55) 8956-2000</span>
+                      <span className="text-[13px] font-bold text-dark">+52 812 165 4040</span>
                     </div>
                     <div className="flex gap-4 items-center group">
                       <div className="w-10 h-10 border border-black/5 flex items-center justify-center text-secondary group-hover:text-primary group-hover:border-primary/20 transition-all">
                         <Icon name="Mail" size={18} />
                       </div>
-                      <span className="text-[13px] font-bold text-dark">solutions@globalgate.mx</span>
+                      <span className="text-[13px] font-bold text-dark">ggm@globalgatemexico.com</span>
                     </div>
                   </div>
                 )}
