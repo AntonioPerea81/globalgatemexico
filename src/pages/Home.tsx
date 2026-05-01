@@ -247,13 +247,6 @@ export const Home = () => {
                 >
                   {t('hero.cta.quote')}
                 </Button>
-                <Button 
-                  variant="outline" 
-                  className="border-white/20 text-white hover:bg-white hover:text-dark px-8 py-6 text-sm" 
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  {t('hero.cta.secondary')}
-                </Button>
               </div>
             </motion.div>
           </div>
