@@ -696,47 +696,6 @@ export const Home = () => {
         </Container>
       </Section>
 
-      {/* 9. CASE STUDY SECTION (Replacing News) */}
-      <Section id="casestudy" className="bg-white">
-        <Container>
-          <Reveal>
-            <div className="flex justify-between items-baseline border-b border-black/5 pb-4 mb-16 px-4">
-              <h2 className="text-xl font-bold uppercase tracking-widest text-dark">{t('case.title')}</h2>
-            </div>
-            
-            <div className="grid lg:grid-cols-5 gap-12 items-center">
-              <div className="lg:col-span-3">
-                <div className="relative overflow-hidden border border-black/5 mb-6 rounded-sm" style={{ maxHeight: '420px' }}>
-                  <img
-                    src={`${import.meta.env.BASE_URL}${encodeURIComponent('LBUN3090.png')}`}
-                    alt="Success Case — Lithium batteries export"
-                    className="w-full h-full object-cover object-center"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                  <div className="absolute bottom-4 left-4 bg-primary px-4 py-2 text-white font-bold text-[10px] tracking-widest uppercase">
-                    {t('case.badge')}
-                  </div>
-                </div>
-              </div>
-              <div className="lg:col-span-2 space-y-6">
-                <div className="space-y-4">
-                  <h4 className="text-[11px] font-bold uppercase tracking-widest text-primary">The Challenge</h4>
-                  <p className="text-[14px] text-dark leading-relaxed font-bold italic">"{t('case.story')}"</p>
-                </div>
-                <div className="space-y-4">
-                  <h4 className="text-[11px] font-bold uppercase tracking-widest text-primary">Our Action</h4>
-                  <p className="text-[14px] text-secondary leading-relaxed">{t('case.action')}</p>
-                </div>
-                <div className="space-y-4 p-6 bg-slate-50 border border-black/5">
-                  <h4 className="text-[11px] font-bold uppercase tracking-widest text-primary">The Result</h4>
-                  <p className="text-[15px] text-dark font-black tracking-tight">{t('case.result')}</p>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-        </Container>
-      </Section>
-
       {/* NEW: OBJECTIONS SECTION */}
       <Section className="bg-dark text-white py-24">
         <Container>

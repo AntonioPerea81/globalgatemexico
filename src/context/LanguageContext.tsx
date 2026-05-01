@@ -123,13 +123,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'reach.hub4.desc': 'We coordinate transport.',
     ‘reach.keyline’: "If it doesn’t pass validation, it doesn’t move forward.",
 
-    // Case Study
-    'case.title': 'When others say no, we make it happen.',
-    ‘case.story’: "A client in the oil industry needed to export lithium metal batteries. Their global freight forwarder couldn’t solve it.",
-    'case.action': 'We handled DG preparation, selected the correct airline, and validated compliance.',
-    ‘case.result’: ‘The shipment was successfully accepted and delivered to the United States.’,
-    ‘case.badge’: ‘Success Story’,
-
     // Objections
     ‘objections.title’: "What you’re probably thinking",
     'objections.item1.q': "Too expensive",
@@ -321,13 +314,6 @@ export const translations: Record<Language, Record<string, string>> = {
     'reach.hub4.city': '4. Ejecución',
     'reach.hub4.desc': 'Coordinamos el transporte.',
     'reach.keyline': 'Si no pasa la validación, no avanza.',
-
-    // Case Study
-    'case.title': 'Cuando otros dicen no, nosotros lo hacemos realidad.',
-    'case.story': 'Un cliente de la industria petrolera necesitaba exportar baterías de metal de litio. Su agente de carga global no pudo resolverlo.',
-    'case.action': 'Nos encargamos de la preparación de DG, seleccionamos la aerolínea correcta y validamos el cumplimiento.',
-    'case.result': 'El envío fue aceptado con éxito y entregado en los Estados Unidos.',
-    'case.badge': 'Historia de Éxito',
 
     // Objections
     'objections.title': 'Lo que probablemente esté pensando',
