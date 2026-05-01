@@ -634,7 +634,7 @@ export const Home = () => {
                         key={label}
                         className="aspect-square overflow-hidden relative"
                         style={{
-                          backgroundImage: `url(${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('process-grid.jpeg')})`,
+                          backgroundImage: `url(${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('Process GGM.png')})`,
                           backgroundSize: '200% 200%',
                           backgroundPosition: pos,
                         }}
