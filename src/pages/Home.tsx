@@ -614,9 +614,16 @@ export const Home = () => {
                     </div>
                   ))}
                 </div>
-                <p className="mt-12 text-[11px] font-black uppercase tracking-widest text-primary border-t border-black/5 pt-6">
-                   {t('reach.keyline')}
-                </p>
+                <div className="mt-12 border-t border-black/5 pt-6 space-y-5">
+                  <p className="text-[11px] font-black uppercase tracking-widest text-primary">
+                    {t('reach.keyline')}
+                  </p>
+                  <a href="https://portal.globalgatemexico.com/sign-in" target="_blank" rel="noopener noreferrer">
+                    <Button variant="primary" className="uppercase tracking-widest text-[11px]">
+                      {t('hero.cta.secondary')} <ArrowRight size={14} className="ml-2" />
+                    </Button>
+                  </a>
+                </div>
               </div>
             </Reveal>
             <Reveal direction="left" delay={0.3}>
