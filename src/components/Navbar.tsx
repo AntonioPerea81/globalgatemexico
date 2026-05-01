@@ -89,13 +89,11 @@ export const Navbar = () => {
           >
             {t('nav.contact')}
           </Button>
-          <Button 
-            variant="gold" 
-            size="sm"
-            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            {t('nav.quoteBtn')}
-          </Button>
+          <a href="https://portal.globalgatemexico.com/sign-in" target="_blank" rel="noopener noreferrer">
+            <Button variant="gold" size="sm">
+              {t('nav.quoteBtn')}
+            </Button>
+          </a>
         </div>
 
           {/* Mobile Toggle */}
@@ -175,16 +173,11 @@ export const Navbar = () => {
             </div>
 
             <div className="mt-auto pt-10 border-t border-white/10">
-              <Button 
-                variant="gold" 
-                className="w-full py-6 text-xl"
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-              >
-                {t('nav.quoteBtn')}
-              </Button>
+              <a href="https://portal.globalgatemexico.com/sign-in" target="_blank" rel="noopener noreferrer" className="block">
+                <Button variant="gold" className="w-full py-6 text-xl" onClick={() => setIsMobileMenuOpen(false)}>
+                  {t('nav.quoteBtn')}
+                </Button>
+              </a>
             </div>
           </motion.div>
         )}
