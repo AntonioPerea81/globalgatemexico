@@ -394,9 +394,12 @@ export const Home = () => {
                   <Button variant="primary" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
                     {t('hero.cta.quote')}
                   </Button>
-                  <p className="text-primary font-black text-base md:text-lg leading-snug italic">
-                    "{t('consequences.closing')}"
-                  </p>
+                  <div>
+                    <p className="text-secondary text-base leading-relaxed">
+                      {t('consequences.closing')}
+                    </p>
+                    <div className="w-10 h-1 bg-accent mt-3" />
+                  </div>
                 </div>
               </div>
             </Reveal>
