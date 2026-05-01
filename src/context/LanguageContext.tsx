@@ -63,7 +63,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'about.subtitle': 'Before your shipment moves, we already know if it will be accepted or rejected.',
     'about.item1': 'Dangerous Goods Classification',
     'about.item1.desc': 'We determine whether your product is regulated as Dangerous Goods under applicable transport regulations.',
-    'about.item2': 'Shipping Configuration Identification',
+    'about.item2': 'Product Identification',
     'about.item2.desc': 'We assign the correct UN Number, Proper Shipping Name, hazard class, and packing group for transport.',
     'about.item3': 'UN Packaging Selection',
     'about.item3.desc': 'We select the proper UN-certified packaging based on quantity, packaging type, and mode of transport.',
