@@ -623,23 +623,28 @@ export const Home = () => {
               <div className="relative">
                 <div className="relative z-10 p-6 bg-white shadow-3xl rounded-sm border border-black/5">
                   <h4 className="text-[10px] font-bold uppercase tracking-widest text-secondary mb-6 text-center">Visual Verification</h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="aspect-square bg-bg-light flex flex-col items-center justify-center p-4 text-center">
-                      <ShieldAlert size={32} className="text-primary mb-2" />
-                      <span className="text-[9px] font-bold uppercase leading-tight line-clamp-2">Regulatory Control</span>
-                    </div>
-                    <div className="aspect-square bg-bg-light flex flex-col items-center justify-center p-4 text-center">
-                      <MapPin size={32} className="text-primary mb-2" />
-                      <span className="text-[9px] font-bold uppercase leading-tight line-clamp-2">Real-time Visibility</span>
-                    </div>
-                    <div className="aspect-square bg-bg-light flex flex-col items-center justify-center p-4 text-center">
-                      <Users size={32} className="text-primary mb-2" />
-                      <span className="text-[9px] font-bold uppercase leading-tight line-clamp-2">Technical Team</span>
-                    </div>
-                    <div className="aspect-square bg-bg-light flex flex-col items-center justify-center p-4 text-center">
-                      <BookOpen size={32} className="text-primary mb-2" />
-                      <span className="text-[9px] font-bold uppercase leading-tight line-clamp-2">Compliance Mastery</span>
-                    </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { label: 'Regulatory Control',  pos: '0% 0%'    },
+                      { label: 'Real-time Visibility', pos: '100% 0%'  },
+                      { label: 'Technical Team',       pos: '0% 100%'  },
+                      { label: 'Compliance Mastery',   pos: '100% 100%'},
+                    ].map(({ label, pos }) => (
+                      <div
+                        key={label}
+                        className="aspect-square overflow-hidden relative"
+                        style={{
+                          backgroundImage: `url(${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('process-grid.jpeg')})`,
+                          backgroundSize: '200% 200%',
+                          backgroundPosition: pos,
+                        }}
+                      >
+                        <div className="absolute inset-0 bg-dark/30" />
+                        <span className="absolute bottom-2 left-2 text-[9px] font-black uppercase text-white tracking-wider leading-tight">
+                          {label}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
                 {/* Decorative dots */}
