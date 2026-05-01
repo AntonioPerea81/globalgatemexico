@@ -30,7 +30,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'hero.subtitle': 'Avoid rejections, fines, and delays in your dangerous goods shipments from Mexico to anywhere in the world. Full compliance. Zero margin for error.',
     'hero.micro': 'For companies that cannot afford compliance mistakes.',
     'hero.cta.quote': 'Schedule Free Diagnostic (30 min)',
-    'hero.cta.secondary': 'Review My Shipment',
+    'hero.cta.secondary': 'Check My Shipment',
     'hero.cta.training': 'Training Services',
 
     // Empathy (Problem)
@@ -228,7 +228,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'hero.subtitle': 'Evite rechazos, multas y retrasos en sus envíos de mercancías peligrosas desde México a cualquier parte del mundo. Cumplimiento total. Cero margen de error.',
     'hero.micro': 'Para empresas que no pueden permitirse errores de cumplimiento.',
     'hero.cta.quote': 'Agendar Diagnóstico Gratuito (30 min)',
-    'hero.cta.secondary': 'Revisar mi Envío',
+    'hero.cta.secondary': 'Verificar mi Envío',
     'hero.cta.training': 'Servicios de Capacitación',
 
     // Empathy (Problem)
