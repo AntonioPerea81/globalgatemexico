@@ -875,7 +875,7 @@ export const Home = () => {
                               <div className="space-y-1">
                                 <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider ml-1">{t('contact.field.photos')}</label>
                                 <div className="relative group/upload">
-                                  <input name="photos" type="file" multiple accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                                  <input name="photos" type="file" multiple accept="image/jpeg,image/jpg,image/png,image/webp" className="absolute inset-0 opacity-0 cursor-pointer z-10" />
                                   <div className="w-full bg-white border border-dashed border-black/20 px-4 py-3 text-[12px] flex items-center justify-center gap-2 group-hover/upload:border-primary transition-colors">
                                     <Camera size={14} className="text-dark/40" />
                                     <span className="text-dark/60">Upload Images</span>

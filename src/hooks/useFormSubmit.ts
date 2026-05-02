@@ -19,9 +19,9 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const uploadFile = async (leadId: string, file: File, fieldName: string) => {
-    const ext = file.name.split('.').pop();
-    const path = `${leadId}/${fieldName}_${Date.now()}.${ext}`;
+  const uploadFile = async (leadId: string, file: File, fieldName: string, index = 0) => {
+    const ext = file.name.split('.').pop() ?? 'bin';
+    const path = `${leadId}/${fieldName}_${index}_${Date.now()}.${ext}`;
 
     const { error: uploadError } = await supabase.storage
       .from('shipment-docs')
@@ -78,8 +78,8 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
       }
 
       const photoFiles = step2.getAll('photos') as File[];
-      for (const photo of photoFiles) {
-        if (photo.size > 0) await uploadFile(leadId, photo, 'photo');
+      for (let i = 0; i < photoFiles.length; i++) {
+        if (photoFiles[i].size > 0) await uploadFile(leadId, photoFiles[i], 'photo', i);
       }
 
       const instrFile = step2.get('instruction_file') as File | null;
