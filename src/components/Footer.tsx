@@ -19,7 +19,6 @@ export const Footer = () => {
                 <li>
                   <a href="mailto:ggm@globalgatemexico.com" className="hover:text-white transition-colors">ggm@globalgatemexico.com</a>
                 </li>
-                <li className="text-white/40">Monterrey, Nuevo León, México</li>
               </ul>
             </div>
 
