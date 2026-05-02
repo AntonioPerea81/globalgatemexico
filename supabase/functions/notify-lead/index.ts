@@ -5,6 +5,7 @@ const NOTIFICATION_EMAIL = Deno.env.get('INTERNAL_NOTIFICATION_EMAIL') ?? 'ggm@g
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
 const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? '';
+const TURNSTILE_SECRET_KEY = Deno.env.get('TURNSTILE_SECRET_KEY') ?? '';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -20,6 +21,7 @@ interface UploadedFile {
 
 interface LeadPayload {
   leadId: string;
+  turnstileToken?: string;
   leadData: {
     name: string;
     company: string;
@@ -61,7 +63,33 @@ serve(async (req: Request) => {
     });
   }
 
-  const { leadId, leadData, uploadedFiles = [] } = payload;
+  const { leadId, turnstileToken, leadData, uploadedFiles = [] } = payload;
+
+  // Verify Turnstile token (only if secret key is configured)
+  if (TURNSTILE_SECRET_KEY) {
+    if (!turnstileToken) {
+      return new Response(JSON.stringify({ error: 'Missing Turnstile token' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        secret: TURNSTILE_SECRET_KEY,
+        response: turnstileToken,
+      }),
+    });
+    const verifyData = await verifyRes.json() as { success: boolean };
+    if (!verifyData.success) {
+      console.error('[notify-lead] Turnstile verification failed');
+      return new Response(JSON.stringify({ error: 'Bot verification failed' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+  }
 
   // Attempt to fetch full lead from DB (server-side, service role)
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);

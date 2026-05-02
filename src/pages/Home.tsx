@@ -1,4 +1,5 @@
 import { useState, useEffect, ReactNode, FC } from 'react';
+import { Turnstile } from '@marsidev/react-turnstile';
 import { useFormSubmit } from '../hooks/useFormSubmit';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import {
@@ -175,7 +176,9 @@ export const Home = () => {
   const [formStep, setFormStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [step1Data, setStep1Data] = useState<Record<string, string>>({});
+  const [turnstileToken, setTurnstileToken] = useState('');
   const { isLoading: formLoading, error: formError, submit: submitLead } = useFormSubmit();
+  const turnstileSiteKey = (import.meta as any).env?.VITE_TURNSTILE_SITE_KEY as string | undefined;
 
   const logos = [
     "IATA_CARGO_AGENT__1_.png",
@@ -796,7 +799,7 @@ export const Home = () => {
                           setFormStep(2);
                         } else {
                           const fd = new FormData(e.currentTarget);
-                          const ok = await submitLead(step1Data as any, fd);
+                          const ok = await submitLead(step1Data as any, fd, turnstileToken);
                           if (ok) setFormSubmitted(true);
                         }
                       }}>
@@ -909,11 +912,14 @@ export const Home = () => {
                               </div>
                             </div>
 
-                            <div className="space-y-4">
-                              <label className="text-[10px] font-black uppercase text-primary tracking-widest block border-b border-primary/10 pb-2">{t('contact.field.emergencyContact')}</label>
+                            <div className="space-y-3">
+                              <div className="border-b border-primary/10 pb-2">
+                                <label className="text-[10px] font-black uppercase text-primary tracking-widest block">{t('contact.field.emergencyContact')}</label>
+                                <p className="text-[10px] text-dark/40 mt-1 leading-snug">{t('contact.field.emergencyContactHelper')}</p>
+                              </div>
                               <div className="grid md:grid-cols-2 gap-4">
-                                <input name="emergency_name" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary" placeholder={t('contact.field.emergencyName')} />
-                                <input name="emergency_phone" type="tel" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary" placeholder={t('contact.field.emergencyPhone')} />
+                                <input name="emergency_name" type="text" className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary" placeholder={t('contact.field.emergencyName')} />
+                                <input name="emergency_phone" type="tel" className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary" placeholder={t('contact.field.emergencyPhone')} />
                               </div>
                             </div>
 
@@ -922,12 +928,22 @@ export const Home = () => {
                                 <input type="checkbox" required className="mt-1 accent-primary" id="consent" />
                                 <label htmlFor="consent" className="text-[11px] text-secondary leading-tight cursor-pointer">{t('contact.field.consent')}</label>
                               </div>
+                              {turnstileSiteKey && (
+                                <div className="flex justify-center">
+                                  <Turnstile
+                                    siteKey={turnstileSiteKey}
+                                    onSuccess={(token) => setTurnstileToken(token)}
+                                    onExpire={() => setTurnstileToken('')}
+                                    options={{ theme: 'light' }}
+                                  />
+                                </div>
+                              )}
                               {formError && (
                                 <p className="text-red-500 text-[11px] font-bold text-center">{formError}</p>
                               )}
                               <div className="flex gap-4">
                                 <button type="button" onClick={() => setFormStep(1)} className="text-[11px] font-black uppercase tracking-widest text-dark/30 hover:text-dark transition-colors">Back</button>
-                                <Button variant="primary" className="flex-grow py-4 uppercase font-black tracking-widest text-[11px]" disabled={formLoading}>
+                                <Button variant="primary" className="flex-grow py-4 uppercase font-black tracking-widest text-[11px]" disabled={formLoading || (!!turnstileSiteKey && !turnstileToken)}>
                                   {formLoading ? 'Sending...' : t('contact.cta')}
                                 </Button>
                               </div>
