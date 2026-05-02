@@ -690,25 +690,25 @@ export const Home = () => {
       </Section>
 
       {/* OBJECTIONS SECTION */}
-      <Section className="bg-dark text-white py-24">
+      <Section className="bg-slate-100 py-24">
         <Container>
-          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-16 text-center">{t('objections.title')}</h2>
+          <Reveal>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-dark mb-4">{t('objections.title')}</h2>
+              <div className="w-12 h-1 bg-accent mx-auto" />
+            </div>
+          </Reveal>
           <div className="grid md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
               <Reveal key={i} delay={i * 0.1}>
-                <div className="p-8 border border-white/10 hover:border-accent/30 transition-colors group h-full">
-                  <div className="flex items-center gap-3 mb-6">
-                    <span className="text-white/20 font-black text-2xl leading-none">?</span>
-                    <h4 className="font-black text-[13px] uppercase tracking-widest text-white group-hover:text-accent transition-colors">
-                      {t(`objections.item${i}.q`)}
-                    </h4>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="mt-1.5 w-2 h-2 rounded-full bg-accent shrink-0" />
-                    <p className="text-[14px] text-white/50 italic leading-relaxed">
-                      {t(`objections.item${i}.a`)}
-                    </p>
-                  </div>
+                <div className="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow text-center h-full flex flex-col items-center gap-4">
+                  <div className="w-12 h-12 rounded-full border-2 border-slate-200 flex items-center justify-center text-slate-400 text-xl font-bold">?</div>
+                  <h4 className="font-bold text-[15px] text-dark">
+                    "{t(`objections.item${i}.q`)}"
+                  </h4>
+                  <p className="text-[14px] text-primary leading-relaxed">
+                    {t(`objections.item${i}.a`)}.
+                  </p>
                 </div>
               </Reveal>
             ))}
