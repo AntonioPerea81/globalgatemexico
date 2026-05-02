@@ -46,10 +46,14 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
     setError(null);
 
     try {
-      // 1. Insert lead record
-      const { data: lead, error: leadError } = await supabase
+      // 1. Generate UUID client-side — avoids needing anon SELECT on shipment_leads
+      const leadId = crypto.randomUUID();
+
+      // 2. Insert lead record (INSERT only — no .select() needed)
+      const { error: leadError } = await supabase
         .from('shipment_leads')
         .insert({
+          id: leadId,
           name: step1.name,
           company: step1.company,
           email: step1.email,
@@ -63,14 +67,11 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
           instruction_support: step2.get('instruction_support') === 'on',
           emergency_name: step2.get('emergency_name') as string,
           emergency_phone: step2.get('emergency_phone') as string,
-        })
-        .select('id')
-        .single();
+        });
 
       if (leadError) throw new Error(`Lead insert failed: ${leadError.message}`);
-      const leadId = lead.id as string;
 
-      // 2. Upload files (SDS, photos, instruction letter)
+      // 3. Upload files (SDS, photos, instruction letter)
       const sdsFile = step2.get('sds') as File | null;
       if (sdsFile && sdsFile.size > 0) {
         await uploadFile(leadId, sdsFile, 'sds');
@@ -86,7 +87,7 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
         await uploadFile(leadId, instrFile, 'instruction_file');
       }
 
-      // 3. Trigger Edge Function for email notification (fire-and-forget; don't block on failure)
+      // 4. Trigger Edge Function for email notification (fire-and-forget; don't block on failure)
       supabase.functions
         .invoke('notify-lead', {
           body: {
