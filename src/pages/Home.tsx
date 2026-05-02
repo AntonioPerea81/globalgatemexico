@@ -952,10 +952,7 @@ export const Home = () => {
                           {t('contact.success.msg')}
                         </p>
                       </div>
-                      <div className="pt-4 border-t border-black/5 space-y-3">
-                        <p className="text-[11px] text-dark/40 font-bold uppercase tracking-widest text-center">
-                          Our team will contact you shortly
-                        </p>
+                      <div className="pt-4 border-t border-black/5">
                         <div className="flex justify-center gap-6 text-[13px] text-dark/60">
                           <a href="tel:+528121654040" className="hover:text-primary transition-colors font-bold">+52 812 165 4040</a>
                           <a href="mailto:ggm@globalgatemexico.com" className="hover:text-primary transition-colors font-bold">ggm@globalgatemexico.com</a>

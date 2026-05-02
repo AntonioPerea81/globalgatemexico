@@ -170,7 +170,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'contact.field.consent': 'I agree to the privacy policy.',
     'contact.cta': 'Validate My DG Shipment',
     'contact.success.title': 'Shipment Details Received',
-    'contact.success.msg': 'Thank you. Please schedule your 30-minute diagnostic call now to finalize the compliance review.',
+    'contact.success.msg': 'Thank you. Our team will review your dangerous goods shipment details and supporting documents. If additional information is required, we will contact you directly.',
     'contact.success.cta': 'Book My Call Now',
 
     // Footer
@@ -362,7 +362,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'contact.field.consent': 'Acepto la política de privacidad.',
     'contact.cta': 'Validar mi Envío de DG',
     'contact.success.title': 'Detalles del Envío Recibidos',
-    'contact.success.msg': 'Gracias. Por favor, agende su llamada de diagnóstico de 30 minutos ahora para finalizar la revisión de cumplimiento.',
+    'contact.success.msg': 'Gracias. Nuestro equipo revisará los detalles de su envío de mercancías peligrosas y los documentos adjuntos. Si se requiere información adicional, nos comunicaremos con usted directamente.',
     'contact.success.cta': 'Agendar mi Llamada Ahora',
 
     // Footer
