@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Globe, Phone, Mail, ChevronRight } from 'lucide-react';
+import { Menu, X, Globe, Phone, Mail, ChevronRight, Instagram, Linkedin } from 'lucide-react';
 import { Container, Button } from './UI';
 import { cn } from '../lib/utils';
 import { useLanguage } from '../context/LanguageContext';
@@ -32,11 +32,11 @@ export const Navbar = () => {
         <div>{t('nav.excellence')}</div>
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-3">
-            <a href="https://www.instagram.com/globalgatemexico/" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
-              <img src={`${import.meta.env.BASE_URL}${encodeURIComponent('Instagram.png')}`} alt="Instagram" style={{ height: '18px', width: 'auto' }} />
+            <a href="https://www.instagram.com/globalgatemexico/" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors" aria-label="Instagram">
+              <Instagram size={16} />
             </a>
-            <a href="https://www.linkedin.com/company/global-gate-mexico/?viewAsMember=true" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity">
-              <img src={`${import.meta.env.BASE_URL}${encodeURIComponent('LinkedIn.png')}`} alt="LinkedIn" style={{ height: '18px', width: 'auto' }} />
+            <a href="https://www.linkedin.com/company/global-gate-mexico/?viewAsMember=true" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors" aria-label="LinkedIn">
+              <Linkedin size={16} />
             </a>
           </div>
           <div className="flex items-center gap-2 border-l border-white/10 pl-4 ml-4">
