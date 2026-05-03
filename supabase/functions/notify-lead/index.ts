@@ -89,19 +89,42 @@ serve(async (req: Request) => {
     instruction_file: 'Instruction Letter',
   };
 
+  console.log('[notify-lead] uploadedFiles received:', JSON.stringify(uploadedFiles));
+
+  // Query lead_files table for authoritative file paths — the payload paths are used
+  // as a fallback only, since the DB record is guaranteed to match what was uploaded.
+  const { data: dbFiles, error: filesError } = await supabase
+    .from('lead_files')
+    .select('field_name, file_name, file_path')
+    .eq('lead_id', leadId);
+
+  if (filesError) {
+    console.error('[notify-lead] Failed to fetch lead_files:', filesError.message);
+  }
+  console.log('[notify-lead] lead_files from DB:', JSON.stringify(dbFiles));
+
+  // Merge DB records with payload: DB is authoritative for file_path; fall back to payload
   interface FileWithUrl {
     label: string;
     fileName: string;
     signedUrl: string | null;
   }
 
+  // Build the list from DB records when available, else fall back to uploadedFiles payload
+  const sourceFiles = (dbFiles && dbFiles.length > 0)
+    ? dbFiles.map(f => ({ fieldName: f.field_name, fileName: f.file_name, path: f.file_path }))
+    : uploadedFiles;
+
   const filesWithUrls: FileWithUrl[] = await Promise.all(
-    uploadedFiles.map(async (f) => {
+    sourceFiles.map(async (f) => {
+      console.log(`[notify-lead] Signing URL for path: ${f.path}`);
       const { data, error: signError } = await supabase.storage
         .from('shipment-docs')
         .createSignedUrl(f.path, 7 * 24 * 60 * 60); // 7 days
       if (signError) {
-        console.error(`[notify-lead] Failed to sign URL for ${f.path}:`, signError.message);
+        console.error(`[notify-lead] Sign error for "${f.path}":`, signError.message);
+      } else {
+        console.log(`[notify-lead] Signed URL OK for "${f.path}"`);
       }
       return {
         label:     FIELD_LABELS[f.fieldName] ?? f.fieldName,

@@ -19,7 +19,8 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const uploadFile = async (leadId: string, file: File, fieldName: string, index = 0) => {
+  // Returns the actual storage path used so callers can pass it to the Edge Function accurately
+  const uploadFile = async (leadId: string, file: File, fieldName: string, index = 0): Promise<string> => {
     const ext = file.name.split('.').pop() ?? 'bin';
     const path = `${leadId}/${fieldName}_${index}_${Date.now()}.${ext}`;
 
@@ -39,6 +40,8 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
     });
 
     if (dbError) throw new Error(`File record failed (${fieldName}): ${dbError.message}`);
+
+    return path;
   };
 
   const submit = async (step1: Step1Data, step2: FormData): Promise<boolean> => {
@@ -81,23 +84,23 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
 
       const sdsFile = step2.get('sds') as File | null;
       if (sdsFile && sdsFile.size > 0) {
-        await uploadFile(leadId, sdsFile, 'sds');
-        uploadedFiles.push({ fieldName: 'sds', fileName: sdsFile.name, path: `${leadId}/sds_0_${sdsFile.name}` });
+        const sdsPath = await uploadFile(leadId, sdsFile, 'sds');
+        uploadedFiles.push({ fieldName: 'sds', fileName: sdsFile.name, path: sdsPath });
       }
 
       const photoFiles = step2.getAll('photos') as File[];
       for (let i = 0; i < photoFiles.length; i++) {
         const photo = photoFiles[i];
         if (photo && photo.size > 0) {
-          await uploadFile(leadId, photo, 'photo', i);
-          uploadedFiles.push({ fieldName: 'photo', fileName: photo.name, path: `${leadId}/photo_${i}_${photo.name}` });
+          const photoPath = await uploadFile(leadId, photo, 'photo', i);
+          uploadedFiles.push({ fieldName: 'photo', fileName: photo.name, path: photoPath });
         }
       }
 
       const instrFile = step2.get('instruction_file') as File | null;
       if (instrFile && instrFile.size > 0) {
-        await uploadFile(leadId, instrFile, 'instruction_file');
-        uploadedFiles.push({ fieldName: 'instruction_file', fileName: instrFile.name, path: `${leadId}/instruction_file_0_${instrFile.name}` });
+        const instrPath = await uploadFile(leadId, instrFile, 'instruction_file');
+        uploadedFiles.push({ fieldName: 'instruction_file', fileName: instrFile.name, path: instrPath });
       }
 
       // 5. Invoke Edge Function — awaited so we can log errors; does not block success screen
