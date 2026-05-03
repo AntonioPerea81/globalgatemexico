@@ -256,13 +256,6 @@ export const Home = () => {
                 >
                   {t('hero.cta.quote')}
                 </Button>
-                <Button
-                  variant="white"
-                  className="px-8 py-5 text-[11px] border border-white/20"
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  {t('hero.cta.secondary')}
-                </Button>
               </div>
             </motion.div>
           </div>
