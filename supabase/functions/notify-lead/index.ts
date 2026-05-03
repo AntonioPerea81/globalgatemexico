@@ -82,6 +82,35 @@ serve(async (req: Request) => {
   // Prefer DB record; fall back to payload fields
   const r = lead ?? leadData;
 
+  // ── Generate signed download URLs (7 days) ───────────────────────────────────
+  const FIELD_LABELS: Record<string, string> = {
+    sds:              'SDS / Technical Data Sheet',
+    photo:            'Product Photo',
+    instruction_file: 'Instruction Letter',
+  };
+
+  interface FileWithUrl {
+    label: string;
+    fileName: string;
+    signedUrl: string | null;
+  }
+
+  const filesWithUrls: FileWithUrl[] = await Promise.all(
+    uploadedFiles.map(async (f) => {
+      const { data, error: signError } = await supabase.storage
+        .from('shipment-docs')
+        .createSignedUrl(f.path, 7 * 24 * 60 * 60); // 7 days
+      if (signError) {
+        console.error(`[notify-lead] Failed to sign URL for ${f.path}:`, signError.message);
+      }
+      return {
+        label:     FIELD_LABELS[f.fieldName] ?? f.fieldName,
+        fileName:  f.fileName,
+        signedUrl: data?.signedUrl ?? null,
+      };
+    })
+  );
+
   // ── Helpers ──────────────────────────────────────────────────────────────────
   const row = (label: string, value: string | undefined, shade = false) =>
     value
@@ -100,15 +129,27 @@ serve(async (req: Request) => {
        <table style="width:100%;border-collapse:collapse;">${rows}</table>
      </div>`;
 
-  const fileTag = (label: string, name: string) =>
+  const fileRow = (label: string, fileName: string, signedUrl: string | null) =>
     `<tr>
-       <td style="padding:9px 16px;border-bottom:1px solid #f0f0f0;">
-         <span style="display:inline-block;background:#eef2ff;color:#4338ca;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;padding:2px 7px;border-radius:3px;margin-right:8px;">${label}</span>
-         <span style="font-size:12px;color:#374151;">${name}</span>
+       <td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;">
+         <table width="100%" cellpadding="0" cellspacing="0">
+           <tr>
+             <td style="vertical-align:middle;">
+               <span style="display:inline-block;background:#eef2ff;color:#4338ca;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;padding:2px 8px;border-radius:3px;margin-right:10px;">${label}</span>
+               <span style="font-size:12px;color:#6b7280;">${fileName}</span>
+             </td>
+             <td style="text-align:right;vertical-align:middle;white-space:nowrap;">
+               ${signedUrl
+                 ? `<a href="${signedUrl}" style="display:inline-block;background:#c9a227;color:#0f1628;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;padding:5px 14px;border-radius:3px;text-decoration:none;">↓ Download</a>`
+                 : `<span style="font-size:10px;color:#9ca3af;font-style:italic;">URL unavailable</span>`
+               }
+             </td>
+           </tr>
+         </table>
        </td>
      </tr>`;
 
-  const filesRows = uploadedFiles.map(f => fileTag(f.fieldName, f.fileName)).join('');
+  const filesRows = filesWithUrls.map(f => fileRow(f.label, f.fileName, f.signedUrl)).join('');
 
   const htmlBody = `<!DOCTYPE html>
 <html lang="en">
