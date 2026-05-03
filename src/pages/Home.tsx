@@ -1,5 +1,5 @@
-import { useState, useEffect, ReactNode, FC } from 'react';
-import { Turnstile } from '@marsidev/react-turnstile';
+import { useState, useEffect, useRef, ReactNode, FC } from 'react';
+// @marsidev/react-turnstile replaced by native Cloudflare explicit render (see useTurnstile below)
 import { useFormSubmit } from '../hooks/useFormSubmit';
 import { motion, useScroll, useTransform, AnimatePresence, useReducedMotion } from 'motion/react';
 import {
@@ -17,6 +17,17 @@ import {
   SERVICES, STATS, INDUSTRIES, NEWS, TESTIMONIALS 
 } from '../constants';
 import { useLanguage } from '../context/LanguageContext';
+
+// Native Cloudflare Turnstile types
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: HTMLElement, options: Record<string, unknown>) => string;
+      remove: (widgetId: string) => void;
+      reset:  (widgetId?: string) => void;
+    };
+  }
+}
 
 const CountUp = ({ value, suffix = "" }: { value: number; suffix?: string }) => {
   const [count, setCount] = useState(0);
@@ -203,11 +214,63 @@ export const Home = () => {
   const [step1Data, setStep1Data] = useState<Record<string, string>>({});
   const [turnstileToken, setTurnstileToken] = useState('');
   const { isLoading: formLoading, error: formError, submit: submitLead } = useFormSubmit();
-  // Must use import.meta.env.VITE_* directly — Vite replaces these at build time
-  // via static string matching; (import.meta as any).env?.... breaks the replacement.
+
+  // Must use import.meta.env.VITE_* directly — Vite replaces at build time via static pattern match
   const turnstileSiteKey: string | undefined =
     import.meta.env.VITE_TURNSTILE_SITE_KEY || undefined;
-  console.log('[Turnstile] siteKey present:', !!turnstileSiteKey);
+
+  // Refs for native Cloudflare explicit render (bypasses React wrapper entirely)
+  const turnstileContainerRef = useRef<HTMLDivElement>(null);
+  const turnstileWidgetId     = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    console.log('[Turnstile] formStep:', formStep, '| siteKey present:', !!turnstileSiteKey);
+    if (formStep !== 2 || !turnstileSiteKey) return;
+
+    const SCRIPT_ID = 'cf-turnstile-script';
+
+    const renderWidget = () => {
+      if (!window.turnstile || !turnstileContainerRef.current) return;
+      // Remove any stale widget before rendering
+      if (turnstileWidgetId.current) {
+        try { window.turnstile.remove(turnstileWidgetId.current); } catch { /* noop */ }
+        turnstileWidgetId.current = undefined;
+      }
+      turnstileWidgetId.current = window.turnstile.render(turnstileContainerRef.current, {
+        sitekey:            turnstileSiteKey,
+        theme:              'light',
+        callback:           (token: string) => setTurnstileToken(token),
+        'expired-callback': () => setTurnstileToken(''),
+      });
+      console.log('[Turnstile] rendered, widgetId:', turnstileWidgetId.current);
+    };
+
+    if (!document.getElementById(SCRIPT_ID)) {
+      // First load — inject the script
+      const script = document.createElement('script');
+      script.id    = SCRIPT_ID;
+      script.src   = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      script.onload = renderWidget;
+      script.onerror = () => console.error('[Turnstile] script failed to load');
+      document.head.appendChild(script);
+    } else if (window.turnstile) {
+      // Script already loaded from a previous step visit
+      renderWidget();
+    } else {
+      // Script tag exists but hasn't finished loading yet
+      const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement;
+      existing.addEventListener('load', renderWidget, { once: true });
+    }
+
+    return () => {
+      if (window.turnstile && turnstileWidgetId.current) {
+        try { window.turnstile.remove(turnstileWidgetId.current); } catch { /* noop */ }
+        turnstileWidgetId.current = undefined;
+      }
+    };
+  }, [formStep, turnstileSiteKey]);
 
   const resetForm = () => {
     setFormStep(1);
@@ -1025,17 +1088,20 @@ export const Home = () => {
                                 <input type="checkbox" required className="mt-0.5 accent-primary shrink-0" id="consent" />
                                 <label htmlFor="consent" className="text-[11px] text-dark/50 leading-snug cursor-pointer">{t('contact.field.consent')}</label>
                               </div>
+                              {/* Turnstile diagnostic + native render container */}
                               {turnstileSiteKey ? (
-                                <div className="flex justify-center">
-                                  <Turnstile
-                                    siteKey={turnstileSiteKey}
-                                    onSuccess={(token) => setTurnstileToken(token)}
-                                    onExpire={() => setTurnstileToken('')}
-                                    options={{ theme: 'light' }}
-                                  />
+                                <div className="space-y-2">
+                                  <p className="text-[10px] text-green-600 font-bold text-center uppercase tracking-wide">
+                                    ✓ Bot protection active
+                                  </p>
+                                  <div className="flex justify-center">
+                                    <div ref={turnstileContainerRef} />
+                                  </div>
                                 </div>
                               ) : (
-                                <p className="text-[10px] text-dark/30 text-center italic">Bot protection unavailable</p>
+                                <p className="text-[10px] text-amber-600 font-bold text-center uppercase tracking-wide">
+                                  ⚠ Bot protection unavailable — VITE_TURNSTILE_SITE_KEY not set
+                                </p>
                               )}
                               {formError && (
                                 <p className="text-red-500 text-[11px] font-bold text-center">{formError}</p>
