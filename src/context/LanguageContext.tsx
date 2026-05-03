@@ -29,7 +29,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'hero.title': '"If your DG shipment doesn’t comply, it doesn’t move."',
     'hero.subtitle': 'Avoid rejections, fines, and delays in your dangerous goods shipments from Mexico to anywhere in the world. Full compliance. Zero margin for error.',
     'hero.micro': 'For companies that cannot afford compliance mistakes.',
-    'hero.cta.quote': 'Schedule Free Diagnostic (30 min)',
+    'hero.cta.quote': 'Validate Your DG Shipment',
     'hero.cta.secondary': 'Check My Shipment',
     'hero.cta.training': 'Training Services',
 
@@ -172,7 +172,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'contact.cta': 'Validate My DG Shipment',
     'contact.success.title': 'Shipment Details Received',
     'contact.success.msg': 'Thank you. Our team will review your dangerous goods shipment details and supporting documents. If additional information is required, we will contact you directly.',
-    'contact.success.cta': 'Book My Call Now',
+    'contact.success.cta': 'Submit Another Shipment',
 
     // Footer
     'footer.copy': 'Global Gate Mexico. Specialized Logistics & Compliance.',
@@ -197,7 +197,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     'page.services.title': 'Our Services',
     'page.services.desc': 'Specialized solutions for the safe transport and management of dangerous goods and industrial materials.',
-    'page.services.cta': 'Schedule a Consultation',
+    'page.services.cta': 'Submit for Compliance Review',
     'page.services.consultation': 'Need a tailored compliance strategy?',
     'page.services.consultation.desc': 'Our consulting team specializes in interpreting complex regulatory frameworks for SCT and global logistics corridors.',
     'page.services.specs': 'Technical Specifications',
@@ -222,7 +222,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'hero.title': '"Si su envío de mercancías peligrosas no cumple, no se mueve."',
     'hero.subtitle': 'Evite rechazos, multas y retrasos en sus envíos de mercancías peligrosas desde México a cualquier parte del mundo. Cumplimiento total. Cero margen de error.',
     'hero.micro': 'Para empresas que no pueden permitirse errores de cumplimiento.',
-    'hero.cta.quote': 'Agendar Diagnóstico Gratuito (30 min)',
+    'hero.cta.quote': 'Validar su Envío de DG',
     'hero.cta.secondary': 'Verificar mi Envío',
     'hero.cta.training': 'Servicios de Capacitación',
 
@@ -365,7 +365,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'contact.cta': 'Validar mi Envío de DG',
     'contact.success.title': 'Detalles del Envío Recibidos',
     'contact.success.msg': 'Gracias. Nuestro equipo revisará los detalles de su envío de mercancías peligrosas y los documentos adjuntos. Si se requiere información adicional, nos comunicaremos con usted directamente.',
-    'contact.success.cta': 'Agendar mi Llamada Ahora',
+    'contact.success.cta': 'Enviar Otro Cargamento',
 
     // Footer
     'footer.copy': 'Global Gate México. Logística y Cumplimiento Especializados.',
@@ -390,7 +390,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     'page.services.title': 'Nuestros Servicios',
     'page.services.desc': 'Soluciones especializadas para el transporte y gestión segura de mercancías peligrosas y materiales industriales.',
-    'page.services.cta': 'Programar una Consulta',
+    'page.services.cta': 'Enviar para Revisión de Cumplimiento',
     'page.services.consultation': '¿Necesita una estrategia de cumplimiento a medida?',
     'page.services.consultation.desc': 'Nuestro equipo de consultoría se especializa en interpretar marcos regulatorios complejos para la SCT y los corredores logísticos globales.',
     'page.services.specs': 'Especificaciones Técnicas',

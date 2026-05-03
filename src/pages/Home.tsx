@@ -944,7 +944,15 @@ export const Home = () => {
                               <div className="flex gap-4">
                                 <button type="button" onClick={() => setFormStep(1)} className="text-[11px] font-black uppercase tracking-widest text-dark/30 hover:text-dark transition-colors">Back</button>
                                 <Button variant="primary" className="flex-grow py-4 uppercase font-black tracking-widest text-[11px]" disabled={formLoading || (!!turnstileSiteKey && !turnstileToken)}>
-                                  {formLoading ? 'Sending...' : t('contact.cta')}
+                                  {formLoading ? (
+                                    <span className="flex items-center justify-center gap-2">
+                                      <svg className="animate-spin h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                      </svg>
+                                      Submitting shipment details...
+                                    </span>
+                                  ) : t('contact.cta')}
                                 </Button>
                               </div>
                             </div>
@@ -953,26 +961,51 @@ export const Home = () => {
                       </form>
                     </motion.div>
                   ) : (
-                    <motion.div 
+                    <motion.div
                       key="success"
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="p-12 text-center space-y-8"
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, ease: 'easeOut' }}
+                      className="flex flex-col items-center text-center px-8 py-16 gap-8"
                     >
-                      <div className="mx-auto w-20 h-20 bg-green-50 flex items-center justify-center rounded-full">
-                        <CheckCircle size={40} className="text-green-500" />
+                      {/* Icon */}
+                      <div className="relative">
+                        <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center">
+                          <CheckCircle size={36} className="text-accent" strokeWidth={1.5} />
+                        </div>
+                        <div className="absolute inset-0 rounded-full border border-accent/20 scale-125" />
                       </div>
-                      <div className="space-y-4">
-                        <h3 className="text-2xl font-black uppercase tracking-tight text-dark">{t('contact.success.title')}</h3>
-                        <p className="text-secondary text-[14px] leading-relaxed max-w-sm mx-auto">
+
+                      {/* Copy */}
+                      <div className="space-y-3 max-w-sm">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-accent">
+                          Submission Confirmed
+                        </p>
+                        <h3 className="text-2xl font-black uppercase tracking-tight text-dark leading-tight">
+                          {t('contact.success.title')}
+                        </h3>
+                        <p className="text-dark/60 text-[13px] leading-relaxed">
                           {t('contact.success.msg')}
                         </p>
                       </div>
-                      <div className="pt-4 border-t border-black/5">
-                        <div className="flex justify-center gap-6 text-[13px] text-dark/60">
-                          <a href="tel:+528121654040" className="hover:text-primary transition-colors font-bold">+52 812 165 4040</a>
-                          <a href="mailto:ggm@globalgatemexico.com" className="hover:text-primary transition-colors font-bold">ggm@globalgatemexico.com</a>
-                        </div>
+
+                      {/* Divider + Contact */}
+                      <div className="w-full max-w-xs border-t border-black/8 pt-6 space-y-2">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-dark/30 mb-3">
+                          Direct Contact
+                        </p>
+                        <a
+                          href="tel:+528121654040"
+                          className="flex items-center justify-center gap-2 text-[13px] font-bold text-dark/70 hover:text-primary transition-colors"
+                        >
+                          +52 812 165 4040
+                        </a>
+                        <a
+                          href="mailto:ggm@globalgatemexico.com"
+                          className="flex items-center justify-center gap-2 text-[13px] font-bold text-dark/70 hover:text-primary transition-colors"
+                        >
+                          ggm@globalgatemexico.com
+                        </a>
                       </div>
                     </motion.div>
                   )}
