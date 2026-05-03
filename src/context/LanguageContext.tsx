@@ -26,12 +26,16 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.excellence': 'Operational Excellence • Global Reach',
 
     // Hero
-    'hero.title': '"If your DG shipment doesn’t comply, it doesn’t move."',
-    'hero.subtitle': 'Avoid rejections, fines, and delays in your dangerous goods shipments from Mexico to anywhere in the world. Full compliance. Zero margin for error.',
-    'hero.micro': 'For companies that cannot afford compliance mistakes.',
-    'hero.cta.quote': 'Validate Your DG Shipment',
-    'hero.cta.secondary': 'Request Compliance Review',
-    'hero.cta.training': 'Training Services',
+    ‘hero.title’: ‘Dangerous Goods Compliance Review Before Your Shipment Moves’,
+    ‘hero.subtitle’: ‘Global Gate Mexico reviews your shipment documentation, classification requirements, and transport conditions before costly delays, rejections, or regulatory exposure occur.’,
+    ‘hero.micro’: ‘IATA · IMDG · ADR Certified Compliance Specialists’,
+    ‘hero.cta.quote’: ‘Validate Your DG Shipment’,
+    ‘hero.cta.secondary’: ‘Request Compliance Review’,
+    ‘hero.cta.training’: ‘Training Services’,
+    ‘hero.trust1’: ‘Certified DG Compliance Specialists’,
+    ‘hero.trust2’: ‘Air · Ocean · Ground’,
+    ‘hero.trust3’: ‘SDS & Documentation Review’,
+    ‘hero.trust4’: ‘Response Within One Business Day’,
 
     // Empathy (Problem)
     'empathy.title': 'The problem is not transportation. It’s compliance.',
@@ -180,6 +184,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'contact.success.title': 'Shipment Details Received',
     'contact.success.msg': 'Thank you. Our team will review your dangerous goods shipment details and supporting documents. If additional information is required, we will contact you directly.',
     'contact.success.cta': 'Submit Another Shipment',
+    'contact.trust1': 'Regulatory pre-screening by certified dangerous goods professionals',
+    'contact.trust2': 'Documentation and SDS review before shipment acceptance',
+    'contact.trust3': 'Direct response from our compliance operations team',
 
     // Footer
     'footer.copy': 'Global Gate Mexico. Specialized Logistics & Compliance.',
@@ -226,12 +233,16 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.excellence': 'Excelencia Operativa • Alcance Global',
 
     // Hero
-    'hero.title': '"Si su envío de mercancías peligrosas no cumple, no se mueve."',
-    'hero.subtitle': 'Evite rechazos, multas y retrasos en sus envíos de mercancías peligrosas desde México a cualquier parte del mundo. Cumplimiento total. Cero margen de error.',
-    'hero.micro': 'Para empresas que no pueden permitirse errores de cumplimiento.',
+    'hero.title': 'Revisión de Cumplimiento de Mercancías Peligrosas Antes de que su Envío se Mueva',
+    'hero.subtitle': 'Global Gate México revisa la documentación de su envío, los requisitos de clasificación y las condiciones de transporte antes de que ocurran retrasos costosos, rechazos o exposición regulatoria.',
+    'hero.micro': 'Especialistas Certificados IATA · IMDG · ADR',
     'hero.cta.quote': 'Validar su Envío de DG',
     'hero.cta.secondary': 'Solicitar Revisión de Cumplimiento',
     'hero.cta.training': 'Servicios de Capacitación',
+    'hero.trust1': 'Especialistas Certificados en Cumplimiento DG',
+    'hero.trust2': 'Aéreo · Marítimo · Terrestre',
+    'hero.trust3': 'Revisión de HDS y Documentación',
+    'hero.trust4': 'Respuesta en un Día Hábil',
 
     // Empathy (Problem)
     'empathy.title': 'El problema no es el transporte. Es el cumplimiento.',
@@ -380,6 +391,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'contact.success.title': 'Detalles del Envío Recibidos',
     'contact.success.msg': 'Gracias. Nuestro equipo revisará los detalles de su envío de mercancías peligrosas y los documentos adjuntos. Si se requiere información adicional, nos comunicaremos con usted directamente.',
     'contact.success.cta': 'Enviar Otro Cargamento',
+    'contact.trust1': 'Preselección regulatoria por especialistas certificados en mercancías peligrosas',
+    'contact.trust2': 'Revisión de documentación y HDS antes de la aceptación del envío',
+    'contact.trust3': 'Respuesta directa de nuestro equipo de operaciones de cumplimiento',
 
     // Footer
     'footer.copy': 'Global Gate México. Logística y Cumplimiento Especializados.',

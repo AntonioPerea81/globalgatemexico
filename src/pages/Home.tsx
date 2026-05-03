@@ -200,64 +200,69 @@ export const Home = () => {
   return (
     <>
       {/* 1. HERO SECTION */}
-      <section className="relative h-screen flex items-center overflow-hidden bg-dark pt-[70px]">
-        {/* Background Overlay */}
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-dark pt-[70px]">
+        {/* Background */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=2000" 
-            alt="Logistics Warehouse" 
-            className="w-full h-full object-cover opacity-40 grayscale"
+          <img
+            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=2000"
+            alt="Logistics Warehouse"
+            className="w-full h-full object-cover opacity-30 grayscale"
             referrerPolicy="no-referrer"
           />
-          <div className="absolute inset-0 bg-linear-to-r from-dark via-dark/60 to-transparent z-10" />
-          
-          {/* Animated Paths & Nodes */}
+          <div className="absolute inset-0 bg-linear-to-r from-dark/95 via-dark/70 to-dark/40 z-10" />
           <LogisticsAnimation />
-
-          {/* Bottom Gradient Fade */}
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-white to-transparent z-20" />
         </div>
-        
-        <Container className="relative z-20 w-full">
-          <div className="grid lg:grid-cols-2 gap-12 items-end">
-            <motion.div 
-              initial={{ opacity: 0, x: -30 }}
+
+        <Container className="relative z-20 w-full py-20 lg:py-32">
+          <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+            {/* Left — Headline */}
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.9, ease: "easeOut" }}
             >
-              <p className="text-[10px] text-white/50 uppercase tracking-[0.2em] mb-6 font-bold">
+              <p className="text-[10px] text-accent/80 uppercase tracking-[0.25em] mb-5 font-bold">
                 {t('hero.micro')}
               </p>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] tracking-tighter mb-4">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-[1.12] tracking-tight mb-0">
                 {t('hero.title')}
               </h1>
             </motion.div>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+            {/* Right — Description + CTA + Trust strip */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="lg:mb-6 lg:pl-12 border-l border-white/10"
+              transition={{ duration: 0.9, delay: 0.25 }}
+              className="lg:pl-10 border-l border-white/10"
             >
-              <div className="flex gap-4 items-start mb-8">
-                <div className="mt-1.5 shrink-0">
-                  <div className="w-8 h-[2px] bg-white" />
-                  <div className="w-[2px] h-8 bg-white ml-0" />
+              <p className="text-base md:text-lg text-white/75 font-normal leading-relaxed mb-8 max-w-lg">
+                {t('hero.subtitle')}
+              </p>
+
+              <Button
+                variant="primary"
+                className="px-10 py-4 text-[11px] tracking-widest uppercase font-black"
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                {t('hero.cta.quote')}
+              </Button>
+
+              {/* Trust strip */}
+              <div className="mt-10 pt-8 border-t border-white/10">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                  {(['hero.trust1','hero.trust2','hero.trust3','hero.trust4'] as const).map((key) => (
+                    <div key={key} className="flex items-start gap-2">
+                      <span className="mt-0.5 text-accent shrink-0 text-[11px]">✓</span>
+                      <span className="text-[11px] text-white/60 font-medium leading-snug">{t(key)}</span>
+                    </div>
+                  ))}
                 </div>
-                <p className="text-xl md:text-2xl text-white font-medium leading-tight max-w-md">
-                  {t('hero.subtitle')}
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button
-                  variant="primary"
-                  className="px-8 py-5 text-[11px]"
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                >
-                  {t('hero.cta.quote')}
-                </Button>
               </div>
             </motion.div>
+
           </div>
         </Container>
       </section>
@@ -734,32 +739,48 @@ export const Home = () => {
             <Reveal direction="right">
               <div>
                 <p className="text-[10px] text-primary font-black uppercase tracking-[0.2em] mb-4">
-                   {t('finalcta.support')}
+                  {t('finalcta.support')}
                 </p>
-                <h2 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight tracking-tighter">{t('contact.title')}</h2>
-                <p className="text-dark/80 text-[16px] font-bold italic mb-10 leading-relaxed max-w-md border-l-4 border-accent pl-6">{t('contact.subtitle')}</p>
+                <h2 className="text-3xl md:text-4xl font-extrabold mb-5 leading-tight tracking-tight">{t('contact.title')}</h2>
+                <p className="text-dark/65 text-[15px] font-normal mb-8 leading-relaxed max-w-md border-l-2 border-accent pl-5">{t('contact.subtitle')}</p>
                 
                 {!formSubmitted && (
-                  <div className="hidden lg:block space-y-8 mt-12">
-                    <div className={cn("flex gap-6 items-center transition-all duration-500", formStep >= 1 ? "opacity-100" : "opacity-30")}>
-                      <div className={cn("w-12 h-12 rounded-full border-2 flex items-center justify-center font-bold", formStep === 1 ? "border-primary text-primary" : "border-green-500 bg-green-500 text-white")}>
-                        {formStep > 1 ? <CheckCircle size={20} /> : "01"}
+                  <div className="hidden lg:block mt-10 space-y-10">
+
+                    {/* Step progress */}
+                    <div className="space-y-0">
+                      <div className={cn("flex gap-5 items-center transition-all duration-500 py-4 border-l-2 pl-4", formStep === 1 ? "border-primary" : "border-green-500")}>
+                        <div className={cn("w-9 h-9 rounded-full border-2 flex items-center justify-center font-black text-xs shrink-0", formStep === 1 ? "border-primary text-primary" : "border-green-500 bg-green-500 text-white")}>
+                          {formStep > 1 ? <CheckCircle size={16} /> : "01"}
+                        </div>
+                        <div>
+                          <p className={cn("font-black uppercase tracking-widest text-[10px]", formStep === 1 ? "text-primary" : "text-green-600")}>Step 1</p>
+                          <p className="text-dark/50 text-[11px] font-medium mt-0.5">Contact Information</p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-bold uppercase tracking-widest text-xs">Step 1</h4>
-                        <p className="text-dark/50 text-[11px] uppercase font-bold tracking-tighter">Contact Information</p>
+                      <div className="w-px h-5 bg-black/8 ml-[22px]" />
+                      <div className={cn("flex gap-5 items-center transition-all duration-500 py-4 border-l-2 pl-4", formStep === 2 ? "border-primary" : "border-black/10")}>
+                        <div className={cn("w-9 h-9 rounded-full border-2 flex items-center justify-center font-black text-xs shrink-0", formStep === 2 ? "border-primary text-primary" : "border-black/15 text-dark/25")}>
+                          02
+                        </div>
+                        <div>
+                          <p className={cn("font-black uppercase tracking-widest text-[10px]", formStep === 2 ? "text-primary" : "text-dark/30")}>Step 2</p>
+                          <p className="text-dark/40 text-[11px] font-medium mt-0.5">Shipment Technical Details</p>
+                        </div>
                       </div>
                     </div>
-                    <div className="w-px h-12 bg-black/5 ml-6" />
-                    <div className={cn("flex gap-6 items-center transition-all duration-500", formStep >= 2 ? "opacity-100" : "opacity-30")}>
-                      <div className={cn("w-12 h-12 rounded-full border-2 flex items-center justify-center font-bold", formStep === 2 ? "border-primary text-primary" : "border-black/10 text-dark/20")}>
-                        02
-                      </div>
-                      <div>
-                        <h4 className="font-bold uppercase tracking-widest text-xs">Step 2</h4>
-                        <p className="text-dark/50 text-[11px] uppercase font-bold tracking-tighter">Shipment Technical Details</p>
-                      </div>
+
+                    {/* Trust reassurance */}
+                    <div className="border-t border-black/6 pt-8 space-y-4">
+                      <p className="text-[9px] font-black uppercase tracking-[0.2em] text-dark/30 mb-5">What to expect</p>
+                      {(['contact.trust1','contact.trust2','contact.trust3'] as const).map((key) => (
+                        <div key={key} className="flex gap-3 items-start">
+                          <span className="text-primary font-black text-[11px] shrink-0 mt-0.5">✓</span>
+                          <p className="text-[12px] text-dark/55 leading-snug">{t(key)}</p>
+                        </div>
+                      ))}
                     </div>
+
                   </div>
                 )}
 
