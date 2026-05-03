@@ -180,6 +180,13 @@ export const Home = () => {
   const { isLoading: formLoading, error: formError, submit: submitLead } = useFormSubmit();
   const turnstileSiteKey = (import.meta as any).env?.VITE_TURNSTILE_SITE_KEY as string | undefined;
 
+  const resetForm = () => {
+    setFormStep(1);
+    setFormSubmitted(false);
+    setStep1Data({});
+    setTurnstileToken('');
+  };
+
   const logos = [
     "IATA_CARGO_AGENT__1_.png",
     "ANIQ__1_.png",
@@ -245,13 +252,20 @@ export const Home = () => {
                   {t('hero.subtitle')}
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  variant="primary" 
-                  className="px-8 py-6 text-sm" 
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button
+                  variant="primary"
+                  className="px-8 py-5 text-[11px]"
                   onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   {t('hero.cta.quote')}
+                </Button>
+                <Button
+                  variant="white"
+                  className="px-8 py-5 text-[11px] border border-white/20"
+                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  {t('hero.cta.secondary')}
                 </Button>
               </div>
             </motion.div>
@@ -744,7 +758,7 @@ export const Home = () => {
                       </div>
                       <div>
                         <h4 className="font-bold uppercase tracking-widest text-xs">Step 1</h4>
-                        <p className="text-dark/50 text-[11px] uppercase font-bold tracking-tighter">Quick Lead Capture</p>
+                        <p className="text-dark/50 text-[11px] uppercase font-bold tracking-tighter">Contact Information</p>
                       </div>
                     </div>
                     <div className="w-px h-12 bg-black/5 ml-6" />
@@ -754,7 +768,7 @@ export const Home = () => {
                       </div>
                       <div>
                         <h4 className="font-bold uppercase tracking-widest text-xs">Step 2</h4>
-                        <p className="text-dark/50 text-[11px] uppercase font-bold tracking-tighter">Shipment Validation</p>
+                        <p className="text-dark/50 text-[11px] uppercase font-bold tracking-tighter">Shipment Technical Details</p>
                       </div>
                     </div>
                   </div>
@@ -804,32 +818,37 @@ export const Home = () => {
                         }
                       }}>
                         {formStep === 1 && (
-                          <div className="space-y-4">
-                            <div className="grid md:grid-cols-2 gap-4">
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider ml-1">{t('contact.field.name')}</label>
-                                <input name="name" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all rounded-none" placeholder="John Doe" />
-                              </div>
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider ml-1">{t('contact.field.company')}</label>
-                                <input name="company" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all rounded-none" placeholder="Global Logistics Inc." />
-                              </div>
+                          <div className="space-y-5">
+                            {/* Step 1 header */}
+                            <div className="pb-4 border-b border-black/5">
+                              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">{t('contact.step1.eyebrow')}</p>
+                              <p className="text-[11px] text-dark/40 mt-1">{t('contact.step1.helper')}</p>
                             </div>
                             <div className="grid md:grid-cols-2 gap-4">
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider ml-1">{t('contact.field.email')}</label>
-                                <input name="email" type="email" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all rounded-none" placeholder="john@company.com" />
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.name')}</label>
+                                <input name="name" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="John Doe" />
                               </div>
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider ml-1">{t('contact.field.phone')}</label>
-                                <input name="phone" type="tel" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all rounded-none" placeholder="+52 ..." />
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.company')}</label>
+                                <input name="company" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="Global Logistics Inc." />
                               </div>
                             </div>
-                            <div className="space-y-1">
-                              <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider ml-1">{t('contact.field.merchandise')}</label>
-                              <input name="merchandise" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all rounded-none" placeholder="e.g. Lithium Batteries, Chemicals..." />
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.email')}</label>
+                                <input name="email" type="email" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="john@company.com" />
+                              </div>
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.phone')}</label>
+                                <input name="phone" type="tel" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="+52 ..." />
+                              </div>
                             </div>
-                            <Button variant="primary" className="w-full py-4 uppercase font-black tracking-widest text-[11px] mt-4">
+                            <div className="space-y-1.5">
+                              <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.merchandise')}</label>
+                              <input name="merchandise" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="e.g. Lithium Batteries, Flammable Chemicals…" />
+                            </div>
+                            <Button variant="primary" className="w-full py-4 uppercase font-black tracking-widest text-[11px] mt-2">
                               {t('contact.btn.next')} <ArrowRight size={14} className="ml-2" />
                             </Button>
                           </div>
@@ -837,20 +856,28 @@ export const Home = () => {
 
                         {formStep === 2 && (
                           <div className="space-y-6">
-                            <div className="grid md:grid-cols-2 gap-4 border-b border-black/5 pb-6">
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider ml-1">{t('contact.field.origin')}</label>
+                            {/* Step 2 header */}
+                            <div className="pb-4 border-b border-black/5">
+                              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">{t('contact.step2.eyebrow')}</p>
+                              <p className="text-[11px] text-dark/40 mt-1">{t('contact.step2.helper')}</p>
+                            </div>
+
+                            {/* Route */}
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.origin')}</label>
                                 <input name="origin" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="Mexico City, MX" />
                               </div>
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider ml-1">{t('contact.field.destination')}</label>
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.destination')}</label>
                                 <input name="destination" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="Houston, TX" />
                               </div>
                             </div>
 
-                            <div className="grid md:grid-cols-2 gap-6">
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider ml-1">{t('contact.field.transport')}</label>
+                            {/* Transport + SDS */}
+                            <div className="grid md:grid-cols-2 gap-5">
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.transport')}</label>
                                 <select name="transport" className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all">
                                   <option value="air">{t('contact.field.transport.air')}</option>
                                   <option value="ground">{t('contact.field.transport.ground')}</option>
@@ -858,75 +885,80 @@ export const Home = () => {
                                   <option value="not_sure">{t('contact.field.transport.notSure')}</option>
                                 </select>
                               </div>
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider ml-1">{t('contact.field.sds')}</label>
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.sds')}</label>
                                 <div className="relative group/upload">
                                   <input name="sds" type="file" accept=".pdf,.doc,.docx" className="absolute inset-0 opacity-0 cursor-pointer z-10" />
-                                  <div className="w-full bg-white border border-dashed border-black/20 px-4 py-3 text-[12px] flex items-center justify-center gap-2 group-hover/upload:border-primary transition-colors">
-                                    <FileText size={14} className="text-dark/40" />
-                                    <span className="text-dark/60">Upload PDF</span>
+                                  <div className="w-full bg-white border border-dashed border-black/20 px-4 py-3.5 text-[12px] flex items-center justify-center gap-2 group-hover/upload:border-primary group-hover/upload:bg-primary/[0.02] transition-all">
+                                    <FileText size={14} className="text-primary/40 shrink-0" />
+                                    <span className="text-dark/50 font-medium">Upload SDS / TDS</span>
                                   </div>
                                 </div>
+                                <p className="text-[9px] text-dark/35 leading-snug px-1">{t('contact.field.sds.helper')}</p>
                               </div>
                             </div>
 
-                            <div className="grid md:grid-cols-2 gap-6">
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider ml-1">{t('contact.field.dims')}</label>
-                                <input name="dims" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="100kg, 120x80x100cm" />
+                            {/* Dims + Photos */}
+                            <div className="grid md:grid-cols-2 gap-5">
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.dims')}</label>
+                                <input name="dims" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="e.g. 100 kg · 120×80×100 cm" />
                               </div>
-                              <div className="space-y-1">
-                                <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider ml-1">{t('contact.field.photos')}</label>
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.photos')}</label>
                                 <div className="relative group/upload">
                                   <input name="photos" type="file" multiple accept="image/jpeg,image/jpg,image/png,image/webp" className="absolute inset-0 opacity-0 cursor-pointer z-10" />
-                                  <div className="w-full bg-white border border-dashed border-black/20 px-4 py-3 text-[12px] flex items-center justify-center gap-2 group-hover/upload:border-primary transition-colors">
-                                    <Camera size={14} className="text-dark/40" />
-                                    <span className="text-dark/60">Upload Images</span>
+                                  <div className="w-full bg-white border border-dashed border-black/20 px-4 py-3.5 text-[12px] flex items-center justify-center gap-2 group-hover/upload:border-primary group-hover/upload:bg-primary/[0.02] transition-all">
+                                    <Camera size={14} className="text-primary/40 shrink-0" />
+                                    <span className="text-dark/50 font-medium">Upload Photos</span>
                                   </div>
                                 </div>
+                                <p className="text-[9px] text-dark/35 leading-snug px-1">{t('contact.field.photos.helper')}</p>
                               </div>
                             </div>
 
-                            <div className="space-y-2">
-                              <div className="flex justify-between items-center px-1">
-                                <label className="text-[10px] font-black uppercase text-dark/40 tracking-wider">{t('contact.field.quantity')}</label>
-                                <Info size={12} className="text-primary cursor-help" />
-                              </div>
-                              <textarea name="quantity" rows={2} required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all resize-none" placeholder={t('contact.field.quantity.helper')}></textarea>
+                            {/* Quantity */}
+                            <div className="space-y-1.5">
+                              <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.quantity')}</label>
+                              <textarea name="quantity" rows={2} required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all resize-none" placeholder={t('contact.field.quantity.helper')} />
                             </div>
 
+                            {/* Instruction support */}
                             <div className="p-4 bg-slate-50 border border-black/5 space-y-3">
-                              <div className="flex items-center gap-3">
-                                <input name="instruction_support" type="checkbox" id="support" className="accent-primary" />
-                                <label htmlFor="support" className="text-[11px] font-bold text-dark/70 cursor-pointer">{t('contact.field.instructionSupport')}</label>
+                              <div className="flex items-start gap-3">
+                                <input name="instruction_support" type="checkbox" id="support" className="mt-0.5 accent-primary shrink-0" />
+                                <label htmlFor="support" className="text-[11px] font-bold text-dark/70 cursor-pointer leading-snug">{t('contact.field.instructionSupport')}</label>
                               </div>
-                              <div className="space-y-1">
+                              <div className="space-y-1.5">
                                 <label className="text-[9px] font-black uppercase text-dark/30 tracking-widest block ml-1">{t('contact.field.instructionFile')}</label>
                                 <div className="relative group/upload">
                                   <input name="instruction_file" type="file" accept=".pdf,.doc,.docx" className="absolute inset-0 opacity-0 cursor-pointer z-10" />
-                                  <div className="w-full bg-white/50 border border-dashed border-black/10 px-4 py-2 text-[11px] flex items-center gap-2 group-hover/upload:border-primary transition-colors">
-                                    <Upload size={12} className="text-dark/40" />
-                                    <span className="text-dark/50">Upload Link</span>
+                                  <div className="w-full bg-white border border-dashed border-black/10 px-4 py-2.5 text-[11px] flex items-center gap-2 group-hover/upload:border-primary transition-colors">
+                                    <Upload size={12} className="text-dark/35 shrink-0" />
+                                    <span className="text-dark/45 font-medium">Upload Document</span>
                                   </div>
                                 </div>
+                                <p className="text-[9px] text-dark/30 leading-snug px-1">{t('contact.field.instructionFile.helper')}</p>
                               </div>
                             </div>
 
+                            {/* Emergency contact */}
                             <div className="space-y-3">
                               <div className="border-b border-primary/10 pb-2">
                                 <label className="text-[10px] font-black uppercase text-primary tracking-widest block">{t('contact.field.emergencyContact')}</label>
                                 <p className="text-[10px] text-dark/40 mt-1 leading-snug">{t('contact.field.emergencyContactHelper')}</p>
                               </div>
                               <div className="grid md:grid-cols-2 gap-4">
-                                <input name="emergency_name" type="text" className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary" placeholder={t('contact.field.emergencyName')} />
-                                <input name="emergency_phone" type="tel" className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary" placeholder={t('contact.field.emergencyPhone')} />
+                                <input name="emergency_name" type="text" className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder={t('contact.field.emergencyName')} />
+                                <input name="emergency_phone" type="tel" className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder={t('contact.field.emergencyPhone')} />
                               </div>
                             </div>
 
-                            <div className="pt-4 space-y-4">
-                              <div className="flex items-start gap-3">
-                                <input type="checkbox" required className="mt-1 accent-primary" id="consent" />
-                                <label htmlFor="consent" className="text-[11px] text-secondary leading-tight cursor-pointer">{t('contact.field.consent')}</label>
+                            {/* Consent + submit */}
+                            <div className="pt-2 space-y-4 border-t border-black/5">
+                              <div className="flex items-start gap-3 pt-2">
+                                <input type="checkbox" required className="mt-0.5 accent-primary shrink-0" id="consent" />
+                                <label htmlFor="consent" className="text-[11px] text-dark/50 leading-snug cursor-pointer">{t('contact.field.consent')}</label>
                               </div>
                               {turnstileSiteKey && (
                                 <div className="flex justify-center">
@@ -942,7 +974,7 @@ export const Home = () => {
                                 <p className="text-red-500 text-[11px] font-bold text-center">{formError}</p>
                               )}
                               <div className="flex gap-4">
-                                <button type="button" onClick={() => setFormStep(1)} className="text-[11px] font-black uppercase tracking-widest text-dark/30 hover:text-dark transition-colors">Back</button>
+                                <button type="button" onClick={() => setFormStep(1)} className="text-[11px] font-black uppercase tracking-widest text-dark/30 hover:text-dark transition-colors shrink-0">← Back</button>
                                 <Button variant="primary" className="flex-grow py-4 uppercase font-black tracking-widest text-[11px]" disabled={formLoading || (!!turnstileSiteKey && !turnstileToken)}>
                                   {formLoading ? (
                                     <span className="flex items-center justify-center gap-2">
@@ -950,7 +982,7 @@ export const Home = () => {
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                                       </svg>
-                                      Submitting shipment details...
+                                      Uploading documents &amp; validating…
                                     </span>
                                   ) : t('contact.cta')}
                                 </Button>
@@ -989,21 +1021,27 @@ export const Home = () => {
                         </p>
                       </div>
 
-                      {/* Divider + Contact */}
-                      <div className="w-full max-w-xs border-t border-black/8 pt-6 space-y-2">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-dark/30 mb-3">
+                      {/* Action buttons */}
+                      <div className="flex flex-col sm:flex-row gap-3 w-full max-w-xs">
+                        <Link to="/" className="flex-1">
+                          <Button variant="outline" className="w-full py-3 text-[11px]">
+                            Return Home
+                          </Button>
+                        </Link>
+                        <Button variant="primary" className="flex-1 py-3 text-[11px]" onClick={resetForm}>
+                          Submit Another
+                        </Button>
+                      </div>
+
+                      {/* Contact */}
+                      <div className="w-full max-w-xs border-t border-black/8 pt-5 space-y-1.5">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-dark/30 mb-3 text-center">
                           Direct Contact
                         </p>
-                        <a
-                          href="tel:+528121654040"
-                          className="flex items-center justify-center gap-2 text-[13px] font-bold text-dark/70 hover:text-primary transition-colors"
-                        >
+                        <a href="tel:+528121654040" className="flex items-center justify-center gap-2 text-[13px] font-bold text-dark/60 hover:text-primary transition-colors">
                           +52 812 165 4040
                         </a>
-                        <a
-                          href="mailto:ggm@globalgatemexico.com"
-                          className="flex items-center justify-center gap-2 text-[13px] font-bold text-dark/70 hover:text-primary transition-colors"
-                        >
+                        <a href="mailto:ggm@globalgatemexico.com" className="flex items-center justify-center gap-2 text-[13px] font-bold text-dark/60 hover:text-primary transition-colors">
                           ggm@globalgatemexico.com
                         </a>
                       </div>
