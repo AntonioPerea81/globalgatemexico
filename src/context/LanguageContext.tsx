@@ -26,25 +26,25 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.excellence': 'Operational Excellence • Global Reach',
 
     // Hero
-    ‘hero.title’: ‘Dangerous Goods Compliance Review Before Your Shipment Moves’,
-    ‘hero.subtitle’: ‘Global Gate Mexico reviews your shipment documentation, classification requirements, and transport conditions before costly delays, rejections, or regulatory exposure occur.’,
-    ‘hero.micro’: ‘IATA · IMDG · ADR Certified Compliance Specialists’,
-    ‘hero.cta.quote’: ‘Validate Your DG Shipment’,
-    ‘hero.cta.secondary’: ‘Request Compliance Review’,
-    ‘hero.cta.training’: ‘Training Services’,
-    ‘hero.trust1’: ‘Certified DG Compliance Specialists’,
-    ‘hero.trust2’: ‘Air · Ocean · Ground’,
-    ‘hero.trust3’: ‘SDS & Documentation Review’,
-    ‘hero.trust4’: ‘Response Within One Business Day’,
+    'hero.title': 'Dangerous Goods Compliance Review Before Your Shipment Moves',
+    'hero.subtitle': 'Global Gate Mexico reviews your shipment documentation, classification requirements, and transport conditions before costly delays, rejections, or regulatory exposure occur.',
+    'hero.micro': 'IATA · IMDG · ADR Certified Compliance Specialists',
+    'hero.cta.quote': 'Validate Your DG Shipment',
+    'hero.cta.secondary': 'Request Compliance Review',
+    'hero.cta.training': 'Training Services',
+    'hero.trust1': 'Certified DG Compliance Specialists',
+    'hero.trust2': 'Air · Ocean · Ground',
+    'hero.trust3': 'SDS & Documentation Review',
+    'hero.trust4': 'Response Within One Business Day',
 
     // Empathy (Problem)
-    'empathy.title': 'The problem is not transportation. It’s compliance.',
-    'empathy.subtitle': 'Most dangerous goods shipments don’t fail because of logistics. They fail because they don’t comply.',
+    'empathy.title': 'The problem is not transportation. It\'s compliance.',
+    'empathy.subtitle': 'Most dangerous goods shipments don\'t fail because of logistics. They fail because they don\'t comply.',
     'empathy.pain1': 'Incorrect classification',
     'empathy.pain2': 'Incomplete documentation',
     'empathy.pain3': 'Non-compliant packaging',
     'empathy.pain4': 'Misinterpretation of regulations',
-    'empathy.closing': 'You only discover the problem when it’s already too late.',
+    'empathy.closing': 'You only discover the problem when it\'s already too late.',
 
     // Consequences
     'consequences.title': 'In dangerous goods, mistakes are not operational. They are legal.',
@@ -52,7 +52,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'consequences.item2': 'Fines and penalties',
     'consequences.item3': 'Client dissatisfaction',
     'consequences.item4': 'Lost time and money',
-    'consequences.closing': 'Compliance seems expensive… until you don’t have it.',
+    'consequences.closing': 'Compliance seems expensive… until you don\'t have it.',
 
     // Stats
     'stats.experience': 'Years of Experience',
@@ -63,7 +63,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // About (Solution)
     'about.label': 'WE ENSURE ACCEPTANCE',
-    'about.title': 'We don’t move dangerous goods. We ensure they are accepted.',
+    'about.title': 'We don\'t move dangerous goods. We ensure they are accepted.',
     'about.subtitle': 'Before your shipment moves, we already know if it will be accepted or rejected.',
     'about.item1': 'Dangerous Goods Classification',
     'about.item1.desc': 'We determine whether your product is regulated as Dangerous Goods under applicable transport regulations.',
@@ -93,7 +93,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'target.col1.item1': 'You export dangerous goods',
     'target.col1.item2': 'You need compliance certainty',
     'target.col1.item3': 'You lack internal DG expertise',
-    'target.col2.item1': 'You’ve experienced rejections',
+    'target.col2.item1': 'You\'ve experienced rejections',
     'target.col2.item2': 'You have urgent shipments',
     'target.col2.item3': 'You face regulatory uncertainty',
 
@@ -125,16 +125,16 @@ export const translations: Record<Language, Record<string, string>> = {
     'reach.hub3.desc': 'We verify compliance before shipping.',
     'reach.hub4.city': '4. Execution',
     'reach.hub4.desc': 'We coordinate transport.',
-    'reach.keyline': "If it doesn’t pass validation, it doesn’t move forward.",
+    'reach.keyline': "If it doesn\'t pass validation, it doesn\'t move forward.",
 
     // Objections
-    'objections.title': "What you’re probably thinking",
+    'objections.title': "What you\'re probably thinking",
     'objections.item1.q': "Too expensive",
     'objections.item1.a': "More expensive is a rejected shipment",
     'objections.item2.q': "We already have a provider",
     'objections.item2.a': "Do they guarantee compliance or just transport?",
-    'objections.item3.q': "We’re not sure",
-    'objections.item3.a': "That’s why we start with a diagnostic",
+    'objections.item3.q': "We\'re not sure",
+    'objections.item3.a': "That\'s why we start with a diagnostic",
 
     // Testimonials
     'testimonials.title': 'Professional Trust',
