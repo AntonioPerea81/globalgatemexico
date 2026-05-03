@@ -288,7 +288,7 @@ export const Home = () => {
               {/* Trust strip — staggered bullets */}
               <motion.div
                 variants={shouldReduce ? undefined : heroRightItem}
-                className="mt-10 pt-8 border-t border-white/15"
+                className="mt-6 pt-6 border-t border-white/15"
               >
                 <motion.div
                   variants={shouldReduce ? undefined : trustStagger}
