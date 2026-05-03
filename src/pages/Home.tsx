@@ -203,7 +203,11 @@ export const Home = () => {
   const [step1Data, setStep1Data] = useState<Record<string, string>>({});
   const [turnstileToken, setTurnstileToken] = useState('');
   const { isLoading: formLoading, error: formError, submit: submitLead } = useFormSubmit();
-  const turnstileSiteKey = (import.meta as any).env?.VITE_TURNSTILE_SITE_KEY as string | undefined;
+  // Must use import.meta.env.VITE_* directly — Vite replaces these at build time
+  // via static string matching; (import.meta as any).env?.... breaks the replacement.
+  const turnstileSiteKey: string | undefined =
+    import.meta.env.VITE_TURNSTILE_SITE_KEY || undefined;
+  console.log('[Turnstile] siteKey present:', !!turnstileSiteKey);
 
   const resetForm = () => {
     setFormStep(1);
@@ -1021,7 +1025,7 @@ export const Home = () => {
                                 <input type="checkbox" required className="mt-0.5 accent-primary shrink-0" id="consent" />
                                 <label htmlFor="consent" className="text-[11px] text-dark/50 leading-snug cursor-pointer">{t('contact.field.consent')}</label>
                               </div>
-                              {turnstileSiteKey && (
+                              {turnstileSiteKey ? (
                                 <div className="flex justify-center">
                                   <Turnstile
                                     siteKey={turnstileSiteKey}
@@ -1030,6 +1034,8 @@ export const Home = () => {
                                     options={{ theme: 'light' }}
                                   />
                                 </div>
+                              ) : (
+                                <p className="text-[10px] text-dark/30 text-center italic">Bot protection unavailable</p>
                               )}
                               {formError && (
                                 <p className="text-red-500 text-[11px] font-bold text-center">{formError}</p>
