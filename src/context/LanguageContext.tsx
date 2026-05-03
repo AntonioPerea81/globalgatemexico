@@ -28,7 +28,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Hero
     'hero.title': 'Dangerous Goods Compliance Review Before Your Shipment Moves',
     'hero.subtitle': 'Global Gate Mexico reviews your shipment documentation, classification requirements, and transport conditions before costly delays, rejections, or regulatory exposure occur.',
-    'hero.micro': 'IATA · IMDG · ADR Certified Compliance Specialists',
+    'hero.micro': 'IATA · IMDG · ADR Compliance Specialists',
     'hero.cta.quote': 'Validate Your DG Shipment',
     'hero.cta.secondary': 'Request Compliance Review',
     'hero.cta.training': 'Training Services',
@@ -235,7 +235,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Hero
     'hero.title': 'Revisión de Cumplimiento de Mercancías Peligrosas Antes de que su Envío se Mueva',
     'hero.subtitle': 'Global Gate México revisa la documentación de su envío, los requisitos de clasificación y las condiciones de transporte antes de que ocurran retrasos costosos, rechazos o exposición regulatoria.',
-    'hero.micro': 'Especialistas Certificados IATA · IMDG · ADR',
+    'hero.micro': 'Especialistas IATA · IMDG · ADR',
     'hero.cta.quote': 'Validar su Envío de DG',
     'hero.cta.secondary': 'Solicitar Revisión de Cumplimiento',
     'hero.cta.training': 'Servicios de Capacitación',

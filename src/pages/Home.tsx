@@ -251,12 +251,14 @@ export const Home = () => {
               </Button>
 
               {/* Trust strip */}
-              <div className="mt-10 pt-8 border-t border-white/10">
-                <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+              <div className="mt-10 pt-8 border-t border-white/15">
+                <div className="flex flex-wrap gap-x-6 gap-y-3">
                   {(['hero.trust1','hero.trust2','hero.trust3','hero.trust4'] as const).map((key) => (
-                    <div key={key} className="flex items-start gap-2">
-                      <span className="mt-0.5 text-accent shrink-0 text-[11px]">✓</span>
-                      <span className="text-[11px] text-white/60 font-medium leading-snug">{t(key)}</span>
+                    <div key={key} className="flex items-center gap-2.5">
+                      <div className="w-5 h-5 rounded-full bg-accent/20 border border-accent/50 flex items-center justify-center shrink-0">
+                        <span className="text-accent font-black leading-none" style={{ fontSize: '9px' }}>✓</span>
+                      </div>
+                      <span className="text-[12px] text-white/70 font-medium tracking-wide">{t(key)}</span>
                     </div>
                   ))}
                 </div>

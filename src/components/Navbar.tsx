@@ -65,23 +65,23 @@ export const Navbar = () => {
         )}
       >
         <Link to="/" className="flex items-center">
-          <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '44px', width: 'auto' }} />
+          <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '55px', width: 'auto' }} />
         </Link>
 
         {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-6">
           {navLinks.map((link) => (
             link.href.startsWith('#') ? (
-              <a 
-                key={link.name} 
+              <a
+                key={link.name}
                 href={link.href}
                 className="text-[13px] font-medium text-dark hover:text-primary transition-colors"
               >
                 {link.name}
               </a>
             ) : (
-              <Link 
-                key={link.name} 
+              <Link
+                key={link.name}
                 to={link.href}
                 className="text-[13px] font-medium text-dark hover:text-primary transition-colors"
               >
@@ -89,11 +89,6 @@ export const Navbar = () => {
               </Link>
             )
           ))}
-          <a href="https://portal.globalgatemexico.com/sign-in" target="_blank" rel="noopener noreferrer">
-            <Button variant="gold" size="sm">
-              {t('nav.quoteBtn')}
-            </Button>
-          </a>
         </div>
 
           {/* Mobile Toggle */}
@@ -116,7 +111,7 @@ export const Navbar = () => {
             className="fixed inset-0 bg-dark z-50 flex flex-col p-8 lg:hidden"
           >
             <div className="flex justify-between items-center mb-12">
-              <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '44px', width: 'auto' }} />
+              <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '55px', width: 'auto' }} />
               <button 
                 className="text-white p-2 border border-white/10 rounded-full"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -172,13 +167,6 @@ export const Navbar = () => {
               </div>
             </div>
 
-            <div className="mt-auto pt-10 border-t border-white/10">
-              <a href="https://portal.globalgatemexico.com/sign-in" target="_blank" rel="noopener noreferrer" className="block">
-                <Button variant="gold" className="w-full py-6 text-xl" onClick={() => setIsMobileMenuOpen(false)}>
-                  {t('nav.quoteBtn')}
-                </Button>
-              </a>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
