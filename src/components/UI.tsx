@@ -32,7 +32,8 @@ export const Button = ({
 
   return (
     <motion.button
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ y: -2, transition: { duration: 0.15, ease: 'easeOut' } }}
+      whileTap={{ scale: 0.97 }}
       className={cn(
         'inline-flex items-center justify-center transition-all duration-200 rounded-none uppercase',
         variants[variant],

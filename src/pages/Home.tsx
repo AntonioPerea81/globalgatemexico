@@ -1,6 +1,6 @@
 import { useState, useEffect, ReactNode, FC } from 'react';
 import { useFormSubmit } from '../hooks/useFormSubmit';
-import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
+import { motion, useScroll, useTransform, AnimatePresence, useReducedMotion } from 'motion/react';
 import {
   ChevronRight, ArrowRight, Play, Users, MapPin,
   ShieldAlert, BookOpen, Quote, Sparkles, Send,
@@ -49,22 +49,24 @@ interface RevealProps {
 }
 
 const Reveal: FC<RevealProps> = ({ children, direction = "up", delay = 0 }) => {
+  const shouldReduce = useReducedMotion();
+
   const variants = {
-    hidden: { 
-      opacity: 0, 
-      y: direction === "up" ? 40 : direction === "down" ? -40 : 0,
-      x: direction === "left" ? 40 : direction === "right" ? -40 : 0
+    hidden: {
+      opacity: 0,
+      y: direction === "up" ? 28 : direction === "down" ? -28 : 0,
+      x: direction === "left" ? 28 : direction === "right" ? -28 : 0,
     },
-    visible: { opacity: 1, y: 0, x: 0 }
+    visible: { opacity: 1, y: 0, x: 0 },
   };
 
   return (
     <motion.div
-      variants={variants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, delay, ease: [0.21, 0.47, 0.32, 0.98] }}
+      variants={shouldReduce ? undefined : variants}
+      initial={shouldReduce ? false : "hidden"}
+      whileInView={shouldReduce ? undefined : "visible"}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.75, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
       {children}
     </motion.div>
@@ -169,8 +171,31 @@ const LogisticsAnimation = () => {
 export const Home = () => {
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 1.1]);
+  const heroScale  = useTransform(scrollYProgress, [0, 0.25], [1, 1.08]);
   const { t, language } = useLanguage();
+  const shouldReduce = useReducedMotion();
+
+  // ── Hero animation variants ────────────────────────────────────────────────
+  const heroLeftVariants = {
+    hidden: { opacity: 0, y: 18 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] as const } },
+  };
+  const heroRightStagger = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.18, delayChildren: 0.45 } },
+  };
+  const heroRightItem = {
+    hidden: { opacity: 0, y: 14 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94] as const } },
+  };
+  const trustStagger = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.09, delayChildren: 0 } },
+  };
+  const trustItem = {
+    hidden: { opacity: 0, y: 6 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' as const } },
+  };
 
   const [formStep, setFormStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -202,13 +227,18 @@ export const Home = () => {
       {/* 1. HERO SECTION */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-dark pt-[70px]">
         {/* Background */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=2000"
-            alt="Logistics Warehouse"
-            className="w-full h-full object-cover opacity-30 grayscale"
-            referrerPolicy="no-referrer"
-          />
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <motion.div
+            className="absolute inset-0 will-change-transform"
+            style={shouldReduce ? {} : { scale: heroScale }}
+          >
+            <img
+              src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=2000"
+              alt="Logistics Warehouse"
+              className="w-full h-full object-cover opacity-30 grayscale"
+              referrerPolicy="no-referrer"
+            />
+          </motion.div>
           <div className="absolute inset-0 bg-linear-to-r from-dark/95 via-dark/70 to-dark/40 z-10" />
           <LogisticsAnimation />
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-white to-transparent z-20" />
@@ -219,9 +249,9 @@ export const Home = () => {
 
             {/* Left — Headline */}
             <motion.div
-              initial={{ opacity: 0, x: -24 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.9, ease: "easeOut" }}
+              variants={shouldReduce ? undefined : heroLeftVariants}
+              initial={shouldReduce ? false : 'hidden'}
+              animate="visible"
             >
               <p className="text-[10px] text-accent/80 uppercase tracking-[0.25em] mb-5 font-bold">
                 {t('hero.micro')}
@@ -231,38 +261,53 @@ export const Home = () => {
               </h1>
             </motion.div>
 
-            {/* Right — Description + CTA + Trust strip */}
+            {/* Right — Description + CTA + Trust strip (stagger children) */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.25 }}
+              variants={shouldReduce ? undefined : heroRightStagger}
+              initial={shouldReduce ? false : 'hidden'}
+              animate="visible"
               className="lg:pl-10 border-l border-white/10"
             >
-              <p className="text-base md:text-lg text-white/75 font-normal leading-relaxed mb-8 max-w-lg">
-                {t('hero.subtitle')}
-              </p>
-
-              <Button
-                variant="primary"
-                className="px-10 py-4 text-[11px] tracking-widest uppercase font-black"
-                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              <motion.p
+                variants={shouldReduce ? undefined : heroRightItem}
+                className="text-base md:text-lg text-white/75 font-normal leading-relaxed mb-8 max-w-lg"
               >
-                {t('hero.cta.quote')}
-              </Button>
+                {t('hero.subtitle')}
+              </motion.p>
 
-              {/* Trust strip */}
-              <div className="mt-10 pt-8 border-t border-white/15">
-                <div className="flex flex-wrap gap-x-6 gap-y-3">
+              <motion.div variants={shouldReduce ? undefined : heroRightItem}>
+                <Button
+                  variant="primary"
+                  className="px-10 py-4 text-[11px] tracking-widest uppercase font-black"
+                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  {t('hero.cta.quote')}
+                </Button>
+              </motion.div>
+
+              {/* Trust strip — staggered bullets */}
+              <motion.div
+                variants={shouldReduce ? undefined : heroRightItem}
+                className="mt-10 pt-8 border-t border-white/15"
+              >
+                <motion.div
+                  variants={shouldReduce ? undefined : trustStagger}
+                  className="flex flex-wrap gap-x-6 gap-y-3"
+                >
                   {(['hero.trust1','hero.trust2','hero.trust3','hero.trust4'] as const).map((key) => (
-                    <div key={key} className="flex items-center gap-2.5">
+                    <motion.div
+                      key={key}
+                      variants={shouldReduce ? undefined : trustItem}
+                      className="flex items-center gap-2.5"
+                    >
                       <div className="w-5 h-5 rounded-full bg-accent/20 border border-accent/50 flex items-center justify-center shrink-0">
                         <span className="text-accent font-black leading-none" style={{ fontSize: '9px' }}>✓</span>
                       </div>
                       <span className="text-[12px] text-white/70 font-medium tracking-wide">{t(key)}</span>
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             </motion.div>
 
           </div>
