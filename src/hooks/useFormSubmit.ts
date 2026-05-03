@@ -12,7 +12,7 @@ export interface Step1Data {
 interface UseFormSubmitReturn {
   isLoading: boolean;
   error: string | null;
-  submit: (step1: Step1Data, step2: FormData, turnstileToken: string) => Promise<boolean>;
+  submit: (step1: Step1Data, step2: FormData) => Promise<boolean>;
 }
 
 export const useFormSubmit = (): UseFormSubmitReturn => {
@@ -41,7 +41,7 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
     if (dbError) throw new Error(`File record failed (${fieldName}): ${dbError.message}`);
   };
 
-  const submit = async (step1: Step1Data, step2: FormData, turnstileToken: string): Promise<boolean> => {
+  const submit = async (step1: Step1Data, step2: FormData): Promise<boolean> => {
     setIsLoading(true);
     setError(null);
 
@@ -105,7 +105,6 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
         const { error: fnError } = await supabase.functions.invoke('notify-lead', {
           body: {
             leadId,
-            turnstileToken,
             leadData: {
               ...step1,
               ...leadData,

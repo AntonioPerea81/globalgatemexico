@@ -1,5 +1,4 @@
 import { useState, useEffect, ReactNode, FC } from 'react';
-import { Turnstile } from '@marsidev/react-turnstile';
 import { useFormSubmit } from '../hooks/useFormSubmit';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import {
@@ -176,15 +175,12 @@ export const Home = () => {
   const [formStep, setFormStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [step1Data, setStep1Data] = useState<Record<string, string>>({});
-  const [turnstileToken, setTurnstileToken] = useState('');
   const { isLoading: formLoading, error: formError, submit: submitLead } = useFormSubmit();
-  const turnstileSiteKey = (import.meta as any).env?.VITE_TURNSTILE_SITE_KEY as string | undefined;
 
   const resetForm = () => {
     setFormStep(1);
     setFormSubmitted(false);
     setStep1Data({});
-    setTurnstileToken('');
   };
 
   const logos = [
@@ -813,7 +809,7 @@ export const Home = () => {
                           setFormStep(2);
                         } else {
                           const fd = new FormData(e.currentTarget);
-                          const ok = await submitLead(step1Data as any, fd, turnstileToken);
+                          const ok = await submitLead(step1Data as any, fd);
                           if (ok) setFormSubmitted(true);
                         }
                       }}>
@@ -960,22 +956,16 @@ export const Home = () => {
                                 <input type="checkbox" required className="mt-0.5 accent-primary shrink-0" id="consent" />
                                 <label htmlFor="consent" className="text-[11px] text-dark/50 leading-snug cursor-pointer">{t('contact.field.consent')}</label>
                               </div>
-                              {turnstileSiteKey && (
-                                <div className="flex justify-center">
-                                  <Turnstile
-                                    siteKey={turnstileSiteKey}
-                                    onSuccess={(token) => setTurnstileToken(token)}
-                                    onExpire={() => setTurnstileToken('')}
-                                    options={{ theme: 'light' }}
-                                  />
-                                </div>
-                              )}
+                              {/* TODO: Re-enable Turnstile bot protection after the final production
+                                  domain is connected to Vercel. Add VITE_TURNSTILE_SITE_KEY to
+                                  Vercel env vars and TURNSTILE_SECRET_KEY to Supabase Edge Function
+                                  secrets, then restore the <Turnstile> widget and token checks. */}
                               {formError && (
                                 <p className="text-red-500 text-[11px] font-bold text-center">{formError}</p>
                               )}
                               <div className="flex gap-4">
                                 <button type="button" onClick={() => setFormStep(1)} className="text-[11px] font-black uppercase tracking-widest text-dark/30 hover:text-dark transition-colors shrink-0">← Back</button>
-                                <Button variant="primary" className="flex-grow py-4 uppercase font-black tracking-widest text-[11px]" disabled={formLoading || (!!turnstileSiteKey && !turnstileToken)}>
+                                <Button variant="primary" className="flex-grow py-4 uppercase font-black tracking-widest text-[11px]" disabled={formLoading}>
                                   {formLoading ? (
                                     <span className="flex items-center justify-center gap-2">
                                       <svg className="animate-spin h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
