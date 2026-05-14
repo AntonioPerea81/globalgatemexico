@@ -1,4 +1,5 @@
 const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
+const CLARITY_ID = import.meta.env.VITE_CLARITY_PROJECT_ID as string | undefined;
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,7 +52,24 @@ export function initAnalytics(granted: boolean) {
   if (granted) {
     window.gtag('event', 'page_view');
     console.log('[GGM Analytics] consent granted, page_view fired');
+    loadClarity();
   }
+}
+
+let clarityLoaded = false;
+
+function loadClarity() {
+  if (clarityLoaded) return;
+  if (!CLARITY_ID) {
+    console.warn('[GGM Analytics] VITE_CLARITY_PROJECT_ID not set — Clarity disabled');
+    return;
+  }
+  clarityLoaded = true;
+  const s = document.createElement('script');
+  s.src = `https://www.clarity.ms/tag/${CLARITY_ID}`;
+  s.async = true;
+  document.head.appendChild(s);
+  console.log('[GGM Analytics] clarity script injected, id:', CLARITY_ID);
 }
 
 export function trackPageView(path: string) {
