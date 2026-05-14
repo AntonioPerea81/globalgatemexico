@@ -8,6 +8,7 @@ export function CookieConsent() {
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
+    console.log('[GGM Analytics] stored consent:', stored);
     if (stored === 'accepted') {
       initAnalytics(true);
     } else if (stored === 'declined') {
@@ -18,12 +19,14 @@ export function CookieConsent() {
   }, []);
 
   function accept() {
+    console.log('[GGM Analytics] user accepted cookies');
     localStorage.setItem(STORAGE_KEY, 'accepted');
     initAnalytics(true);
     setVisible(false);
   }
 
   function decline() {
+    console.log('[GGM Analytics] user declined cookies');
     localStorage.setItem(STORAGE_KEY, 'declined');
     initAnalytics(false);
     setVisible(false);

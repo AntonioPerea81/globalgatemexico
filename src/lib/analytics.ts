@@ -1,15 +1,8 @@
 const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
 
 declare global {
-  interface Window {
-    dataLayer: unknown[];
-    gtag: (...args: unknown[]) => void;
-  }
-}
-
-function gtag(...args: unknown[]) {
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push(args);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  interface Window { dataLayer: any[]; gtag: (...args: unknown[]) => void; }
 }
 
 let loaded = false;
@@ -17,30 +10,51 @@ let loaded = false;
 function loadScript() {
   if (loaded || !GA_ID) return;
   loaded = true;
-  window.gtag = gtag;
-  gtag('js', new Date());
-  // Default-deny before consent
-  gtag('consent', 'default', {
+
+  window.dataLayer = window.dataLayer || [];
+  // Must be a plain function (not arrow/rest) so `arguments` is an IArguments
+  // object — gtag.js checks the entry type when processing the dataLayer queue.
+  window.gtag = function gtag() {
+    // eslint-disable-next-line prefer-rest-params
+    window.dataLayer.push(arguments);
+  };
+
+  // consent/default MUST be the first dataLayer command per consent mode v2 spec.
+  // wait_for_update tells gtag.js to pause 500 ms for a consent update before
+  // firing any hit — critical for returning visitors who have already accepted.
+  window.gtag('consent', 'default', {
     analytics_storage: 'denied',
     ad_storage: 'denied',
+    wait_for_update: 500,
   });
-  gtag('config', GA_ID, { send_page_view: false });
+  window.gtag('js', new Date());
+  window.gtag('config', GA_ID, { send_page_view: false });
+
   const s = document.createElement('script');
   s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
   s.async = true;
   document.head.appendChild(s);
+
+  console.log('[GGM Analytics] script injected, id:', GA_ID);
 }
 
 export function initAnalytics(granted: boolean) {
-  if (!GA_ID) return;
+  if (!GA_ID) {
+    console.warn('[GGM Analytics] VITE_GA_MEASUREMENT_ID not set — analytics disabled');
+    return;
+  }
+  console.log('[GGM Analytics] initAnalytics called, granted:', granted);
   loadScript();
-  gtag('consent', 'update', {
+  window.gtag('consent', 'update', {
     analytics_storage: granted ? 'granted' : 'denied',
   });
-  if (granted) gtag('event', 'page_view');
+  if (granted) {
+    window.gtag('event', 'page_view');
+    console.log('[GGM Analytics] consent granted, page_view fired');
+  }
 }
 
 export function trackPageView(path: string) {
   if (!GA_ID || !loaded) return;
-  gtag('event', 'page_view', { page_path: path });
+  window.gtag('event', 'page_view', { page_path: path });
 }
