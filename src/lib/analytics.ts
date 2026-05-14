@@ -65,10 +65,17 @@ function loadClarity() {
     return;
   }
   clarityLoaded = true;
-  const s = document.createElement('script');
-  s.src = `https://www.clarity.ms/tag/${CLARITY_ID}`;
-  s.async = true;
-  document.head.appendChild(s);
+  // Official Clarity init pattern — sets up the queue before the script loads.
+  (function (c: Window, l: Document, a: string, r: string, i: string) {
+    type ClarityFn = ((...args: unknown[]) => void) & { q?: unknown[][] };
+    const w = c as Window & { [key: string]: ClarityFn };
+    w[a] = w[a] || function (...args: unknown[]) { (w[a].q = w[a].q || []).push(args); };
+    const t = l.createElement(r) as HTMLScriptElement;
+    t.async = true;
+    t.src = 'https://www.clarity.ms/tag/' + i;
+    const y = l.getElementsByTagName(r)[0];
+    y.parentNode!.insertBefore(t, y);
+  })(window, document, 'clarity', 'script', CLARITY_ID);
   console.log('[GGM Analytics] clarity script injected, id:', CLARITY_ID);
 }
 
