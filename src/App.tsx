@@ -3,6 +3,7 @@ import { Home } from './pages/Home';
 import { ServicesPage, AboutPage, TrainingPage } from './pages/Internal';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
+import { CookieConsent } from './components/CookieConsent';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
             <Route path="*" element={<Home />} />
           </Routes>
         </Layout>
+        <CookieConsent />
       </Router>
     </LanguageProvider>
   );
