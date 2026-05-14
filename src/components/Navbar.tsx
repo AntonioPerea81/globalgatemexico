@@ -257,10 +257,10 @@ export const Navbar = () => {
           ))}
         </div>
 
-        {/* Right side: language (scrolled only) + CTA + mobile toggle */}
-        <div className="flex items-center gap-3 ml-auto xl:ml-4">
+        {/* Right side: language (scrolled only) + mobile toggle */}
+        <div className="flex items-center gap-4 ml-auto xl:ml-6">
 
-          {/* Language toggle visible at desktop when scrolled (utility bar is hidden) */}
+          {/* Language toggle — desktop, fades in once utility bar collapses */}
           <div
             className={cn(
               'hidden xl:flex items-center gap-2 text-[10px] tracking-widest transition-all duration-300',
@@ -277,18 +277,6 @@ export const Navbar = () => {
               className={cn('uppercase transition-colors', language === 'EN' ? 'text-white font-bold' : 'text-white/35 hover:text-white/80')}
             >EN</button>
           </div>
-
-          {/* CTA — Request a Quote */}
-          <button
-            onClick={scrollToContact}
-            className={cn(
-              'hidden xl:flex items-center px-5 py-[9px] text-[10px] font-black tracking-[0.15em] uppercase whitespace-nowrap transition-all duration-200',
-              'bg-primary text-white border border-primary/80',
-              'hover:bg-primary/85 hover:shadow-[0_0_22px_rgba(7,56,223,0.45)] hover:border-primary'
-            )}
-          >
-            Request a Quote
-          </button>
 
           {/* Mobile hamburger */}
           <button
@@ -390,14 +378,8 @@ export const Navbar = () => {
               ))}
             </div>
 
-            {/* Mobile bottom: CTA + language */}
-            <div className="shrink-0 px-8 py-6 border-t border-white/[0.07] flex flex-col gap-4">
-              <button
-                onClick={scrollToContact}
-                className="w-full py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_20px_rgba(7,56,223,0.4)] transition-all"
-              >
-                Request a Quote
-              </button>
+            {/* Mobile bottom: language only */}
+            <div className="shrink-0 px-8 py-6 border-t border-white/[0.07]">
               <div className="flex items-center gap-4 text-[12px]">
                 <button
                   onClick={() => setLanguage('ES')}
