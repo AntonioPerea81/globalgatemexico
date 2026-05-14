@@ -169,7 +169,7 @@ export const Navbar = () => {
       >
         {/* Logo */}
         <Link to="/" className="shrink-0 z-10" aria-label="Global Gate México — Home">
-          <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '46px', width: 'auto' }} />
+          <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '56px', width: 'auto' }} />
         </Link>
 
         {/* Desktop nav items — visible at xl (≥1280 px) */}
@@ -301,7 +301,7 @@ export const Navbar = () => {
           >
             {/* Mobile header row */}
             <div className="flex justify-between items-center px-8 py-4 border-b border-white/[0.07] shrink-0">
-              <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '42px', width: 'auto' }} />
+              <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '46px', width: 'auto' }} />
               <button
                 className="text-white/60 hover:text-white p-2 transition-colors"
                 onClick={() => setMobileOpen(false)}
