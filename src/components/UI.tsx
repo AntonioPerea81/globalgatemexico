@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { motion, HTMLMotionProps } from 'motion/react';
+import { ReactNode, useRef } from 'react';
+import { motion, HTMLMotionProps, useInView } from 'motion/react';
 import { cn } from '../lib/utils';
 
 interface ButtonProps extends HTMLMotionProps<'button'> {
@@ -53,23 +53,23 @@ export const Container = ({ children, className }: { children: ReactNode; classN
   </div>
 );
 
-export const Section = ({ 
-  children, 
-  id, 
-  className, 
+export const Section = ({
+  children,
+  id,
+  className,
   dark = false,
   noPadding = false
-}: { 
-  children: ReactNode; 
-  id?: string; 
-  className?: string; 
+}: {
+  children: ReactNode;
+  id?: string;
+  className?: string;
   dark?: boolean;
   noPadding?: boolean;
 }) => (
-  <section 
-    id={id} 
+  <section
+    id={id}
     className={cn(
-      noPadding ? '' : 'py-20 md:py-24', 
+      noPadding ? '' : 'py-20 md:py-24',
       dark ? 'bg-dark text-white' : 'bg-white text-dark',
       'border-b border-black/5',
       className
@@ -78,3 +78,48 @@ export const Section = ({
     {children}
   </section>
 );
+
+export function FadeIn({
+  children,
+  delay = 0,
+  className,
+  direction = 'up',
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+  direction?: 'up' | 'left' | 'right' | 'none';
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-64px' });
+  const initial =
+    direction === 'up'    ? { opacity: 0, y: 28 }
+    : direction === 'left'  ? { opacity: 0, x: -28 }
+    : direction === 'right' ? { opacity: 0, x: 28 }
+    : { opacity: 0 };
+  return (
+    <motion.div
+      ref={ref}
+      initial={initial}
+      animate={inView ? { opacity: 1, y: 0, x: 0 } : {}}
+      transition={{ duration: 0.72, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+export function Eyebrow({ children, light = false }: { children: ReactNode; light?: boolean }) {
+  return (
+    <div className="flex items-center gap-3 mb-5">
+      <div className={cn('h-px w-10', light ? 'bg-accent' : 'bg-primary')} />
+      <span className={cn(
+        'text-[10px] font-black tracking-[0.22em] uppercase',
+        light ? 'text-accent' : 'text-primary'
+      )}>
+        {children}
+      </span>
+    </div>
+  );
+}

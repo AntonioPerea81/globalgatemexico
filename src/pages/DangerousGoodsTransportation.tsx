@@ -1,5 +1,4 @@
-import { useRef, ReactNode } from 'react';
-import { motion, useInView } from 'motion/react';
+import { motion } from 'motion/react';
 import {
   Plane, Truck, Ship, Package, FileText, Tag,
   ShieldCheck, Award, Globe, Users, GraduationCap,
@@ -7,66 +6,17 @@ import {
   FlaskConical, Droplets, Car, Stethoscope, Factory,
   BadgeCheck, Lock, ClipboardList, Radiation,
 } from 'lucide-react';
-import { Container } from '../components/UI';
+import { Container, FadeIn, Eyebrow } from '../components/UI';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
-
-// ── Scroll-reveal wrapper ────────────────────────────────────────────────────
-
-function FadeIn({
-  children,
-  delay = 0,
-  className,
-  direction = 'up',
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-  direction?: 'up' | 'left' | 'right' | 'none';
-}) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-64px' });
-  const initial =
-    direction === 'up'    ? { opacity: 0, y: 28 }
-    : direction === 'left'  ? { opacity: 0, x: -28 }
-    : direction === 'right' ? { opacity: 0, x: 28 }
-    : { opacity: 0 };
-  return (
-    <motion.div
-      ref={ref}
-      initial={initial}
-      animate={inView ? { opacity: 1, y: 0, x: 0 } : {}}
-      transition={{ duration: 0.72, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-// ── Eyebrow label ────────────────────────────────────────────────────────────
-
-function Eyebrow({ children, light = false }: { children: ReactNode; light?: boolean }) {
-  return (
-    <div className="flex items-center gap-3 mb-5">
-      <div className={cn('h-px w-10', light ? 'bg-accent' : 'bg-primary')} />
-      <span className={cn(
-        'text-[10px] font-black tracking-[0.22em] uppercase',
-        light ? 'text-accent' : 'text-primary'
-      )}>
-        {children}
-      </span>
-    </div>
-  );
-}
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 
 const SERVICES = [
   {
     Icon: Plane,
-    // dg-air-transport.webp not yet available — icon-only card
     image: '/images/dg-transport/dg-air-transport.webp' as string | null,
+    href: '/services/air-transportation',
     title: 'Air Transportation',
     desc: 'IATA DGR-compliant air freight for Class 1–9 dangerous goods. Packing, documentation, and airline coordination handled end-to-end.',
     items: ['IATA DGR compliance', 'Dangerous Goods Declaration', 'Class 1–9 materials', 'Express & scheduled freight'],
@@ -74,6 +24,7 @@ const SERVICES = [
   {
     Icon: Truck,
     image: '/images/dg-transport/dg-ground-transport.webp' as string | null,
+    href: '/services/ground-transportation',
     title: 'Ground Transportation',
     desc: 'SCT-regulated road transport across Mexico and cross-border to the US and Canada. Dedicated DG-certified drivers and vehicles.',
     items: ['SCT NOM compliance', 'Certified DG drivers', 'Cross-border US/Canada', 'Real-time tracking'],
@@ -81,6 +32,7 @@ const SERVICES = [
   {
     Icon: Ship,
     image: '/images/dg-transport/dg-ocean-freight.webp' as string | null,
+    href: '/services/ocean-freight',
     title: 'Ocean Freight',
     desc: 'IMDG-compliant sea shipments for bulk and containerized hazardous cargo. Full port handling and customs documentation.',
     items: ['IMDG Code compliance', 'FCL & LCL options', 'Port-to-port / door-to-door', 'Hazmat manifest preparation'],
@@ -88,6 +40,7 @@ const SERVICES = [
   {
     Icon: Package,
     image: '/images/dg-transport/dg-specialized-packaging.webp' as string | null,
+    href: '/services/dg-packaging',
     title: 'DG Packaging',
     desc: 'UN-certified packaging sourced, prepared, and validated for all hazard classes. Compliant with IATA, IMDG, and ADR specifications.',
     items: ['UN-certified containers', 'All hazard classes', 'Inner & outer packaging', 'Compatibility verification'],
@@ -95,6 +48,7 @@ const SERVICES = [
   {
     Icon: FileText,
     image: '/images/dg-transport/dg-documentation-services.webp' as string | null,
+    href: '/services/documentation-services',
     title: 'Documentation Services',
     desc: 'Complete preparation of DG declarations, shipper certifications, SDS review, and all regulatory paperwork across transport modes.',
     items: ['Dangerous Goods Declaration', 'SDS preparation & review', 'Shipper certification', 'Multi-modal documentation'],
@@ -279,7 +233,7 @@ export const DangerousGoodsTransportationPage = () => {
           </FadeIn>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-0 border border-black/8">
-            {SERVICES.map(({ Icon: SIcon, image, title, desc, items }, i) => (
+            {SERVICES.map(({ Icon: SIcon, image, href, title, desc, items }, i) => (
               <FadeIn key={title} delay={i * 0.1}>
                 <div className={cn(
                   'group flex flex-col h-full transition-all duration-300 border-b border-black/8',
@@ -323,7 +277,7 @@ export const DangerousGoodsTransportationPage = () => {
 
                     <div className="mt-7 pt-6 border-t border-black/6">
                       <Link
-                        to="/services"
+                        to={href}
                         className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.12em] text-primary hover:gap-3 transition-all duration-200"
                       >
                         Learn More <ArrowRight size={13} />

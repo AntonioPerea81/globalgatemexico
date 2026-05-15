@@ -20,11 +20,11 @@ const NAV_ITEMS: NavItem[] = [
     id: 'dgt',
     label: 'Dangerous Goods Transportation',
     dropdown: [
-      { label: 'Air Transportation',      href: '/dangerous-goods-transportation' },
-      { label: 'Ground Transportation',   href: '/dangerous-goods-transportation' },
-      { label: 'Ocean Freight',           href: '/dangerous-goods-transportation' },
-      { label: 'DG Packaging',            href: '/dangerous-goods-transportation' },
-      { label: 'Documentation Services',  href: '/dangerous-goods-transportation' },
+      { label: 'Air Transportation',      href: '/services/air-transportation' },
+      { label: 'Ground Transportation',   href: '/services/ground-transportation' },
+      { label: 'Ocean Freight',           href: '/services/ocean-freight' },
+      { label: 'DG Packaging',            href: '/services/dg-packaging' },
+      { label: 'Documentation Services',  href: '/services/documentation-services' },
     ],
   },
   {
