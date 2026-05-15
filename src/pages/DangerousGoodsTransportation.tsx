@@ -65,21 +65,39 @@ function Eyebrow({ children, light = false }: { children: ReactNode; light?: boo
 const SERVICES = [
   {
     Icon: Plane,
+    // dg-air-transport.webp not yet available — icon-only card
+    image: null as string | null,
     title: 'Air Transportation',
     desc: 'IATA DGR-compliant air freight for Class 1–9 dangerous goods. Packing, documentation, and airline coordination handled end-to-end.',
     items: ['IATA DGR compliance', 'Dangerous Goods Declaration', 'Class 1–9 materials', 'Express & scheduled freight'],
   },
   {
     Icon: Truck,
+    image: '/images/dg-transport/dg-ground-transport.webp' as string | null,
     title: 'Ground Transportation',
     desc: 'SCT-regulated road transport across Mexico and cross-border to the US and Canada. Dedicated DG-certified drivers and vehicles.',
     items: ['SCT NOM compliance', 'Certified DG drivers', 'Cross-border US/Canada', 'Real-time tracking'],
   },
   {
     Icon: Ship,
+    image: '/images/dg-transport/dg-ocean-freight.webp' as string | null,
     title: 'Ocean Freight',
     desc: 'IMDG-compliant sea shipments for bulk and containerized hazardous cargo. Full port handling and customs documentation.',
     items: ['IMDG Code compliance', 'FCL & LCL options', 'Port-to-port / door-to-door', 'Hazmat manifest preparation'],
+  },
+  {
+    Icon: Package,
+    image: '/images/dg-transport/dg-specialized-packaging.webp' as string | null,
+    title: 'DG Packaging',
+    desc: 'UN-certified packaging sourced, prepared, and validated for all hazard classes. Compliant with IATA, IMDG, and ADR specifications.',
+    items: ['UN-certified containers', 'All hazard classes', 'Inner & outer packaging', 'Compatibility verification'],
+  },
+  {
+    Icon: FileText,
+    image: '/images/dg-transport/dg-documentation-services.webp' as string | null,
+    title: 'Documentation Services',
+    desc: 'Complete preparation of DG declarations, shipper certifications, SDS review, and all regulatory paperwork across transport modes.',
+    items: ['Dangerous Goods Declaration', 'SDS preparation & review', 'Shipper certification', 'Multi-modal documentation'],
   },
 ];
 
@@ -166,9 +184,9 @@ export const DangerousGoodsTransportationPage = () => {
         {/* Background image */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img
-            src="/transportes.jpeg"
+            src="/images/dg-transport/dg-hero-main.webp"
             alt="Dangerous goods transportation fleet"
-            className="w-full h-full object-cover opacity-25 grayscale"
+            className="w-full h-full object-cover opacity-30 grayscale"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#060e1c]/98 via-[#060e1c]/85 to-[#060e1c]/60" />
           {/* Dot-grid texture */}
@@ -260,38 +278,57 @@ export const DangerousGoodsTransportationPage = () => {
             </p>
           </FadeIn>
 
-          <div className="grid md:grid-cols-3 gap-0 border border-black/8">
-            {SERVICES.map(({ Icon: SIcon, title, desc, items }, i) => (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-0 border border-black/8">
+            {SERVICES.map(({ Icon: SIcon, image, title, desc, items }, i) => (
               <FadeIn key={title} delay={i * 0.1}>
                 <div className={cn(
-                  'group flex flex-col h-full p-8 xl:p-10 transition-all duration-300 hover:bg-[#f8f9fc] border-b md:border-b-0',
-                  i < SERVICES.length - 1 && 'md:border-r border-black/8'
+                  'group flex flex-col h-full transition-all duration-300 border-b border-black/8',
+                  i % 2 === 0 && 'sm:border-r sm:border-black/8 lg:border-r-0',
+                  i % 3 !== 2 && 'lg:border-r lg:border-black/8',
                 )}>
-                  {/* Icon block */}
-                  <div className="w-14 h-14 bg-primary/6 flex items-center justify-center mb-7 group-hover:bg-primary transition-colors duration-300">
-                    <SIcon size={26} className="text-primary group-hover:text-white transition-colors duration-300" />
-                  </div>
+                  {/* Photo header (when image available) */}
+                  {image ? (
+                    <div className="relative h-52 overflow-hidden shrink-0">
+                      <img
+                        src={image}
+                        alt={title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#060e1c]/75 via-[#060e1c]/20 to-transparent" />
+                      <div className="absolute bottom-4 left-4 w-10 h-10 bg-primary flex items-center justify-center">
+                        <SIcon size={20} className="text-white" />
+                      </div>
+                    </div>
+                  ) : (
+                    /* Icon-only header when no photo */
+                    <div className="px-8 xl:px-10 pt-8 xl:pt-10">
+                      <div className="w-14 h-14 bg-primary/6 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
+                        <SIcon size={26} className="text-primary group-hover:text-white transition-colors duration-300" />
+                      </div>
+                    </div>
+                  )}
 
-                  <h3 className="text-xl font-extrabold mb-3 tracking-tight">{title}</h3>
-                  <p className="text-secondary text-[14px] leading-relaxed mb-7">{desc}</p>
+                  <div className="flex flex-col flex-1 p-8 xl:p-10 pt-7">
+                    <h3 className="text-xl font-extrabold mb-3 tracking-tight">{title}</h3>
+                    <p className="text-secondary text-[14px] leading-relaxed mb-7">{desc}</p>
 
-                  {/* Included items */}
-                  <ul className="mt-auto space-y-2.5">
-                    {items.map((item) => (
-                      <li key={item} className="flex items-center gap-2.5 text-[12px] font-semibold text-dark/70 uppercase tracking-wide">
-                        <div className="w-1.5 h-1.5 bg-primary/50 group-hover:bg-primary rounded-full shrink-0 transition-colors" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                    <ul className="mt-auto space-y-2.5">
+                      {items.map((item) => (
+                        <li key={item} className="flex items-center gap-2.5 text-[12px] font-semibold text-dark/70 uppercase tracking-wide">
+                          <div className="w-1.5 h-1.5 bg-primary/50 rounded-full shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
 
-                  <div className="mt-7 pt-6 border-t border-black/6">
-                    <Link
-                      to="/services"
-                      className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.12em] text-primary hover:gap-3 transition-all duration-200"
-                    >
-                      Learn More <ArrowRight size={13} />
-                    </Link>
+                    <div className="mt-7 pt-6 border-t border-black/6">
+                      <Link
+                        to="/services"
+                        className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.12em] text-primary hover:gap-3 transition-all duration-200"
+                      >
+                        Learn More <ArrowRight size={13} />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </FadeIn>
@@ -345,6 +382,25 @@ export const DangerousGoodsTransportationPage = () => {
           </FadeIn>
         </Container>
       </section>
+
+      {/* ── Photo gallery strip ─────────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 h-64 sm:h-80">
+        {[
+          { src: '/images/dg-transport/dg-warehouse-01.webp',       alt: 'Dangerous goods warehouse operations' },
+          { src: '/images/dg-transport/dg-operations-team.webp',    alt: 'Global Gate México DG operations team' },
+          { src: '/images/dg-transport/dg-field-operations.webp',   alt: 'DG field operations and transport' },
+        ].map(({ src, alt }, i) => (
+          <FadeIn key={src} delay={i * 0.08} className="relative overflow-hidden">
+            <img
+              src={src}
+              alt={alt}
+              className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+              style={{ minHeight: '100%' }}
+            />
+            <div className="absolute inset-0 bg-[#060e1c]/35 hover:bg-[#060e1c]/10 transition-colors duration-700" />
+          </FadeIn>
+        ))}
+      </div>
 
       {/* ── 4. WHY GGM ──────────────────────────────────────────────────────── */}
       <section className="py-24 lg:py-32 bg-white">
