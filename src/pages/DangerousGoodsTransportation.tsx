@@ -66,7 +66,7 @@ const SERVICES = [
   {
     Icon: Plane,
     // dg-air-transport.webp not yet available — icon-only card
-    image: null as string | null,
+    image: '/images/dg-transport/dg-air-transport.webp' as string | null,
     title: 'Air Transportation',
     desc: 'IATA DGR-compliant air freight for Class 1–9 dangerous goods. Packing, documentation, and airline coordination handled end-to-end.',
     items: ['IATA DGR compliance', 'Dangerous Goods Declaration', 'Class 1–9 materials', 'Express & scheduled freight'],
