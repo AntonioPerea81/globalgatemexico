@@ -31,11 +31,11 @@ const NAV_ITEMS: NavItem[] = [
     id: 'dgc',
     label: 'DG Consulting & Compliance',
     dropdown: [
-      { label: 'DG Classification',       href: '/services' },
-      { label: 'Regulatory Consulting',   href: '/services' },
-      { label: 'Compliance Audits',       href: '/services' },
-      { label: 'SDS Review',              href: '/services' },
-      { label: 'Cross-border Compliance', href: '/services' },
+      { label: 'DG Compliance',              href: '/services' },
+      { label: 'Regulatory Consulting',      href: '/services' },
+      { label: 'Compliance Audits',          href: '/services' },
+      { label: 'SDS Review',                 href: '/services' },
+      { label: 'Cross-Border DG Compliance', href: '/services' },
     ],
   },
   {
