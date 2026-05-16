@@ -257,93 +257,12 @@ const PROCESS_STEPS = [
 
 function CertCard({ cert, height }: { cert: Certification; height: string }) {
   return (
-    <div
-      className={cn(
-        'group relative overflow-hidden rounded-2xl cursor-default bg-[#0b1829]',
-        'shadow-[0_8px_32px_rgba(0,0,0,0.55),0_2px_8px_rgba(0,0,0,0.35)]',
-        'ring-1 ring-white/[0.06]',
-        'hover:shadow-[0_16px_56px_rgba(0,0,0,0.7),0_0_0_1px_rgba(7,56,223,0.25)]',
-        'transition-shadow duration-500',
-        height,
-      )}
-    >
-
-      {/* ── DIAGNOSTIC — remove after confirming image paths ── */}
-      <p style={{ position: 'absolute', top: 4, right: 4, zIndex: 999, color: 'lime', fontSize: 9, background: 'rgba(0,0,0,0.7)', padding: '2px 4px', maxWidth: '90%', wordBreak: 'break-all' }}>
-        {cert.image ?? 'IMAGE UNDEFINED'}
-      </p>
-
-      {/* ── Image — direct fill, no fallback state ── */}
+    <div className={cn('relative overflow-hidden', height)}>
       <img
         src={cert.image}
         alt={cert.title}
-        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-        style={{ objectPosition: cert.objectPosition }}
+        className="absolute inset-0 w-full h-full object-cover"
       />
-
-      {/* ── Overlays above image ── */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: 'linear-gradient(to top, rgba(6,14,28,0.92) 0%, rgba(6,14,28,0.55) 35%, rgba(6,14,28,0.15) 60%, transparent 80%)' }}
-      />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: 'linear-gradient(to bottom, rgba(6,14,28,0.35) 0%, transparent 30%)' }}
-      />
-
-      {/* ── Tag — top left, glassmorphism ── */}
-      <div className="absolute top-4 left-4 z-20">
-        <span
-          className={cn(
-            'inline-flex items-center px-2.5 py-1',
-            'text-[8px] font-black uppercase tracking-[0.16em]',
-            'text-white/80 rounded-md',
-            'bg-white/10 backdrop-blur-md',
-            'border border-white/15',
-            'shadow-[0_2px_8px_rgba(0,0,0,0.3)]',
-          )}
-        >
-          {cert.tag}
-        </span>
-      </div>
-
-      {/* ── Content panel — glassmorphism at bottom ── */}
-      <div
-        className={cn(
-          'absolute bottom-0 left-0 right-0 z-20',
-          'px-5 pt-4 pb-5',
-          'border-t border-white/[0.07]',
-          'group-hover:border-white/[0.12] transition-colors duration-500',
-        )}
-      >
-        <p className="text-[8px] text-primary/60 uppercase tracking-[0.22em] font-black mb-1.5 leading-none">
-          {cert.issuer}
-        </p>
-        <h3 className="text-[12px] font-extrabold uppercase tracking-wide text-white leading-snug mb-2">
-          {cert.title}
-        </h3>
-        <p className="text-[11px] text-white/50 leading-snug line-clamp-2 group-hover:text-white/65 transition-colors duration-300">
-          {cert.desc}
-        </p>
-        {cert.verifyUrl && (
-          <a
-            href={cert.verifyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={e => e.stopPropagation()}
-            className="inline-flex items-center gap-1 mt-3 text-[9px] font-bold uppercase tracking-[0.16em] text-white/25 hover:text-primary/80 transition-colors duration-200"
-          >
-            Verified in IATA Registry
-            <svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden="true">
-              <path d="M1.5 7.5L7.5 1.5M7.5 1.5H3M7.5 1.5V6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </a>
-        )}
-      </div>
-
-      {/* ── Hover glow ring ── */}
-      <div className="absolute inset-0 rounded-2xl ring-1 ring-primary/0 group-hover:ring-primary/20 transition-all duration-500 pointer-events-none" />
-
     </div>
   );
 }
