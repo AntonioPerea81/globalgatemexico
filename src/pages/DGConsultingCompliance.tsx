@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import { Container, FadeIn, Eyebrow } from '../components/UI';
 import { cn } from '../lib/utils';
-import { Link } from 'react-router-dom';
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 
@@ -471,33 +470,11 @@ export const DGConsultingCompliancePage = () => {
         <div className="bg-[#060e1c] py-8">
           <Container>
             <FadeIn>
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
-                <div className="flex items-center gap-3">
-                  <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '36px', width: 'auto', opacity: 0.85 }} />
-                  <span className="text-[10px] text-white/30 uppercase tracking-[0.15em] font-bold hidden sm:inline">
-                    Dangerous Goods Specialists
-                  </span>
-                </div>
-                <div className="flex flex-wrap justify-center sm:justify-end gap-6 text-[11px]">
-                  <Link
-                    to="/dangerous-goods-transportation"
-                    className="text-white/45 hover:text-white transition-colors uppercase tracking-widest font-medium"
-                  >
-                    DG Transportation
-                  </Link>
-                  <Link
-                    to="/training"
-                    className="text-white/45 hover:text-white transition-colors uppercase tracking-widest font-medium"
-                  >
-                    Training
-                  </Link>
-                  <Link
-                    to="/about"
-                    className="text-white/45 hover:text-white transition-colors uppercase tracking-widest font-medium"
-                  >
-                    About Us
-                  </Link>
-                </div>
+              <div className="flex items-center gap-3">
+                <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '36px', width: 'auto', opacity: 0.85 }} />
+                <span className="text-[10px] text-white/30 uppercase tracking-[0.15em] font-bold hidden sm:inline">
+                  Dangerous Goods Specialists
+                </span>
               </div>
             </FadeIn>
           </Container>
