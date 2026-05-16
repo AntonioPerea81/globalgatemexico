@@ -259,7 +259,7 @@ function CertCard({ cert, height }: { cert: Certification; height: string }) {
   return (
     <div
       className={cn(
-        'group relative overflow-hidden rounded-2xl cursor-default',
+        'group relative overflow-hidden rounded-2xl cursor-default bg-[#0b1829]',
         'shadow-[0_8px_32px_rgba(0,0,0,0.55),0_2px_8px_rgba(0,0,0,0.35)]',
         'ring-1 ring-white/[0.06]',
         'hover:shadow-[0_16px_56px_rgba(0,0,0,0.7),0_0_0_1px_rgba(7,56,223,0.25)]',
@@ -268,49 +268,22 @@ function CertCard({ cert, height }: { cert: Certification; height: string }) {
       )}
     >
 
-      {/* ── Base: icon fallback always behind ── */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0d2040] to-[#060e1c] flex items-center justify-center">
-        <cert.Icon size={52} className="text-white/[0.06]" />
-      </div>
-
-      {/* ── Image layer: CSS background-image — no onError state risk ── */}
-      {/* Outer: scale on hover. Inner: static rotation. */}
-      <div className="absolute inset-0 overflow-hidden rounded-2xl">
-        <div className="absolute inset-[-12%] transition-transform duration-700 ease-out origin-center group-hover:scale-[1.08]">
-          <div
-            className="w-full h-full"
-            style={{
-              transform: `rotate(${cert.rotation}deg)`,
-              backgroundImage: `url('${cert.image}')`,
-              backgroundSize: 'cover',
-              backgroundPosition: cert.objectPosition,
-              backgroundRepeat: 'no-repeat',
-            }}
-          />
-        </div>
-      </div>
-
-      {/* ── Depth overlays ── */}
-      {/* Radial vignette: edges/corners darken, centre stays clear */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at 50% 40%, transparent 25%, rgba(6,14,28,0.4) 100%)',
-        }}
+      {/* ── Image — direct fill, no fallback state ── */}
+      <img
+        src={cert.image}
+        alt={cert.title}
+        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+        style={{ objectPosition: cert.objectPosition }}
       />
-      {/* Bottom gradient: legibility for text panel — only covers lower 55% */}
+
+      {/* ── Overlays above image ── */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'linear-gradient(to top, rgba(6,14,28,0.96) 0%, rgba(6,14,28,0.78) 30%, rgba(6,14,28,0.18) 55%, transparent 72%)',
-        }}
+        style={{ background: 'linear-gradient(to top, rgba(6,14,28,0.92) 0%, rgba(6,14,28,0.55) 35%, rgba(6,14,28,0.15) 60%, transparent 80%)' }}
       />
-      {/* Top scrim: just enough for tag legibility */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'linear-gradient(to bottom, rgba(6,14,28,0.38) 0%, transparent 28%)',
-        }}
+        style={{ background: 'linear-gradient(to bottom, rgba(6,14,28,0.35) 0%, transparent 30%)' }}
       />
 
       {/* ── Tag — top left, glassmorphism ── */}
