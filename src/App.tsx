@@ -25,6 +25,13 @@ import {
   SDSReviewPage,
   CrossBorderDGPage,
 } from './pages/compliance';
+import {
+  CumplimientoDGPage,
+  ConsultoriaRegulatoriaPage,
+  AuditoriasCumplimientoPage,
+  RevisionHDSPage,
+  CumplimientoTransfronterizoPage,
+} from './pages/compliance/es';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -59,6 +66,11 @@ export default function App() {
             <Route path="/dg-compliance/compliance-audits"            element={<ComplianceAuditsPage />} />
             <Route path="/dg-compliance/sds-review"                   element={<SDSReviewPage />} />
             <Route path="/dg-compliance/cross-border-dg-compliance"   element={<CrossBorderDGPage />} />
+            <Route path="/es/consultoria-cumplimiento-dg/cumplimiento-dg"              element={<CumplimientoDGPage />} />
+            <Route path="/es/consultoria-cumplimiento-dg/consultoria-regulatoria"      element={<ConsultoriaRegulatoriaPage />} />
+            <Route path="/es/consultoria-cumplimiento-dg/auditorias-cumplimiento"      element={<AuditoriasCumplimientoPage />} />
+            <Route path="/es/consultoria-cumplimiento-dg/revision-hds"                element={<RevisionHDSPage />} />
+            <Route path="/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo" element={<CumplimientoTransfronterizoPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/about"    element={<AboutPage />} />
             <Route path="/training" element={<TrainingPage />} />

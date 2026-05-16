@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   AlertTriangle, FileX, PackageX, Globe,
   ClipboardCheck, Search, ShieldAlert, BookOpen,
@@ -7,6 +8,8 @@ import {
   Layers, AlertCircle, XCircle, Database,
 } from 'lucide-react';
 import { CompliancePageTemplate, CompliancePageData } from './CompliancePageTemplate';
+import { useLanguage } from '../../context/LanguageContext';
+import { usePageMeta } from '../../hooks/usePageMeta';
 
 // ── DG Compliance ─────────────────────────────────────────────────────────────
 
@@ -510,8 +513,87 @@ const crossBorderData: CompliancePageData = {
 
 // ── Page Exports ──────────────────────────────────────────────────────────────
 
-export const DGCompliancePage = () => <CompliancePageTemplate data={dgComplianceData} />;
-export const RegulatoryConsultingPage = () => <CompliancePageTemplate data={regulatoryConsultingData} />;
-export const ComplianceAuditsPage = () => <CompliancePageTemplate data={complianceAuditsData} />;
-export const SDSReviewPage = () => <CompliancePageTemplate data={sdsReviewData} />;
-export const CrossBorderDGPage = () => <CompliancePageTemplate data={crossBorderData} />;
+export function DGCompliancePage() {
+  const { setLanguage } = useLanguage();
+  useEffect(() => { setLanguage('EN'); }, []);
+  usePageMeta({
+    title: 'DG Compliance Services | Classification & Documentation | Global Gate México',
+    description: 'Full-cycle dangerous goods compliance: classification, packaging validation, and DG declaration preparation by IATA and IMDG certified specialists.',
+    canonical: 'https://globalgatemexico.com/dg-compliance/dg-compliance',
+    lang: 'en',
+    hreflang: [
+      { lang: 'en', href: 'https://globalgatemexico.com/dg-compliance/dg-compliance' },
+      { lang: 'es', href: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/cumplimiento-dg' },
+      { lang: 'x-default', href: 'https://globalgatemexico.com/dg-compliance/dg-compliance' },
+    ],
+  });
+  return <CompliancePageTemplate data={dgComplianceData} />;
+}
+
+export function RegulatoryConsultingPage() {
+  const { setLanguage } = useLanguage();
+  useEffect(() => { setLanguage('EN'); }, []);
+  usePageMeta({
+    title: 'Dangerous Goods Regulatory Consulting | IATA · IMDG · SCT · DOT | Global Gate México',
+    description: 'Expert dangerous goods regulatory consulting for IATA DGR, IMDG Code, DOT 49 CFR, and SCT NOM. Current-edition compliance guidance for your products and routes.',
+    canonical: 'https://globalgatemexico.com/dg-compliance/regulatory-consulting',
+    lang: 'en',
+    hreflang: [
+      { lang: 'en', href: 'https://globalgatemexico.com/dg-compliance/regulatory-consulting' },
+      { lang: 'es', href: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/consultoria-regulatoria' },
+      { lang: 'x-default', href: 'https://globalgatemexico.com/dg-compliance/regulatory-consulting' },
+    ],
+  });
+  return <CompliancePageTemplate data={regulatoryConsultingData} />;
+}
+
+export function ComplianceAuditsPage() {
+  const { setLanguage } = useLanguage();
+  useEffect(() => { setLanguage('EN'); }, []);
+  usePageMeta({
+    title: 'DG Compliance Audits | Internal & Pre-Inspection | Global Gate México',
+    description: 'Structured dangerous goods compliance audits for documentation, classification, packaging, and training records. Gap reports with prioritized remediation plans.',
+    canonical: 'https://globalgatemexico.com/dg-compliance/compliance-audits',
+    lang: 'en',
+    hreflang: [
+      { lang: 'en', href: 'https://globalgatemexico.com/dg-compliance/compliance-audits' },
+      { lang: 'es', href: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/auditorias-cumplimiento' },
+      { lang: 'x-default', href: 'https://globalgatemexico.com/dg-compliance/compliance-audits' },
+    ],
+  });
+  return <CompliancePageTemplate data={complianceAuditsData} />;
+}
+
+export function SDSReviewPage() {
+  const { setLanguage } = useLanguage();
+  useEffect(() => { setLanguage('EN'); }, []);
+  usePageMeta({
+    title: 'Safety Data Sheet Review | Section 14 Transport Classification | Global Gate México',
+    description: 'SDS Section 14 transport data verified against current IATA DGR and IMDG Code. Written correction reports for any errors found in your SDS library.',
+    canonical: 'https://globalgatemexico.com/dg-compliance/sds-review',
+    lang: 'en',
+    hreflang: [
+      { lang: 'en', href: 'https://globalgatemexico.com/dg-compliance/sds-review' },
+      { lang: 'es', href: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/revision-hds' },
+      { lang: 'x-default', href: 'https://globalgatemexico.com/dg-compliance/sds-review' },
+    ],
+  });
+  return <CompliancePageTemplate data={sdsReviewData} />;
+}
+
+export function CrossBorderDGPage() {
+  const { setLanguage } = useLanguage();
+  useEffect(() => { setLanguage('EN'); }, []);
+  usePageMeta({
+    title: 'Cross-Border DG Compliance | Mexico–US | SCT & DOT | Global Gate México',
+    description: 'Dangerous goods compliance for Mexico–US cross-border shipments under both SCT and DOT 49 CFR simultaneously. Documentation, packaging review, and border coordination.',
+    canonical: 'https://globalgatemexico.com/dg-compliance/cross-border-dg-compliance',
+    lang: 'en',
+    hreflang: [
+      { lang: 'en', href: 'https://globalgatemexico.com/dg-compliance/cross-border-dg-compliance' },
+      { lang: 'es', href: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo' },
+      { lang: 'x-default', href: 'https://globalgatemexico.com/dg-compliance/cross-border-dg-compliance' },
+    ],
+  });
+  return <CompliancePageTemplate data={crossBorderData} />;
+}

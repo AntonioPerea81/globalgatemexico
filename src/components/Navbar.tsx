@@ -36,11 +36,11 @@ const NAV_ITEMS: NavItem[] = [
     label: { EN: 'DG Consulting & Compliance', ES: 'Consultoría y Cumplimiento DG' },
     href: '/dg-consulting-compliance',
     dropdown: [
-      { label: { EN: 'DG Compliance',              ES: 'Cumplimiento DG' },                 href: { EN: '/dg-compliance/dg-compliance',              ES: '/dg-compliance/dg-compliance' } },
-      { label: { EN: 'Regulatory Consulting',      ES: 'Consultoría Regulatoria' },          href: { EN: '/dg-compliance/regulatory-consulting',      ES: '/dg-compliance/regulatory-consulting' } },
-      { label: { EN: 'Compliance Audits',          ES: 'Auditorías de Cumplimiento' },       href: { EN: '/dg-compliance/compliance-audits',          ES: '/dg-compliance/compliance-audits' } },
-      { label: { EN: 'SDS Review',                 ES: 'Revisión de HDS' },                 href: { EN: '/dg-compliance/sds-review',                 ES: '/dg-compliance/sds-review' } },
-      { label: { EN: 'Cross-Border DG Compliance', ES: 'Cumplimiento DG Transfronterizo' }, href: { EN: '/dg-compliance/cross-border-dg-compliance', ES: '/dg-compliance/cross-border-dg-compliance' } },
+      { label: { EN: 'DG Compliance',              ES: 'Cumplimiento DG' },                 href: { EN: '/dg-compliance/dg-compliance',              ES: '/es/consultoria-cumplimiento-dg/cumplimiento-dg' } },
+      { label: { EN: 'Regulatory Consulting',      ES: 'Consultoría Regulatoria' },          href: { EN: '/dg-compliance/regulatory-consulting',      ES: '/es/consultoria-cumplimiento-dg/consultoria-regulatoria' } },
+      { label: { EN: 'Compliance Audits',          ES: 'Auditorías de Cumplimiento' },       href: { EN: '/dg-compliance/compliance-audits',          ES: '/es/consultoria-cumplimiento-dg/auditorias-cumplimiento' } },
+      { label: { EN: 'SDS Review',                 ES: 'Revisión de HDS' },                 href: { EN: '/dg-compliance/sds-review',                 ES: '/es/consultoria-cumplimiento-dg/revision-hds' } },
+      { label: { EN: 'Cross-Border DG Compliance', ES: 'Cumplimiento DG Transfronterizo' }, href: { EN: '/dg-compliance/cross-border-dg-compliance', ES: '/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo' } },
     ],
   },
   {
@@ -90,6 +90,16 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/es/transporte-mercancias-peligrosas/embalaje-dg':                      { EN: '/dangerous-goods-transportation/dg-packaging',                         ES: '/es/transporte-mercancias-peligrosas/embalaje-dg' },
   '/dangerous-goods-transportation/documentation-services':                { EN: '/dangerous-goods-transportation/documentation-services',               ES: '/es/transporte-mercancias-peligrosas/servicios-documentacion' },
   '/es/transporte-mercancias-peligrosas/servicios-documentacion':          { EN: '/dangerous-goods-transportation/documentation-services',               ES: '/es/transporte-mercancias-peligrosas/servicios-documentacion' },
+  '/dg-compliance/dg-compliance':                                          { EN: '/dg-compliance/dg-compliance',                                          ES: '/es/consultoria-cumplimiento-dg/cumplimiento-dg' },
+  '/es/consultoria-cumplimiento-dg/cumplimiento-dg':                       { EN: '/dg-compliance/dg-compliance',                                          ES: '/es/consultoria-cumplimiento-dg/cumplimiento-dg' },
+  '/dg-compliance/regulatory-consulting':                                  { EN: '/dg-compliance/regulatory-consulting',                                  ES: '/es/consultoria-cumplimiento-dg/consultoria-regulatoria' },
+  '/es/consultoria-cumplimiento-dg/consultoria-regulatoria':               { EN: '/dg-compliance/regulatory-consulting',                                  ES: '/es/consultoria-cumplimiento-dg/consultoria-regulatoria' },
+  '/dg-compliance/compliance-audits':                                      { EN: '/dg-compliance/compliance-audits',                                      ES: '/es/consultoria-cumplimiento-dg/auditorias-cumplimiento' },
+  '/es/consultoria-cumplimiento-dg/auditorias-cumplimiento':               { EN: '/dg-compliance/compliance-audits',                                      ES: '/es/consultoria-cumplimiento-dg/auditorias-cumplimiento' },
+  '/dg-compliance/sds-review':                                             { EN: '/dg-compliance/sds-review',                                             ES: '/es/consultoria-cumplimiento-dg/revision-hds' },
+  '/es/consultoria-cumplimiento-dg/revision-hds':                          { EN: '/dg-compliance/sds-review',                                             ES: '/es/consultoria-cumplimiento-dg/revision-hds' },
+  '/dg-compliance/cross-border-dg-compliance':                             { EN: '/dg-compliance/cross-border-dg-compliance',                             ES: '/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo' },
+  '/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo':       { EN: '/dg-compliance/cross-border-dg-compliance',                             ES: '/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo' },
 };
 
 export const Navbar = () => {
