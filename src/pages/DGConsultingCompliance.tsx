@@ -7,7 +7,6 @@ import {
   FlaskConical, Droplets, Car, Stethoscope, Factory, Radiation,
 } from 'lucide-react';
 import { Container, FadeIn, Eyebrow } from '../components/UI';
-import { cn } from '../lib/utils';
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 
@@ -43,56 +42,51 @@ const SERVICES = [
   {
     Icon: ShieldCheck,
     title: 'DG Compliance',
-    desc: 'We review, validate, and correct your dangerous goods operations before a carrier, port authority, or regulator does it for you. Practical compliance support from certified professionals who understand what compliant operations look like in practice.',
+    desc: 'Validate and correct your dangerous goods operations before a carrier or regulator does. Classification, packaging, and documentation reviewed against current modal requirements.',
     items: [
-      'Shipment compliance review and validation',
-      'Classification and packing instruction verification',
+      'Shipment compliance review',
+      'Classification & packaging validation',
       'Pre-shipment documentation audit',
-      'Operational gap identification and correction plan',
     ],
   },
   {
     Icon: BookOpen,
     title: 'Regulatory Consulting',
-    desc: 'The IATA DGR, IMDG Code, DOT 49 CFR, and Mexican SCT regulations are not identical — and the differences create real operational risk. We help your team understand which regulations apply, how to interpret specific provisions, and how to build procedures that work across all applicable frameworks.',
+    desc: 'IATA DGR, IMDG Code, DOT 49 CFR, and SCT regulations differ in ways that create real operational risk. We clarify what applies to your operation and how.',
     items: [
-      'IATA DGR applicability and interpretation',
-      'IMDG Code requirements and special provisions',
-      'DOT 49 CFR for US cross-border operations',
-      'SCT NOM compliance for Mexican road transport',
+      'IATA DGR & IMDG Code interpretation',
+      'DOT 49 CFR cross-border requirements',
+      'SCT NOM compliance — Mexico',
     ],
   },
   {
     Icon: ClipboardList,
     title: 'Compliance Audits',
-    desc: 'Internal dangerous goods compliance audits identify the gaps that lead to shipment rejections, carrier incidents, and regulatory penalties — before they occur. We audit your classification records, packaging files, documentation workflows, and operational procedures against current modal regulations.',
+    desc: 'Internal DG audits identify the gaps that lead to shipment rejections and regulatory penalties — before they reach your operation. Records, procedures, and documentation reviewed against current regulations.',
     items: [
-      'Classification and packaging documentation review',
-      'DG declaration accuracy and completeness audit',
-      'Training record and certification verification',
-      'Corrective action plan with implementation support',
+      'Classification & documentation review',
+      'DG declaration accuracy audit',
+      'Corrective action plan development',
     ],
   },
   {
     Icon: FileText,
     title: 'SDS Review',
-    desc: 'A Safety Data Sheet is the foundation of every dangerous goods classification decision. An incorrect SDS leads to wrong UN numbers, missed hazard classes, and non-compliant transport declarations. We review your SDS library against current GHS standards and flag every inconsistency that creates operational or compliance risk.',
+    desc: 'An incorrect Safety Data Sheet produces wrong UN numbers and non-compliant declarations. We verify your SDS library against current GHS standards and transport requirements.',
     items: [
-      'UN number and hazard class accuracy verification',
-      'Packing group and subsidiary hazard review',
-      'GHS Section 14 transport data assessment',
-      'Bilingual SDS preparation — Spanish and English',
+      'UN number & hazard class verification',
+      'GHS Section 14 transport data review',
+      'Bilingual SDS — Spanish & English',
     ],
   },
   {
     Icon: Globe,
     title: 'Cross-Border DG Compliance',
-    desc: 'Mexico–USA dangerous goods movements must comply with both SCT NOM regulations and DOT 49 CFR simultaneously — and the requirements are not always aligned. We help shippers, freight forwarders, and carriers maintain compliant cross-border operations across classification, documentation, packaging, and carrier requirements.',
+    desc: 'Mexico–USA movements must comply with SCT NOM and DOT 49 CFR simultaneously. We align your classification, documentation, and packaging across both frameworks.',
     items: [
-      'Mexico–USA cross-border regulatory alignment',
-      'Multimodal compliance — air, ground, and sea',
-      'DOT 49 CFR and SCT dual-framework compliance',
-      'Cross-border documentation preparation and review',
+      'Mexico–USA regulatory alignment',
+      'DOT 49 CFR & SCT dual compliance',
+      'Cross-border documentation review',
     ],
   },
 ];
@@ -309,55 +303,60 @@ export const DGConsultingCompliancePage = () => {
       {/* ── 3. SERVICES ─────────────────────────────────────────────────────── */}
       <section className="py-24 lg:py-32 bg-[#f8f9fc] border-y border-black/5">
         <Container>
-          <FadeIn className="max-w-2xl mb-16">
+          <FadeIn className="max-w-2xl mb-14">
             <Eyebrow>Our Services</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-5">
               Dangerous Goods Compliance Services
             </h2>
             <p className="text-secondary text-[15px] leading-relaxed">
-              Each service addresses a specific layer of the DG compliance stack. We work with companies that need a single service and with operators that need all five.
+              Each service addresses a specific layer of the DG compliance stack. We work with companies that need one service and with operators that need all five.
             </p>
           </FadeIn>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-0 border border-black/8">
+          {/* 3 + 2 centered layout */}
+          <div className="flex flex-wrap justify-center gap-4">
             {SERVICES.map(({ Icon: SIcon, title, desc, items }, i) => (
-              <FadeIn key={title} delay={i * 0.07}>
-                <div className={cn(
-                  'group flex flex-col h-full bg-white p-8 xl:p-10 transition-all duration-300 border-b border-black/8',
-                  i % 3 !== 2 && 'lg:border-r lg:border-black/8',
-                  i % 2 === 0 && 'sm:border-r sm:border-black/8 lg:border-r-0',
-                  i % 3 !== 2 && 'lg:border-r',
-                  'hover:bg-[#060e1c]',
-                )}>
-                  <div className="w-11 h-11 bg-primary/7 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors duration-300">
-                    <SIcon size={22} className="text-primary" />
+              <FadeIn key={title} delay={i * 0.07} className="w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)]">
+                <div className="group bg-white border border-black/[0.07] hover:border-primary/30 hover:shadow-[0_4px_24px_rgba(0,0,0,0.07)] transition-all duration-300 p-7 h-full flex flex-col">
+
+                  {/* Icon + title */}
+                  <div className="flex items-start gap-4 mb-5">
+                    <div className="w-9 h-9 bg-primary/7 flex items-center justify-center shrink-0 group-hover:bg-primary/12 transition-colors duration-300">
+                      <SIcon size={17} className="text-primary" />
+                    </div>
+                    <h3 className="text-[15px] font-extrabold tracking-tight leading-snug pt-1">
+                      {title}
+                    </h3>
                   </div>
-                  <h3 className="text-[16px] font-extrabold tracking-tight mb-3 group-hover:text-white transition-colors duration-300">
-                    {title}
-                  </h3>
-                  <p className="text-secondary text-[13px] leading-relaxed mb-7 group-hover:text-white/55 transition-colors duration-300">
+
+                  {/* Description */}
+                  <p className="text-secondary text-[13px] leading-relaxed mb-5">
                     {desc}
                   </p>
-                  <ul className="mt-auto space-y-2.5">
+
+                  {/* Bullets */}
+                  <ul className="mt-auto space-y-2 pt-4 border-t border-black/[0.06]">
                     {items.map((item) => (
-                      <li key={item} className="flex items-center gap-2.5 text-[11px] font-semibold text-dark/60 uppercase tracking-wide group-hover:text-white/45 transition-colors duration-300">
-                        <div className="w-1.5 h-1.5 bg-primary/50 rounded-full shrink-0 group-hover:bg-accent/60 transition-colors duration-300" />
+                      <li key={item} className="flex items-center gap-2.5 text-[11px] font-semibold text-dark/55 uppercase tracking-[0.08em]">
+                        <div className="w-1 h-1 bg-primary/40 rounded-full shrink-0" />
                         {item}
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-7 pt-6 border-t border-black/6 group-hover:border-white/10 transition-colors duration-300">
-                    <button
-                      onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                      className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.12em] text-primary group-hover:text-accent hover:gap-3 transition-all duration-200"
-                    >
-                      Request Consultation <ArrowRight size={13} />
-                    </button>
-                  </div>
                 </div>
               </FadeIn>
             ))}
           </div>
+
+          {/* Centralized CTA */}
+          <FadeIn delay={0.4} className="mt-12 flex justify-center">
+            <button
+              onClick={scrollToContact}
+              className="inline-flex items-center gap-3 px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.4)] transition-all duration-200"
+            >
+              Discuss Your DG Operation <ArrowRight size={14} />
+            </button>
+          </FadeIn>
         </Container>
       </section>
 
