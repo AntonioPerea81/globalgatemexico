@@ -502,20 +502,6 @@ export const DangerousGoodsTransportationPage = () => {
           </Container>
         </div>
 
-        {/* Contact strip */}
-        <div className="bg-[#060e1c] py-8">
-          <Container>
-            <FadeIn>
-              <div className="flex items-center gap-3">
-                <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '36px', width: 'auto', opacity: 0.85 }} />
-                <span className="text-[10px] text-white/30 uppercase tracking-[0.15em] font-bold hidden sm:inline">
-                  Dangerous Goods Specialists
-                </span>
-              </div>
-            </FadeIn>
-          </Container>
-        </div>
-
       </section>
 
     </div>
