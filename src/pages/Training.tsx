@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'motion/react';
 import {
   GraduationCap, Award, BookOpen, Globe, ShieldCheck, Users,
@@ -256,13 +256,10 @@ const PROCESS_STEPS = [
 // ── CertCard ─────────────────────────────────────────────────────────────────
 
 function CertCard({ cert, height }: { cert: Certification; height: string }) {
-  const [imgError, setImgError] = useState(false);
-
   return (
     <div
       className={cn(
         'group relative overflow-hidden rounded-2xl cursor-default',
-        'bg-[#0b1829]',
         'shadow-[0_8px_32px_rgba(0,0,0,0.55),0_2px_8px_rgba(0,0,0,0.35)]',
         'ring-1 ring-white/[0.06]',
         'hover:shadow-[0_16px_56px_rgba(0,0,0,0.7),0_0_0_1px_rgba(7,56,223,0.25)]',
@@ -271,42 +268,50 @@ function CertCard({ cert, height }: { cert: Certification; height: string }) {
       )}
     >
 
-      {/* ── Image layer — outer scales on hover, inner holds static rotation ── */}
+      {/* ── Base: icon fallback always behind ── */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0d2040] to-[#060e1c] flex items-center justify-center">
+        <cert.Icon size={52} className="text-white/[0.06]" />
+      </div>
+
+      {/* ── Image layer: CSS background-image — no onError state risk ── */}
+      {/* Outer: scale on hover. Inner: static rotation. */}
       <div className="absolute inset-0 overflow-hidden rounded-2xl">
-        {/* Outer: scale on hover */}
         <div className="absolute inset-[-12%] transition-transform duration-700 ease-out origin-center group-hover:scale-[1.08]">
-          {/* Inner: static rotation */}
-          <div className="w-full h-full" style={{ transform: `rotate(${cert.rotation}deg)` }}>
-            {!imgError ? (
-              <img
-                src={cert.image}
-                alt={cert.title}
-                onError={() => setImgError(true)}
-                draggable={false}
-                className="w-full h-full object-cover select-none"
-                style={{ objectPosition: cert.objectPosition }}
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-[#0d2040] to-[#060e1c] flex items-center justify-center">
-                <cert.Icon size={52} className="text-primary/10" />
-              </div>
-            )}
-          </div>
+          <div
+            className="w-full h-full"
+            style={{
+              transform: `rotate(${cert.rotation}deg)`,
+              backgroundImage: `url('${cert.image}')`,
+              backgroundSize: 'cover',
+              backgroundPosition: cert.objectPosition,
+              backgroundRepeat: 'no-repeat',
+            }}
+          />
         </div>
       </div>
 
       {/* ── Depth overlays ── */}
-      {/* Radial vignette — corners darken for cinematic depth */}
+      {/* Radial vignette: edges/corners darken, centre stays clear */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at 50% 30%, transparent 30%, rgba(6,14,28,0.55) 100%)',
+          background: 'radial-gradient(ellipse at 50% 40%, transparent 25%, rgba(6,14,28,0.4) 100%)',
         }}
       />
-      {/* Strong bottom gradient — content readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#060e1c] via-[#060e1c]/60 to-transparent pointer-events-none" />
-      {/* Subtle top fade for tag contrast */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#060e1c]/50 via-transparent to-transparent pointer-events-none" />
+      {/* Bottom gradient: legibility for text panel — only covers lower 55% */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to top, rgba(6,14,28,0.96) 0%, rgba(6,14,28,0.78) 30%, rgba(6,14,28,0.18) 55%, transparent 72%)',
+        }}
+      />
+      {/* Top scrim: just enough for tag legibility */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(6,14,28,0.38) 0%, transparent 28%)',
+        }}
+      />
 
       {/* ── Tag — top left, glassmorphism ── */}
       <div className="absolute top-4 left-4 z-20">
@@ -314,8 +319,7 @@ function CertCard({ cert, height }: { cert: Certification; height: string }) {
           className={cn(
             'inline-flex items-center px-2.5 py-1',
             'text-[8px] font-black uppercase tracking-[0.16em]',
-            'text-white/80',
-            'rounded-md',
+            'text-white/80 rounded-md',
             'bg-white/10 backdrop-blur-md',
             'border border-white/15',
             'shadow-[0_2px_8px_rgba(0,0,0,0.3)]',
@@ -330,19 +334,17 @@ function CertCard({ cert, height }: { cert: Certification; height: string }) {
         className={cn(
           'absolute bottom-0 left-0 right-0 z-20',
           'px-5 pt-4 pb-5',
-          'bg-gradient-to-t from-[#060e1c]/95 via-[#060e1c]/70 to-transparent',
-          'backdrop-blur-[2px]',
-          'border-t border-white/[0.06]',
-          'group-hover:border-white/[0.1] transition-colors duration-500',
+          'border-t border-white/[0.07]',
+          'group-hover:border-white/[0.12] transition-colors duration-500',
         )}
       >
-        <p className="text-[8px] text-primary/55 uppercase tracking-[0.22em] font-black mb-1.5 leading-none">
+        <p className="text-[8px] text-primary/60 uppercase tracking-[0.22em] font-black mb-1.5 leading-none">
           {cert.issuer}
         </p>
-        <h3 className="text-[12px] font-extrabold uppercase tracking-wide text-white leading-snug mb-2 group-hover:text-white transition-colors duration-300">
+        <h3 className="text-[12px] font-extrabold uppercase tracking-wide text-white leading-snug mb-2">
           {cert.title}
         </h3>
-        <p className="text-[11px] text-white/40 leading-snug line-clamp-2 group-hover:text-white/55 transition-colors duration-300">
+        <p className="text-[11px] text-white/50 leading-snug line-clamp-2 group-hover:text-white/65 transition-colors duration-300">
           {cert.desc}
         </p>
         {cert.verifyUrl && (
@@ -354,7 +356,7 @@ function CertCard({ cert, height }: { cert: Certification; height: string }) {
             className="inline-flex items-center gap-1 mt-3 text-[9px] font-bold uppercase tracking-[0.16em] text-white/25 hover:text-primary/80 transition-colors duration-200"
           >
             Verified in IATA Registry
-            <svg width="9" height="9" viewBox="0 0 9 9" fill="none" className="opacity-60 group-hover:opacity-100 transition-opacity" aria-hidden="true">
+            <svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden="true">
               <path d="M1.5 7.5L7.5 1.5M7.5 1.5H3M7.5 1.5V6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </a>
