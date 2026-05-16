@@ -19,7 +19,7 @@ const SERVICIOS = [
   {
     Icon: Plane,
     image: '/images/dg-transport/dg-air-transport.webp' as string | null,
-    href: '/services/air-transportation',
+    href: '/es/transporte-mercancias-peligrosas/transporte-aereo',
     title: 'Transporte Aéreo',
     desc: 'Transporte aéreo de mercancías peligrosas Clase 1–9 bajo IATA DGR. Embalaje, documentación y coordinación con aerolíneas en un solo proveedor.',
     items: ['Cumplimiento IATA DGR', 'Declaración de Mercancías Peligrosas', 'Clases 1–9', 'Flete express y regular'],
@@ -27,7 +27,7 @@ const SERVICIOS = [
   {
     Icon: Truck,
     image: '/images/dg-transport/dg-ground-transport.webp' as string | null,
-    href: '/services/ground-transportation',
+    href: '/es/transporte-mercancias-peligrosas/transporte-terrestre',
     title: 'Transporte Terrestre',
     desc: 'Transporte carretero bajo regulación SCT en todo México y transfronterizo a EUA y Canadá. Operadores y vehículos certificados en mercancías peligrosas.',
     items: ['Cumplimiento SCT NOM', 'Operadores certificados DG', 'Transfronterizo EUA/Canadá', 'Rastreo en tiempo real'],
@@ -35,7 +35,7 @@ const SERVICIOS = [
   {
     Icon: Ship,
     image: '/images/dg-transport/dg-ocean-freight.webp' as string | null,
-    href: '/services/ocean-freight',
+    href: '/es/transporte-mercancias-peligrosas/transporte-maritimo',
     title: 'Flete Marítimo',
     desc: 'Envíos marítimos bajo Código IMDG para carga peligrosa a granel y en contenedor. Gestión portuaria completa y documentación aduanera.',
     items: ['Cumplimiento Código IMDG', 'FCL y LCL', 'Puerto a puerto / puerta a puerta', 'Manifiesto de materiales peligrosos'],
@@ -43,7 +43,7 @@ const SERVICIOS = [
   {
     Icon: Package,
     image: '/images/dg-transport/dg-specialized-packaging.webp' as string | null,
-    href: '/services/dg-packaging',
+    href: '/es/transporte-mercancias-peligrosas/embalaje-dg',
     title: 'Embalaje para Mercancías Peligrosas',
     desc: 'Embalaje certificado ONU suministrado, preparado y validado para todas las clases de peligro. Conforme a IATA, IMDG y ADR.',
     items: ['Envases certificados ONU', 'Todas las clases de peligro', 'Embalaje interior y exterior', 'Verificación de compatibilidad'],
@@ -51,7 +51,7 @@ const SERVICIOS = [
   {
     Icon: FileText,
     image: '/images/dg-transport/dg-documentation-services.webp' as string | null,
-    href: '/services/documentation-services',
+    href: '/es/transporte-mercancias-peligrosas/servicios-documentacion',
     title: 'Servicios de Documentación',
     desc: 'Preparación completa de declaraciones DG, certificaciones del embarcador, revisión de HDS y documentación regulatoria para todos los modos de transporte.',
     items: ['Declaración de Mercancías Peligrosas', 'Preparación y revisión de HDS', 'Certificación del embarcador', 'Documentación multimodal'],
@@ -292,7 +292,7 @@ export const TransporteMercanciasPeligrosasPage = () => {
                         to={href}
                         className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.12em] text-primary hover:gap-3 transition-all duration-200"
                       >
-                        Ver más <ArrowRight size={13} />
+                        Conocer Más <ArrowRight size={13} />
                       </Link>
                     </div>
                   </div>

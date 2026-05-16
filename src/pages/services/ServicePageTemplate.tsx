@@ -4,6 +4,45 @@ import { Container, FadeIn, Eyebrow } from '../../components/UI';
 
 export type LucideIcon = ComponentType<{ size?: number; className?: string }>;
 
+interface TemplateStrings {
+  heroCta1: string;
+  heroCta2: string;
+  capabilities: string;
+  regulatoryEyebrow: string;
+  processEyebrow: string;
+  keyline: string;
+  whyEyebrow: string;
+  ctaEyebrow: string;
+  ctaBtn1: string;
+  ctaBtn2: string;
+}
+
+const EN_STRINGS: TemplateStrings = {
+  heroCta1: 'Request a Quote',
+  heroCta2: 'Speak with a Specialist',
+  capabilities: 'Capabilities',
+  regulatoryEyebrow: 'Regulatory Framework',
+  processEyebrow: 'Our Process',
+  keyline: "If it doesn't pass validation — it doesn't move forward.",
+  whyEyebrow: 'Why Global Gate México',
+  ctaEyebrow: 'Expert DG Logistics',
+  ctaBtn1: 'Contact Us',
+  ctaBtn2: 'Request a Quote',
+};
+
+const ES_STRINGS: TemplateStrings = {
+  heroCta1: 'Solicitar Cotización',
+  heroCta2: 'Hablar con un Especialista',
+  capabilities: 'Capacidades',
+  regulatoryEyebrow: 'Marco Regulatorio',
+  processEyebrow: 'Nuestro Proceso',
+  keyline: 'Si no pasa la validación — no avanza.',
+  whyEyebrow: 'Por Qué Global Gate México',
+  ctaEyebrow: 'Logística DG Especializada',
+  ctaBtn1: 'Contáctenos',
+  ctaBtn2: 'Solicitar Cotización',
+};
+
 export interface ComplianceStandard {
   code: string;
   name: string;
@@ -59,8 +98,9 @@ export interface ServicePageData {
   };
 }
 
-export function ServicePageTemplate({ data }: { data: ServicePageData }) {
+export function ServicePageTemplate({ data, lang = 'EN' }: { data: ServicePageData; lang?: 'EN' | 'ES' }) {
   const { hero, overview, compliance, process: proc, whyGGM, cta } = data;
+  const s = lang === 'ES' ? ES_STRINGS : EN_STRINGS;
 
   function scrollToContact() {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
@@ -112,13 +152,13 @@ export function ServicePageTemplate({ data }: { data: ServicePageData }) {
                 onClick={scrollToContact}
                 className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.5)] transition-all duration-200"
               >
-                Request a Quote
+                {s.heroCta1}
               </button>
               <button
                 onClick={scrollToContact}
                 className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-transparent border border-white/25 text-white hover:border-white/60 hover:bg-white/5 transition-all duration-200"
               >
-                Speak with a Specialist
+                {s.heroCta2}
               </button>
             </div>
           </motion.div>
@@ -145,7 +185,7 @@ export function ServicePageTemplate({ data }: { data: ServicePageData }) {
             <FadeIn direction="right" delay={0.1}>
               <div className="bg-[#f8f9fc] border border-black/5 p-8">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-5">
-                  Capabilities
+                  {s.capabilities}
                 </p>
                 <ul className="space-y-3">
                   {overview.capabilities.map((cap) => (
@@ -175,7 +215,7 @@ export function ServicePageTemplate({ data }: { data: ServicePageData }) {
       <section className="py-24 lg:py-32 bg-[#f8f9fc] border-y border-black/5">
         <Container>
           <FadeIn className="max-w-2xl mb-14">
-            <Eyebrow>Regulatory Framework</Eyebrow>
+            <Eyebrow>{s.regulatoryEyebrow}</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-5">
               {compliance.headline}
             </h2>
@@ -204,7 +244,7 @@ export function ServicePageTemplate({ data }: { data: ServicePageData }) {
       <section className="py-24 lg:py-32 bg-white">
         <Container>
           <FadeIn className="max-w-2xl mb-16">
-            <Eyebrow>Our Process</Eyebrow>
+            <Eyebrow>{s.processEyebrow}</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-5">
               {proc.headline}
             </h2>
@@ -238,7 +278,7 @@ export function ServicePageTemplate({ data }: { data: ServicePageData }) {
 
           <FadeIn delay={0.35} className="mt-12 text-center">
             <p className="text-[12px] font-black uppercase tracking-[0.2em] text-primary">
-              If it doesn't pass validation — it doesn't move forward.
+              {s.keyline}
             </p>
           </FadeIn>
         </Container>
@@ -248,7 +288,7 @@ export function ServicePageTemplate({ data }: { data: ServicePageData }) {
       <section className="py-24 lg:py-28 bg-[#060e1c]">
         <Container>
           <FadeIn className="max-w-2xl mb-14">
-            <Eyebrow light>Why Global Gate México</Eyebrow>
+            <Eyebrow light>{s.whyEyebrow}</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-5">
               {whyGGM.headline}
             </h2>
@@ -285,7 +325,7 @@ export function ServicePageTemplate({ data }: { data: ServicePageData }) {
           <Container className="relative z-10 text-center">
             <FadeIn>
               <p className="text-[10px] text-white/50 uppercase tracking-[0.25em] font-black mb-4">
-                Expert DG Logistics
+                {s.ctaEyebrow}
               </p>
               <h2 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-6">
                 {cta.headline}
@@ -298,13 +338,13 @@ export function ServicePageTemplate({ data }: { data: ServicePageData }) {
                   onClick={scrollToContact}
                   className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-white text-primary hover:bg-white/90 hover:shadow-lg transition-all duration-200"
                 >
-                  Contact Us
+                  {s.ctaBtn1}
                 </button>
                 <button
                   onClick={scrollToContact}
                   className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-transparent border-2 border-white/40 text-white hover:border-white hover:bg-white/10 transition-all duration-200"
                 >
-                  Request a Quote
+                  {s.ctaBtn2}
                 </button>
               </div>
             </FadeIn>

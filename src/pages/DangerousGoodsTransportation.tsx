@@ -19,7 +19,7 @@ const SERVICES = [
   {
     Icon: Plane,
     image: '/images/dg-transport/dg-air-transport.webp' as string | null,
-    href: '/services/air-transportation',
+    href: '/dangerous-goods-transportation/air-transportation',
     title: 'Air Transportation',
     desc: 'IATA DGR-compliant air freight for Class 1–9 dangerous goods. Packing, documentation, and airline coordination handled end-to-end.',
     items: ['IATA DGR compliance', 'Dangerous Goods Declaration', 'Class 1–9 materials', 'Express & scheduled freight'],
@@ -27,7 +27,7 @@ const SERVICES = [
   {
     Icon: Truck,
     image: '/images/dg-transport/dg-ground-transport.webp' as string | null,
-    href: '/services/ground-transportation',
+    href: '/dangerous-goods-transportation/ground-transportation',
     title: 'Ground Transportation',
     desc: 'SCT-regulated road transport across Mexico and cross-border to the US and Canada. Dedicated DG-certified drivers and vehicles.',
     items: ['SCT NOM compliance', 'Certified DG drivers', 'Cross-border US/Canada', 'Real-time tracking'],
@@ -35,7 +35,7 @@ const SERVICES = [
   {
     Icon: Ship,
     image: '/images/dg-transport/dg-ocean-freight.webp' as string | null,
-    href: '/services/ocean-freight',
+    href: '/dangerous-goods-transportation/ocean-freight',
     title: 'Ocean Freight',
     desc: 'IMDG-compliant sea shipments for bulk and containerized hazardous cargo. Full port handling and customs documentation.',
     items: ['IMDG Code compliance', 'FCL & LCL options', 'Port-to-port / door-to-door', 'Hazmat manifest preparation'],
@@ -43,7 +43,7 @@ const SERVICES = [
   {
     Icon: Package,
     image: '/images/dg-transport/dg-specialized-packaging.webp' as string | null,
-    href: '/services/dg-packaging',
+    href: '/dangerous-goods-transportation/dg-packaging',
     title: 'DG Packaging',
     desc: 'UN-certified packaging sourced, prepared, and validated for all hazard classes. Compliant with IATA, IMDG, and ADR specifications.',
     items: ['UN-certified containers', 'All hazard classes', 'Inner & outer packaging', 'Compatibility verification'],
@@ -51,7 +51,7 @@ const SERVICES = [
   {
     Icon: FileText,
     image: '/images/dg-transport/dg-documentation-services.webp' as string | null,
-    href: '/services/documentation-services',
+    href: '/dangerous-goods-transportation/documentation-services',
     title: 'Documentation Services',
     desc: 'Complete preparation of DG declarations, shipper certifications, SDS review, and all regulatory paperwork across transport modes.',
     items: ['Dangerous Goods Declaration', 'SDS preparation & review', 'Shipper certification', 'Multi-modal documentation'],

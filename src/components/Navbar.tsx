@@ -5,7 +5,7 @@ import { Menu, X, ChevronDown, Instagram, Linkedin } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useLanguage } from '../context/LanguageContext';
 
-interface SubItem { label: { EN: string; ES: string }; href: string; }
+interface SubItem { label: { EN: string; ES: string }; href: { EN: string; ES: string }; }
 interface NavItem {
   id: string;
   label: { EN: string; ES: string };
@@ -24,11 +24,11 @@ const NAV_ITEMS: NavItem[] = [
     id: 'dgt',
     label: { EN: 'Dangerous Goods Transportation', ES: 'Transporte de Mercancías Peligrosas' },
     dropdown: [
-      { label: { EN: 'Air Transportation',     ES: 'Transporte Aéreo' },             href: '/services/air-transportation' },
-      { label: { EN: 'Ground Transportation',  ES: 'Transporte Terrestre' },          href: '/services/ground-transportation' },
-      { label: { EN: 'Ocean Freight',          ES: 'Transporte Marítimo' },           href: '/services/ocean-freight' },
-      { label: { EN: 'DG Packaging',           ES: 'Embalaje DG' },                  href: '/services/dg-packaging' },
-      { label: { EN: 'Documentation Services', ES: 'Servicios de Documentación' },   href: '/services/documentation-services' },
+      { label: { EN: 'Air Transportation',     ES: 'Transporte Aéreo' },           href: { EN: '/dangerous-goods-transportation/air-transportation',    ES: '/es/transporte-mercancias-peligrosas/transporte-aereo' } },
+      { label: { EN: 'Ground Transportation',  ES: 'Transporte Terrestre' },        href: { EN: '/dangerous-goods-transportation/ground-transportation',  ES: '/es/transporte-mercancias-peligrosas/transporte-terrestre' } },
+      { label: { EN: 'Ocean Freight',          ES: 'Transporte Marítimo' },         href: { EN: '/dangerous-goods-transportation/ocean-freight',          ES: '/es/transporte-mercancias-peligrosas/transporte-maritimo' } },
+      { label: { EN: 'DG Packaging',           ES: 'Embalaje DG' },                href: { EN: '/dangerous-goods-transportation/dg-packaging',           ES: '/es/transporte-mercancias-peligrosas/embalaje-dg' } },
+      { label: { EN: 'Documentation Services', ES: 'Servicios de Documentación' }, href: { EN: '/dangerous-goods-transportation/documentation-services',  ES: '/es/transporte-mercancias-peligrosas/servicios-documentacion' } },
     ],
   },
   {
@@ -36,32 +36,32 @@ const NAV_ITEMS: NavItem[] = [
     label: { EN: 'DG Consulting & Compliance', ES: 'Consultoría y Cumplimiento DG' },
     href: '/dg-consulting-compliance',
     dropdown: [
-      { label: { EN: 'DG Compliance',              ES: 'Cumplimiento DG' },                  href: '/dg-compliance/dg-compliance' },
-      { label: { EN: 'Regulatory Consulting',      ES: 'Consultoría Regulatoria' },           href: '/dg-compliance/regulatory-consulting' },
-      { label: { EN: 'Compliance Audits',          ES: 'Auditorías de Cumplimiento' },        href: '/dg-compliance/compliance-audits' },
-      { label: { EN: 'SDS Review',                 ES: 'Revisión de HDS' },                  href: '/dg-compliance/sds-review' },
-      { label: { EN: 'Cross-Border DG Compliance', ES: 'Cumplimiento DG Transfronterizo' },  href: '/dg-compliance/cross-border-dg-compliance' },
+      { label: { EN: 'DG Compliance',              ES: 'Cumplimiento DG' },                 href: { EN: '/dg-compliance/dg-compliance',              ES: '/dg-compliance/dg-compliance' } },
+      { label: { EN: 'Regulatory Consulting',      ES: 'Consultoría Regulatoria' },          href: { EN: '/dg-compliance/regulatory-consulting',      ES: '/dg-compliance/regulatory-consulting' } },
+      { label: { EN: 'Compliance Audits',          ES: 'Auditorías de Cumplimiento' },       href: { EN: '/dg-compliance/compliance-audits',          ES: '/dg-compliance/compliance-audits' } },
+      { label: { EN: 'SDS Review',                 ES: 'Revisión de HDS' },                 href: { EN: '/dg-compliance/sds-review',                 ES: '/dg-compliance/sds-review' } },
+      { label: { EN: 'Cross-Border DG Compliance', ES: 'Cumplimiento DG Transfronterizo' }, href: { EN: '/dg-compliance/cross-border-dg-compliance', ES: '/dg-compliance/cross-border-dg-compliance' } },
     ],
   },
   {
     id: 'training',
     label: { EN: 'Training', ES: 'Capacitación' },
     dropdown: [
-      { label: { EN: 'IATA Training',          ES: 'Capacitación IATA' },        href: '/training' },
-      { label: { EN: 'IMDG Training',          ES: 'Capacitación IMDG' },        href: '/training' },
-      { label: { EN: 'Ground Transportation',  ES: 'Transporte Terrestre' },     href: '/training' },
-      { label: { EN: 'WHMIS / HazCom',         ES: 'WHMIS / HazCom' },          href: '/training' },
-      { label: { EN: 'Corporate Training',     ES: 'Capacitación Corporativa' }, href: '/training' },
+      { label: { EN: 'IATA Training',          ES: 'Capacitación IATA' },        href: { EN: '/training', ES: '/training' } },
+      { label: { EN: 'IMDG Training',          ES: 'Capacitación IMDG' },        href: { EN: '/training', ES: '/training' } },
+      { label: { EN: 'Ground Transportation',  ES: 'Transporte Terrestre' },     href: { EN: '/training', ES: '/training' } },
+      { label: { EN: 'WHMIS / HazCom',         ES: 'WHMIS / HazCom' },          href: { EN: '/training', ES: '/training' } },
+      { label: { EN: 'Corporate Training',     ES: 'Capacitación Corporativa' }, href: { EN: '/training', ES: '/training' } },
     ],
   },
   {
     id: 'radioactive',
     label: { EN: 'Radioactive Material Logistics', ES: 'Logística de Material Radiactivo' },
     dropdown: [
-      { label: { EN: 'Class 7 Transportation', ES: 'Transporte Clase 7' },      href: '/services' },
-      { label: { EN: 'Radioactive Storage',    ES: 'Almacenamiento Radiactivo' }, href: '/services' },
-      { label: { EN: 'Packaging & Labelling',  ES: 'Embalaje y Etiquetado' },   href: '/services' },
-      { label: { EN: 'CNSNS Compliance',       ES: 'Cumplimiento CNSNS' },      href: '/services' },
+      { label: { EN: 'Class 7 Transportation', ES: 'Transporte Clase 7' },       href: { EN: '/services', ES: '/services' } },
+      { label: { EN: 'Radioactive Storage',    ES: 'Almacenamiento Radiactivo' }, href: { EN: '/services', ES: '/services' } },
+      { label: { EN: 'Packaging & Labelling',  ES: 'Embalaje y Etiquetado' },    href: { EN: '/services', ES: '/services' } },
+      { label: { EN: 'CNSNS Compliance',       ES: 'Cumplimiento CNSNS' },       href: { EN: '/services', ES: '/services' } },
     ],
   },
   {
@@ -78,8 +78,18 @@ const NAV_ITEMS: NavItem[] = [
 
 // Route equivalents for EN ↔ ES language switching
 const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
-  '/dangerous-goods-transportation':      { EN: '/dangerous-goods-transportation',      ES: '/es/transporte-mercancias-peligrosas' },
-  '/es/transporte-mercancias-peligrosas': { EN: '/dangerous-goods-transportation',      ES: '/es/transporte-mercancias-peligrosas' },
+  '/dangerous-goods-transportation':                                       { EN: '/dangerous-goods-transportation',                                      ES: '/es/transporte-mercancias-peligrosas' },
+  '/es/transporte-mercancias-peligrosas':                                  { EN: '/dangerous-goods-transportation',                                      ES: '/es/transporte-mercancias-peligrosas' },
+  '/dangerous-goods-transportation/air-transportation':                    { EN: '/dangerous-goods-transportation/air-transportation',                   ES: '/es/transporte-mercancias-peligrosas/transporte-aereo' },
+  '/es/transporte-mercancias-peligrosas/transporte-aereo':                 { EN: '/dangerous-goods-transportation/air-transportation',                   ES: '/es/transporte-mercancias-peligrosas/transporte-aereo' },
+  '/dangerous-goods-transportation/ground-transportation':                 { EN: '/dangerous-goods-transportation/ground-transportation',                ES: '/es/transporte-mercancias-peligrosas/transporte-terrestre' },
+  '/es/transporte-mercancias-peligrosas/transporte-terrestre':             { EN: '/dangerous-goods-transportation/ground-transportation',                ES: '/es/transporte-mercancias-peligrosas/transporte-terrestre' },
+  '/dangerous-goods-transportation/ocean-freight':                         { EN: '/dangerous-goods-transportation/ocean-freight',                        ES: '/es/transporte-mercancias-peligrosas/transporte-maritimo' },
+  '/es/transporte-mercancias-peligrosas/transporte-maritimo':              { EN: '/dangerous-goods-transportation/ocean-freight',                        ES: '/es/transporte-mercancias-peligrosas/transporte-maritimo' },
+  '/dangerous-goods-transportation/dg-packaging':                          { EN: '/dangerous-goods-transportation/dg-packaging',                         ES: '/es/transporte-mercancias-peligrosas/embalaje-dg' },
+  '/es/transporte-mercancias-peligrosas/embalaje-dg':                      { EN: '/dangerous-goods-transportation/dg-packaging',                         ES: '/es/transporte-mercancias-peligrosas/embalaje-dg' },
+  '/dangerous-goods-transportation/documentation-services':                { EN: '/dangerous-goods-transportation/documentation-services',               ES: '/es/transporte-mercancias-peligrosas/servicios-documentacion' },
+  '/es/transporte-mercancias-peligrosas/servicios-documentacion':          { EN: '/dangerous-goods-transportation/documentation-services',               ES: '/es/transporte-mercancias-peligrosas/servicios-documentacion' },
 };
 
 export const Navbar = () => {
@@ -277,8 +287,8 @@ export const Navbar = () => {
                       <div className="py-2">
                         {item.dropdown.map((sub) => (
                           <Link
-                            key={sub.href + sub.label.EN}
-                            to={sub.href}
+                            key={sub.href.EN + sub.label.EN}
+                            to={sub.href[language]}
                             onClick={() => setActiveDropdown(null)}
                             className="group flex items-center px-5 py-[10px] text-[10px] font-semibold tracking-[0.1em] uppercase text-white/50 hover:text-white hover:bg-white/[0.04] transition-all border-l-2 border-transparent hover:border-primary/70"
                           >
@@ -380,8 +390,8 @@ export const Navbar = () => {
                             <div className="pb-3 pl-3 flex flex-col gap-0.5">
                               {item.dropdown.map((sub) => (
                                 <Link
-                                  key={sub.href + sub.label.EN}
-                                  to={sub.href}
+                                  key={sub.href.EN + sub.label.EN}
+                                  to={sub.href[language]}
                                   onClick={() => setMobileOpen(false)}
                                   className="py-2.5 px-3 text-[10px] font-semibold text-white/45 hover:text-white uppercase tracking-[0.1em] border-l-2 border-primary/25 hover:border-primary/70 transition-all"
                                 >

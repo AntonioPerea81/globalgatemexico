@@ -9,6 +9,13 @@ import {
   DGPackagingPage,
   DocumentationServicesPage,
 } from './pages/services';
+import {
+  TransporteAereoPage,
+  TransporteTerrestrePage,
+  TransporteMaritimoPage,
+  EmbalajeDGPage,
+  ServiciosDocumentacionPage,
+} from './pages/services/es';
 import { DGConsultingCompliancePage } from './pages/DGConsultingCompliance';
 import { TransporteMercanciasPeligrosasPage } from './pages/TransporteMercanciasPeligrosas';
 import {
@@ -36,6 +43,16 @@ export default function App() {
             <Route path="/services/ocean-freight"         element={<OceanFreightPage />} />
             <Route path="/services/dg-packaging"          element={<DGPackagingPage />} />
             <Route path="/services/documentation-services" element={<DocumentationServicesPage />} />
+            <Route path="/dangerous-goods-transportation/air-transportation"    element={<AirTransportationPage />} />
+            <Route path="/dangerous-goods-transportation/ground-transportation" element={<GroundTransportationPage />} />
+            <Route path="/dangerous-goods-transportation/ocean-freight"         element={<OceanFreightPage />} />
+            <Route path="/dangerous-goods-transportation/dg-packaging"          element={<DGPackagingPage />} />
+            <Route path="/dangerous-goods-transportation/documentation-services" element={<DocumentationServicesPage />} />
+            <Route path="/es/transporte-mercancias-peligrosas/transporte-aereo"        element={<TransporteAereoPage />} />
+            <Route path="/es/transporte-mercancias-peligrosas/transporte-terrestre"    element={<TransporteTerrestrePage />} />
+            <Route path="/es/transporte-mercancias-peligrosas/transporte-maritimo"     element={<TransporteMaritimoPage />} />
+            <Route path="/es/transporte-mercancias-peligrosas/embalaje-dg"             element={<EmbalajeDGPage />} />
+            <Route path="/es/transporte-mercancias-peligrosas/servicios-documentacion" element={<ServiciosDocumentacionPage />} />
             <Route path="/dg-consulting-compliance"                      element={<DGConsultingCompliancePage />} />
             <Route path="/dg-compliance/dg-compliance"               element={<DGCompliancePage />} />
             <Route path="/dg-compliance/regulatory-consulting"        element={<RegulatoryConsultingPage />} />
