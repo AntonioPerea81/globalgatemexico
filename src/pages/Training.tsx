@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import {
   GraduationCap, Award, BookOpen, Globe, ShieldCheck, Users,
@@ -18,12 +18,17 @@ const CREDENTIALS = [
   {
     designation: 'IATA Diploma',
     issuer: 'International Air Transport Association',
-    detail: 'Dangerous Goods Regulations — Geneva, Switzerland',
+    detail: 'DGR Professional Diploma — Geneva, Switzerland',
+  },
+  {
+    designation: 'ICAO TDC',
+    issuer: 'International Civil Aviation Organization',
+    detail: 'Training Developers Course — ICAO Doc 9941',
   },
   {
     designation: 'IATA CBTA',
     issuer: 'Competency-Based Training & Assessment',
-    detail: 'Authorized provider — DG transport by air',
+    detail: 'Authorized DG training provider — by air',
   },
   {
     designation: 'IHMM CDGP',
@@ -38,7 +43,7 @@ const CREDENTIALS = [
   {
     designation: 'STPS',
     issuer: 'Secretaría del Trabajo y Previsión Social',
-    detail: 'Agente Capacitador Externo — Mexico',
+    detail: 'Agente Capacitador Externo Registrado',
   },
   {
     designation: 'DGTA',
@@ -52,51 +57,90 @@ interface Certification {
   title: string;
   issuer: string;
   desc: string;
-  image?: string; // e.g. '/certifications/iata-diploma.jpg' — add when asset is available
+  image: string;
+  tag: string;
+  rotation: number;
+  objectPosition: string;
+  tier: 'primary' | 'secondary';
 }
 
 const CERTIFICATIONS: Certification[] = [
   {
     Icon: GraduationCap,
     title: 'IATA Professional Diploma',
-    issuer: 'International Air Transport Association — Geneva, Switzerland',
-    desc: 'Professional training in Dangerous Goods Regulations completed at IATA headquarters — the primary global standard for air transport compliance.',
-    // image: '/certifications/iata-diploma.jpg',
+    issuer: 'International Air Transport Association',
+    desc: 'Professional Training – Dangerous Goods Regulation Diploma completed in Geneva, Switzerland.',
+    image: '/certifications/iata-diploma.jpg',
+    tag: 'International Aviation Training',
+    rotation: -1.5,
+    objectPosition: 'center top',
+    tier: 'primary',
+  },
+  {
+    Icon: Globe,
+    title: 'ICAO Training Developers Course',
+    issuer: 'International Civil Aviation Organization',
+    desc: 'Specialized training in competency-based training development aligned with ICAO methodologies and Doc 9941 principles.',
+    image: '/certifications/icao-tdc.jpg',
+    tag: 'ICAO Training Standards',
+    rotation: 1.0,
+    objectPosition: 'center center',
+    tier: 'primary',
   },
   {
     Icon: Award,
     title: 'IATA CBTA Provider',
     issuer: 'Competency-Based Training & Assessment',
-    desc: 'Global Gate México certified as an IATA CBTA provider — authorized to train, assess, and certify dangerous goods personnel under the international competency framework.',
-    // image: '/certifications/cbta-provider.jpg',
-  },
-  {
-    Icon: ShieldCheck,
-    title: 'CDGP — Certified Dangerous Goods Professional',
-    issuer: 'Institute of Hazardous Materials Management',
-    desc: 'International certification issued by IHMM validating advanced competency in dangerous goods classification, documentation, and regulatory compliance.',
-    // image: '/certifications/ihmm-cdgp.jpg',
+    desc: 'Global Gate Mexico certified as CBTA Provider for dangerous goods transportation by air.',
+    image: '/certifications/cbta-provider.jpg',
+    tag: 'CBTA Provider',
+    rotation: -0.8,
+    objectPosition: 'center top',
+    tier: 'primary',
   },
   {
     Icon: BadgeCheck,
-    title: 'Dangerous Goods Safety Adviser (DGSA)',
+    title: 'Dangerous Goods Safety Adviser',
     issuer: 'Scottish Qualifications Authority',
-    desc: 'Certification recognized under UK dangerous goods transport legislation — demonstrating cross-jurisdictional compliance expertise for international operations.',
-    // image: '/certifications/dgsa.jpg',
+    desc: 'Certification recognized under UK dangerous goods transport legislation.',
+    image: '/certifications/dgsa-sqa.jpg',
+    tag: 'Regulatory Compliance',
+    rotation: 1.5,
+    objectPosition: 'center center',
+    tier: 'primary',
+  },
+  {
+    Icon: ShieldCheck,
+    title: 'Certified DG Professional (CDGP)',
+    issuer: 'Institute of Hazardous Materials Management',
+    desc: 'International certification issued by the Institute of Hazardous Materials Management.',
+    image: '/certifications/ihmm-cdgp.jpg',
+    tag: 'Professional Certification',
+    rotation: -1.2,
+    objectPosition: 'center top',
+    tier: 'secondary',
   },
   {
     Icon: ClipboardList,
     title: 'STPS External Training Agent',
-    issuer: 'Secretaría del Trabajo y Previsión Social — Mexico',
-    desc: 'Authorized and registered external training provider before the Mexican labor authority — enabling issuance of official DC-3 and DC-4 training constancias.',
-    // image: '/certifications/stps.jpg',
+    issuer: 'Secretaría del Trabajo y Previsión Social',
+    desc: 'Authorized external training provider registered before the Mexican labor authority.',
+    image: '/certifications/stps-dc5.jpg',
+    tag: 'Mexico Training Authority',
+    rotation: 0.7,
+    objectPosition: 'center center',
+    tier: 'secondary',
   },
   {
     Icon: Users,
     title: 'DGTA Membership',
     issuer: 'Dangerous Goods Trainers Association',
-    desc: 'Institutional member of the Dangerous Goods Trainers Association — connected to a global network of DG training professionals and regulatory specialists.',
-    // image: '/certifications/dgta.jpg',
+    desc: 'Member of the Dangerous Goods Trainers Association.',
+    image: '/certifications/dgta-membership.jpg',
+    tag: 'Industry Association',
+    rotation: -0.5,
+    objectPosition: 'center top',
+    tier: 'secondary',
   },
 ];
 
@@ -206,6 +250,107 @@ const PROCESS_STEPS = [
     desc: 'Official training documentation issued, including certificates, constancias DC-3/DC-4, and competency records compliant with IATA DGR and SCT requirements.',
   },
 ];
+
+// ── CertCard ─────────────────────────────────────────────────────────────────
+
+function CertCard({ cert, height }: { cert: Certification; height: string }) {
+  const [imgError, setImgError] = useState(false);
+
+  return (
+    <div
+      className={cn(
+        'group relative overflow-hidden rounded-2xl cursor-default',
+        'bg-[#0b1829]',
+        'shadow-[0_8px_32px_rgba(0,0,0,0.55),0_2px_8px_rgba(0,0,0,0.35)]',
+        'ring-1 ring-white/[0.06]',
+        'hover:shadow-[0_16px_56px_rgba(0,0,0,0.7),0_0_0_1px_rgba(7,56,223,0.25)]',
+        'transition-shadow duration-500',
+        height,
+      )}
+    >
+
+      {/* ── Image layer — outer scales on hover, inner holds static rotation ── */}
+      <div className="absolute inset-0 overflow-hidden rounded-2xl">
+        {/* Outer: scale on hover */}
+        <div className="absolute inset-[-12%] transition-transform duration-700 ease-out origin-center group-hover:scale-[1.08]">
+          {/* Inner: static rotation */}
+          <div className="w-full h-full" style={{ transform: `rotate(${cert.rotation}deg)` }}>
+            {!imgError ? (
+              <img
+                src={cert.image}
+                alt={cert.title}
+                onError={() => setImgError(true)}
+                draggable={false}
+                className="w-full h-full object-cover select-none"
+                style={{ objectPosition: cert.objectPosition }}
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-[#0d2040] to-[#060e1c] flex items-center justify-center">
+                <cert.Icon size={52} className="text-primary/10" />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Depth overlays ── */}
+      {/* Radial vignette — corners darken for cinematic depth */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 30%, transparent 30%, rgba(6,14,28,0.55) 100%)',
+        }}
+      />
+      {/* Strong bottom gradient — content readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#060e1c] via-[#060e1c]/60 to-transparent pointer-events-none" />
+      {/* Subtle top fade for tag contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#060e1c]/50 via-transparent to-transparent pointer-events-none" />
+
+      {/* ── Tag — top left, glassmorphism ── */}
+      <div className="absolute top-4 left-4 z-20">
+        <span
+          className={cn(
+            'inline-flex items-center px-2.5 py-1',
+            'text-[8px] font-black uppercase tracking-[0.16em]',
+            'text-white/80',
+            'rounded-md',
+            'bg-white/10 backdrop-blur-md',
+            'border border-white/15',
+            'shadow-[0_2px_8px_rgba(0,0,0,0.3)]',
+          )}
+        >
+          {cert.tag}
+        </span>
+      </div>
+
+      {/* ── Content panel — glassmorphism at bottom ── */}
+      <div
+        className={cn(
+          'absolute bottom-0 left-0 right-0 z-20',
+          'px-5 pt-4 pb-5',
+          'bg-gradient-to-t from-[#060e1c]/95 via-[#060e1c]/70 to-transparent',
+          'backdrop-blur-[2px]',
+          'border-t border-white/[0.06]',
+          'group-hover:border-white/[0.1] transition-colors duration-500',
+        )}
+      >
+        <p className="text-[8px] text-primary/55 uppercase tracking-[0.22em] font-black mb-1.5 leading-none">
+          {cert.issuer}
+        </p>
+        <h3 className="text-[12px] font-extrabold uppercase tracking-wide text-white leading-snug mb-2 group-hover:text-white transition-colors duration-300">
+          {cert.title}
+        </h3>
+        <p className="text-[11px] text-white/40 leading-snug line-clamp-2 group-hover:text-white/55 transition-colors duration-300">
+          {cert.desc}
+        </p>
+      </div>
+
+      {/* ── Hover glow ring ── */}
+      <div className="absolute inset-0 rounded-2xl ring-1 ring-primary/0 group-hover:ring-primary/20 transition-all duration-500 pointer-events-none" />
+
+    </div>
+  );
+}
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
@@ -330,19 +475,14 @@ export function TrainingPage() {
             </p>
           </div>
 
-          {/* Six credentials — horizontal, typographic only */}
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 divide-x divide-white/[0.05]">
-            {CREDENTIALS.map(({ designation, issuer, detail }, i) => (
+          {/* Seven credentials — horizontal, typographic only */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-7 gap-px bg-white/[0.05]">
+            {CREDENTIALS.map(({ designation, issuer, detail }) => (
               <div
                 key={designation}
-                className={cn(
-                  'px-5 py-6',
-                  'hover:bg-white/[0.02] transition-colors duration-200',
-                  i >= 2 && i < 4 ? 'border-t border-white/[0.05] md:border-t-0' : '',
-                  i >= 4 ? 'border-t border-white/[0.05] xl:border-t-0' : '',
-                )}
+                className="bg-[#070f1c] px-5 py-6 hover:bg-white/[0.025] transition-colors duration-200"
               >
-                <div className="text-[15px] font-black text-white tracking-tight mb-1.5 leading-none">
+                <div className="text-[14px] font-black text-white tracking-tight mb-1.5 leading-none">
                   {designation}
                 </div>
                 <div className="text-[10px] text-white/30 font-medium leading-snug mb-1">
@@ -421,77 +561,93 @@ export function TrainingPage() {
       </section>
 
       {/* ── 4. CERTIFICATIONS & RECOGNITIONS ──────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-white border-y border-black/5">
-        <Container>
-          <div className="grid lg:grid-cols-[1fr_2fr] gap-16 xl:gap-24 items-start">
+      <section
+        className="relative py-24 lg:py-32 overflow-hidden"
+        style={{ background: 'linear-gradient(180deg, #060e1c 0%, #070f1e 60%, #060e1c 100%)' }}
+      >
+        {/* Subtle grid texture */}
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)',
+            backgroundSize: '48px 48px',
+          }}
+        />
 
-            {/* Left — section intro */}
-            <FadeIn direction="left" className="lg:sticky lg:top-28">
-              <Eyebrow>Certifications & Recognitions</Eyebrow>
-              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-6">
-                International Credentials Behind Every Program
-              </h2>
-              <p className="text-secondary text-[15px] leading-relaxed mb-8">
-                Our instructors and programs operate under the highest international standards for dangerous goods training — verified by global certification bodies across multiple regulatory frameworks.
-              </p>
-              <div className="p-5 bg-[#f8f9fc] border border-black/[0.05] border-l-2 border-l-primary">
-                <p className="text-[11px] font-black uppercase tracking-[0.15em] text-primary mb-1">
-                  Verified credentials
-                </p>
-                <p className="text-[12px] text-secondary leading-relaxed">
-                  Each certification listed is held by Global Gate México personnel and renewed on the schedule required by the issuing body.
+        <Container className="relative z-10">
+
+          {/* Section header — two-col on desktop */}
+          <FadeIn className="mb-14">
+            <div className="grid lg:grid-cols-2 gap-8 items-end">
+              <div>
+                <Eyebrow light>Certifications & Recognitions</Eyebrow>
+                <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-[1.08]">
+                  International Credentials<br />Behind Every Program
+                </h2>
+              </div>
+              <div className="lg:text-right">
+                <p className="text-white/40 text-[14px] leading-relaxed max-w-md lg:ml-auto">
+                  Every program we deliver is backed by certifications held by our instructors — verified by the world's leading aviation, maritime, and hazardous materials regulatory bodies.
                 </p>
               </div>
-            </FadeIn>
+            </div>
+          </FadeIn>
 
-            {/* Right — certificate cards */}
-            <div className="grid sm:grid-cols-2 gap-4">
-              {CERTIFICATIONS.map(({ Icon: CIcon, title, issuer, desc, image }, i) => (
-                <FadeIn key={title} delay={i * 0.07}>
-                  <div className="group bg-white border border-black/[0.08] hover:border-primary/30 hover:shadow-[0_4px_24px_rgba(0,0,0,0.07)] transition-all duration-300 h-full flex flex-col overflow-hidden">
-
-                    {/* Visual area — image if available, icon treatment if not */}
-                    {image ? (
-                      <div className="h-44 overflow-hidden bg-[#f0f1f5] border-b border-black/[0.05]">
-                        <img
-                          src={image}
-                          alt={title}
-                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                        />
-                      </div>
-                    ) : (
-                      <div className="h-44 bg-[#f8f9fc] border-b border-black/[0.05] flex items-center justify-center relative overflow-hidden">
-                        {/* Subtle document-frame corners */}
-                        <div className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-primary/20" />
-                        <div className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-primary/20" />
-                        <div className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-primary/20" />
-                        <div className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-primary/20" />
-                        <div className="flex flex-col items-center gap-3">
-                          <div className="w-14 h-14 bg-primary/8 flex items-center justify-center group-hover:bg-primary/14 transition-colors">
-                            <CIcon size={26} className="text-primary/60" />
-                          </div>
-                          <p className="text-[8px] text-black/20 uppercase tracking-[0.25em] font-black">Certificate</p>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Content */}
-                    <div className="p-6 flex-1 flex flex-col">
-                      <p className="text-[9px] text-primary/65 uppercase tracking-[0.18em] font-black mb-2">
-                        {issuer}
-                      </p>
-                      <h3 className="text-[13px] font-extrabold uppercase tracking-wide mb-3 leading-snug">
-                        {title}
-                      </h3>
-                      <p className="text-[12px] text-secondary leading-relaxed flex-1">{desc}</p>
-                    </div>
-
-                  </div>
-                </FadeIn>
+          {/* Primary tier — 4 cards, taller */}
+          <FadeIn delay={0.06}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-[8px] text-primary/50 uppercase tracking-[0.22em] font-black">Primary Credentials</span>
+              <div className="flex-1 h-px bg-white/[0.06]" />
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
+              {CERTIFICATIONS.filter(c => c.tier === 'primary').map((cert, i) => (
+                <motion.div
+                  key={cert.title}
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.55, delay: i * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
+                >
+                  <CertCard cert={cert} height="h-[22rem]" />
+                </motion.div>
               ))}
             </div>
+          </FadeIn>
 
-          </div>
+          {/* Secondary tier — 3 cards, shorter */}
+          <FadeIn delay={0.18}>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-[8px] text-white/20 uppercase tracking-[0.22em] font-black">Additional Credentials</span>
+              <div className="flex-1 h-px bg-white/[0.04]" />
+            </div>
+            <div className="grid sm:grid-cols-3 gap-3">
+              {CERTIFICATIONS.filter(c => c.tier === 'secondary').map((cert, i) => (
+                <motion.div
+                  key={cert.title}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.07 + 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                >
+                  <CertCard cert={cert} height="h-56" />
+                </motion.div>
+              ))}
+            </div>
+          </FadeIn>
+
+          {/* Footer attestation */}
+          <FadeIn delay={0.28} className="mt-12 pt-8 border-t border-white/[0.05] flex items-center justify-between gap-6 flex-wrap">
+            <p className="text-[9px] text-white/20 uppercase tracking-[0.22em] font-black leading-relaxed">
+              All certifications held by Global Gate México instructors · renewed per issuing body schedule
+            </p>
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary/50" />
+              <p className="text-[9px] text-primary/45 uppercase tracking-[0.18em] font-black">
+                7 International Credentials
+              </p>
+            </div>
+          </FadeIn>
+
         </Container>
       </section>
 
