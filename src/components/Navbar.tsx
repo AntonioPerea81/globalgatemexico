@@ -5,70 +5,81 @@ import { Menu, X, ChevronDown, Instagram, Linkedin } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useLanguage } from '../context/LanguageContext';
 
-interface SubItem { label: string; href: string; }
+interface SubItem { label: { EN: string; ES: string }; href: string; }
 interface NavItem {
   id: string;
-  label: string;
+  label: { EN: string; ES: string };
   href?: string;
-  hash?: string;       // scroll-to anchor id on current page
+  hash?: string;
   dropdown?: SubItem[];
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { id: 'home', label: 'Home', href: '/' },
+  {
+    id: 'home',
+    label: { EN: 'Home', ES: 'Inicio' },
+    href: '/',
+  },
   {
     id: 'dgt',
-    label: 'Dangerous Goods Transportation',
+    label: { EN: 'Dangerous Goods Transportation', ES: 'Transporte de Mercancías Peligrosas' },
     dropdown: [
-      { label: 'Air Transportation',      href: '/services/air-transportation' },
-      { label: 'Ground Transportation',   href: '/services/ground-transportation' },
-      { label: 'Ocean Freight',           href: '/services/ocean-freight' },
-      { label: 'DG Packaging',            href: '/services/dg-packaging' },
-      { label: 'Documentation Services',  href: '/services/documentation-services' },
+      { label: { EN: 'Air Transportation',     ES: 'Transporte Aéreo' },             href: '/services/air-transportation' },
+      { label: { EN: 'Ground Transportation',  ES: 'Transporte Terrestre' },          href: '/services/ground-transportation' },
+      { label: { EN: 'Ocean Freight',          ES: 'Transporte Marítimo' },           href: '/services/ocean-freight' },
+      { label: { EN: 'DG Packaging',           ES: 'Embalaje DG' },                  href: '/services/dg-packaging' },
+      { label: { EN: 'Documentation Services', ES: 'Servicios de Documentación' },   href: '/services/documentation-services' },
     ],
   },
   {
     id: 'dgc',
-    label: 'DG Consulting & Compliance',
+    label: { EN: 'DG Consulting & Compliance', ES: 'Consultoría y Cumplimiento DG' },
     href: '/dg-consulting-compliance',
     dropdown: [
-      { label: 'DG Compliance',              href: '/dg-compliance/dg-compliance' },
-      { label: 'Regulatory Consulting',      href: '/dg-compliance/regulatory-consulting' },
-      { label: 'Compliance Audits',          href: '/dg-compliance/compliance-audits' },
-      { label: 'SDS Review',                 href: '/dg-compliance/sds-review' },
-      { label: 'Cross-Border DG Compliance', href: '/dg-compliance/cross-border-dg-compliance' },
+      { label: { EN: 'DG Compliance',              ES: 'Cumplimiento DG' },                  href: '/dg-compliance/dg-compliance' },
+      { label: { EN: 'Regulatory Consulting',      ES: 'Consultoría Regulatoria' },           href: '/dg-compliance/regulatory-consulting' },
+      { label: { EN: 'Compliance Audits',          ES: 'Auditorías de Cumplimiento' },        href: '/dg-compliance/compliance-audits' },
+      { label: { EN: 'SDS Review',                 ES: 'Revisión de HDS' },                  href: '/dg-compliance/sds-review' },
+      { label: { EN: 'Cross-Border DG Compliance', ES: 'Cumplimiento DG Transfronterizo' },  href: '/dg-compliance/cross-border-dg-compliance' },
     ],
   },
   {
     id: 'training',
-    label: 'Training',
+    label: { EN: 'Training', ES: 'Capacitación' },
     dropdown: [
-      { label: 'IATA Training',           href: '/training' },
-      { label: 'IMDG Training',           href: '/training' },
-      { label: 'Ground Transportation',   href: '/training' },
-      { label: 'WHMIS / HazCom',          href: '/training' },
-      { label: 'Corporate Training',      href: '/training' },
+      { label: { EN: 'IATA Training',          ES: 'Capacitación IATA' },        href: '/training' },
+      { label: { EN: 'IMDG Training',          ES: 'Capacitación IMDG' },        href: '/training' },
+      { label: { EN: 'Ground Transportation',  ES: 'Transporte Terrestre' },     href: '/training' },
+      { label: { EN: 'WHMIS / HazCom',         ES: 'WHMIS / HazCom' },          href: '/training' },
+      { label: { EN: 'Corporate Training',     ES: 'Capacitación Corporativa' }, href: '/training' },
     ],
   },
   {
     id: 'radioactive',
-    label: 'Radioactive Material Logistics',
+    label: { EN: 'Radioactive Material Logistics', ES: 'Logística de Material Radiactivo' },
     dropdown: [
-      { label: 'Class 7 Transportation',  href: '/services' },
-      { label: 'Radioactive Storage',     href: '/services' },
-      { label: 'Packaging & Labelling',   href: '/services' },
-      { label: 'CNSNS Compliance',        href: '/services' },
+      { label: { EN: 'Class 7 Transportation', ES: 'Transporte Clase 7' },      href: '/services' },
+      { label: { EN: 'Radioactive Storage',    ES: 'Almacenamiento Radiactivo' }, href: '/services' },
+      { label: { EN: 'Packaging & Labelling',  ES: 'Embalaje y Etiquetado' },   href: '/services' },
+      { label: { EN: 'CNSNS Compliance',       ES: 'Cumplimiento CNSNS' },      href: '/services' },
     ],
   },
-  { id: 'about',   label: 'About Us', href: '/about' },
-  { id: 'contact', label: 'Contact',  hash: 'contact' },
+  {
+    id: 'about',
+    label: { EN: 'About Us', ES: 'Nosotros' },
+    href: '/about',
+  },
+  {
+    id: 'contact',
+    label: { EN: 'Contact', ES: 'Contacto' },
+    hash: 'contact',
+  },
 ];
 
 // Route equivalents for EN ↔ ES language switching
-// When user toggles language while on a translated page, navigate to the equivalent.
 const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
-  '/dangerous-goods-transportation':          { EN: '/dangerous-goods-transportation',          ES: '/es/transporte-mercancias-peligrosas' },
-  '/es/transporte-mercancias-peligrosas':     { EN: '/dangerous-goods-transportation',          ES: '/es/transporte-mercancias-peligrosas' },
+  '/dangerous-goods-transportation':      { EN: '/dangerous-goods-transportation',      ES: '/es/transporte-mercancias-peligrosas' },
+  '/es/transporte-mercancias-peligrosas': { EN: '/dangerous-goods-transportation',      ES: '/es/transporte-mercancias-peligrosas' },
 };
 
 export const Navbar = () => {
@@ -83,9 +94,7 @@ export const Navbar = () => {
 
   function switchLanguage(lang: 'EN' | 'ES') {
     const equivalent = ROUTE_EQUIVALENTS[location.pathname];
-    if (equivalent) {
-      navigate(equivalent[lang]);
-    }
+    if (equivalent) navigate(equivalent[lang]);
     setLanguage(lang);
   }
 
@@ -101,7 +110,6 @@ export const Navbar = () => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  // Lock body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -125,7 +133,6 @@ export const Navbar = () => {
     }, mobileOpen ? 300 : 0);
   }
 
-  // Transparent at top of page, solid dark navy once scrolled (or mobile open)
   const solid = isScrolled || mobileOpen;
 
   return (
@@ -190,7 +197,7 @@ export const Navbar = () => {
           <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '56px', width: 'auto' }} />
         </Link>
 
-        {/* Desktop nav items — visible at xl (≥1280 px) */}
+        {/* Desktop nav items */}
         <div className="hidden xl:flex items-center h-full ml-6 2xl:ml-10">
           {NAV_ITEMS.map((item) => (
             <div
@@ -205,17 +212,16 @@ export const Navbar = () => {
                   onClick={scrollToContact}
                   className="flex items-center gap-1 px-3 2xl:px-4 h-full text-[11px] font-semibold tracking-[0.08em] uppercase text-white/65 hover:text-white transition-colors whitespace-nowrap"
                 >
-                  {item.label}
+                  {item.label[language]}
                 </button>
               ) : item.href && !item.dropdown ? (
                 <Link
                   to={item.href}
                   className="flex items-center gap-1 px-3 2xl:px-4 h-full text-[11px] font-semibold tracking-[0.08em] uppercase text-white/65 hover:text-white transition-colors whitespace-nowrap"
                 >
-                  {item.label}
+                  {item.label[language]}
                 </Link>
               ) : (
-                /* dropdown trigger — Link when href present, button otherwise */
                 item.href ? (
                   <Link
                     to={item.href}
@@ -224,13 +230,10 @@ export const Navbar = () => {
                       activeDropdown === item.id ? 'text-white' : 'text-white/65 hover:text-white'
                     )}
                   >
-                    {item.label}
+                    {item.label[language]}
                     <ChevronDown
                       size={11}
-                      className={cn(
-                        'shrink-0 transition-transform duration-200',
-                        activeDropdown === item.id && 'rotate-180'
-                      )}
+                      className={cn('shrink-0 transition-transform duration-200', activeDropdown === item.id && 'rotate-180')}
                     />
                   </Link>
                 ) : (
@@ -240,13 +243,10 @@ export const Navbar = () => {
                       activeDropdown === item.id ? 'text-white' : 'text-white/65 hover:text-white'
                     )}
                   >
-                    {item.label}
+                    {item.label[language]}
                     <ChevronDown
                       size={11}
-                      className={cn(
-                        'shrink-0 transition-transform duration-200',
-                        activeDropdown === item.id && 'rotate-180'
-                      )}
+                      className={cn('shrink-0 transition-transform duration-200', activeDropdown === item.id && 'rotate-180')}
                     />
                   </button>
                 )
@@ -273,17 +273,16 @@ export const Navbar = () => {
                       onMouseLeave={scheduleClose}
                       className="absolute top-full left-0 min-w-[230px] bg-[#060e1c] border border-white/[0.08] shadow-[0_20px_48px_rgba(0,0,0,0.55)] z-50"
                     >
-                      {/* Accent line at top of panel */}
                       <div className="h-[2px] bg-primary w-full" />
                       <div className="py-2">
                         {item.dropdown.map((sub) => (
                           <Link
-                            key={sub.label}
+                            key={sub.href + sub.label.EN}
                             to={sub.href}
                             onClick={() => setActiveDropdown(null)}
                             className="group flex items-center px-5 py-[10px] text-[10px] font-semibold tracking-[0.1em] uppercase text-white/50 hover:text-white hover:bg-white/[0.04] transition-all border-l-2 border-transparent hover:border-primary/70"
                           >
-                            {sub.label}
+                            {sub.label[language]}
                           </Link>
                         ))}
                       </div>
@@ -295,10 +294,9 @@ export const Navbar = () => {
           ))}
         </div>
 
-        {/* Right side: language (scrolled only) + mobile toggle */}
+        {/* Right side: language toggle (scrolled) + mobile hamburger */}
         <div className="flex items-center gap-4 ml-auto xl:ml-6">
 
-          {/* Language toggle — desktop, fades in once utility bar collapses */}
           <div
             className={cn(
               'hidden xl:flex items-center gap-2 text-[10px] tracking-widest transition-all duration-300',
@@ -316,7 +314,6 @@ export const Navbar = () => {
             >EN</button>
           </div>
 
-          {/* Mobile hamburger */}
           <button
             className="xl:hidden text-white/80 hover:text-white p-2 transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -337,7 +334,7 @@ export const Navbar = () => {
             transition={{ type: 'spring', damping: 30, stiffness: 240 }}
             className="fixed inset-0 bg-[#060e1c] z-40 flex flex-col xl:hidden"
           >
-            {/* Mobile header row */}
+            {/* Mobile header */}
             <div className="flex justify-between items-center px-8 py-4 border-b border-white/[0.07] shrink-0">
               <img src="/GGM-SM.png" alt="Global Gate México" style={{ height: '46px', width: 'auto' }} />
               <button
@@ -365,7 +362,7 @@ export const Navbar = () => {
                         onClick={() => setMobileExpanded(mobileExpanded === item.id ? null : item.id)}
                         className="w-full flex items-center justify-between py-4 text-[11px] font-bold text-white/70 uppercase tracking-[0.1em] hover:text-white transition-colors"
                       >
-                        {item.label}
+                        {item.label[language]}
                         <ChevronDown
                           size={13}
                           className={cn('shrink-0 transition-transform duration-200', mobileExpanded === item.id && 'rotate-180')}
@@ -383,12 +380,12 @@ export const Navbar = () => {
                             <div className="pb-3 pl-3 flex flex-col gap-0.5">
                               {item.dropdown.map((sub) => (
                                 <Link
-                                  key={sub.label}
+                                  key={sub.href + sub.label.EN}
                                   to={sub.href}
                                   onClick={() => setMobileOpen(false)}
                                   className="py-2.5 px-3 text-[10px] font-semibold text-white/45 hover:text-white uppercase tracking-[0.1em] border-l-2 border-primary/25 hover:border-primary/70 transition-all"
                                 >
-                                  {sub.label}
+                                  {sub.label[language]}
                                 </Link>
                               ))}
                             </div>
@@ -401,7 +398,7 @@ export const Navbar = () => {
                       onClick={scrollToContact}
                       className="w-full text-left py-4 text-[11px] font-bold text-white/70 uppercase tracking-[0.1em] hover:text-white transition-colors"
                     >
-                      {item.label}
+                      {item.label[language]}
                     </button>
                   ) : (
                     <Link
@@ -409,14 +406,14 @@ export const Navbar = () => {
                       onClick={() => setMobileOpen(false)}
                       className="block py-4 text-[11px] font-bold text-white/70 uppercase tracking-[0.1em] hover:text-white transition-colors"
                     >
-                      {item.label}
+                      {item.label[language]}
                     </Link>
                   )}
                 </motion.div>
               ))}
             </div>
 
-            {/* Mobile bottom: language only */}
+            {/* Mobile bottom: language toggle */}
             <div className="shrink-0 px-8 py-6 border-t border-white/[0.07]">
               <div className="flex items-center gap-4 text-[12px]">
                 <button
