@@ -62,6 +62,7 @@ interface Certification {
   rotation: number;
   objectPosition: string;
   tier: 'primary' | 'secondary';
+  verifyUrl?: string;
 }
 
 const CERTIFICATIONS: Certification[] = [
@@ -97,6 +98,7 @@ const CERTIFICATIONS: Certification[] = [
     rotation: -0.8,
     objectPosition: 'center top',
     tier: 'primary',
+    verifyUrl: 'https://www.iata.org/en/services/certification/training-development/cbta-center/cbta-certified-companies/global-gate-mexico-s-de-rl-de-cv/440489/',
   },
   {
     Icon: BadgeCheck,
@@ -343,6 +345,20 @@ function CertCard({ cert, height }: { cert: Certification; height: string }) {
         <p className="text-[11px] text-white/40 leading-snug line-clamp-2 group-hover:text-white/55 transition-colors duration-300">
           {cert.desc}
         </p>
+        {cert.verifyUrl && (
+          <a
+            href={cert.verifyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={e => e.stopPropagation()}
+            className="inline-flex items-center gap-1 mt-3 text-[9px] font-bold uppercase tracking-[0.16em] text-white/25 hover:text-primary/80 transition-colors duration-200"
+          >
+            Verified in IATA Registry
+            <svg width="9" height="9" viewBox="0 0 9 9" fill="none" className="opacity-60 group-hover:opacity-100 transition-opacity" aria-hidden="true">
+              <path d="M1.5 7.5L7.5 1.5M7.5 1.5H3M7.5 1.5V6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </a>
+        )}
       </div>
 
       {/* ── Hover glow ring ── */}
