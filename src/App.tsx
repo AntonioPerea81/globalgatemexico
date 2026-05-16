@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Home } from './pages/Home';
-import { ServicesPage, AboutPage, TrainingPage } from './pages/Internal';
+import { ServicesPage, AboutPage } from './pages/Internal';
+import { TrainingPage } from './pages/Training';
 import { DangerousGoodsTransportationPage } from './pages/DangerousGoodsTransportation';
 import {
   AirTransportationPage,
