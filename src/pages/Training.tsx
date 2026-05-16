@@ -268,6 +268,11 @@ function CertCard({ cert, height }: { cert: Certification; height: string }) {
       )}
     >
 
+      {/* ── DIAGNOSTIC — remove after confirming image paths ── */}
+      <p style={{ position: 'absolute', top: 4, right: 4, zIndex: 999, color: 'lime', fontSize: 9, background: 'rgba(0,0,0,0.7)', padding: '2px 4px', maxWidth: '90%', wordBreak: 'break-all' }}>
+        {cert.image ?? 'IMAGE UNDEFINED'}
+      </p>
+
       {/* ── Image — direct fill, no fallback state ── */}
       <img
         src={cert.image}
