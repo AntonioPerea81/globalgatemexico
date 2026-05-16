@@ -5,7 +5,7 @@ import {
   CheckCircle, Clock, Plane, Truck, Ship, Radiation,
   FileText, ClipboardList, Tag, Search, RefreshCw,
   BadgeCheck, Package, Layers, FlaskConical, Zap,
-  ChevronRight, ArrowRight, Lock,
+  ChevronRight, Lock,
 } from 'lucide-react';
 import { Container, FadeIn, Eyebrow } from '../components/UI';
 import { cn } from '../lib/utils';
@@ -706,22 +706,46 @@ export function TrainingPage() {
                   </p>
 
                   {/* Audience */}
-                  <div className="mt-auto">
-                    <p className="text-[9px] text-primary/60 uppercase tracking-[0.15em] font-black mb-3 group-hover:text-primary/80 transition-colors">
-                      {audience}
-                    </p>
-                    <button
-                      onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                      className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-primary group-hover:text-white/80 hover:gap-3 transition-all duration-200"
-                    >
-                      Request Info <ArrowRight size={11} />
-                    </button>
-                  </div>
+                  <p className="mt-auto text-[9px] text-primary/60 uppercase tracking-[0.15em] font-black group-hover:text-primary/80 transition-colors">
+                    {audience}
+                  </p>
 
                 </div>
               </FadeIn>
             ))}
           </div>
+
+          {/* Programs CTA */}
+          <FadeIn delay={0.15} className="mt-12 border border-black/[0.07] bg-[#f8f9fc]">
+            <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-center p-8 lg:p-10">
+              <div>
+                <p className="text-[9px] text-primary uppercase tracking-[0.22em] font-black mb-3">
+                  Custom Training Programs
+                </p>
+                <h3 className="text-xl md:text-2xl font-extrabold tracking-tight mb-3 leading-snug">
+                  Need a Customized Dangerous Goods<br className="hidden sm:block" /> Training Program?
+                </h3>
+                <p className="text-secondary text-[13px] leading-relaxed max-w-lg">
+                  We help companies train personnel in compliance with international dangerous goods regulations across air, ground, and maritime operations.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
+                <button
+                  onClick={scrollToContact}
+                  className="px-7 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_20px_rgba(7,56,223,0.35)] transition-all duration-200 whitespace-nowrap"
+                >
+                  Request Training Proposal
+                </button>
+                <button
+                  onClick={scrollToContact}
+                  className="px-7 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] bg-transparent border border-black/15 text-dark/60 hover:border-primary/40 hover:text-primary transition-all duration-200 whitespace-nowrap"
+                >
+                  Contact Our Team
+                </button>
+              </div>
+            </div>
+          </FadeIn>
+
         </Container>
       </section>
 
