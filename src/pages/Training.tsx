@@ -16,73 +16,87 @@ import { usePageMeta } from '../hooks/usePageMeta';
 
 const CREDENTIALS = [
   {
-    code: 'IATA',
-    name: 'International Air Transport Association',
-    desc: 'CBTA-authorized provider for dangerous goods transport by air',
+    designation: 'IATA Diploma',
+    issuer: 'International Air Transport Association',
+    detail: 'Dangerous Goods Regulations — Geneva, Switzerland',
   },
   {
-    code: 'CBTA',
-    name: 'Competency-Based Training & Assessment',
-    desc: 'Global standard for DG personnel qualification and assessment',
+    designation: 'IATA CBTA',
+    issuer: 'Competency-Based Training & Assessment',
+    detail: 'Authorized provider — DG transport by air',
   },
   {
-    code: 'IHMM',
-    name: 'Institute of Hazardous Materials Management',
-    desc: 'CDGP certification — international professional standard',
+    designation: 'IHMM CDGP',
+    issuer: 'Institute of Hazardous Materials Management',
+    detail: 'Certified Dangerous Goods Professional',
   },
   {
-    code: 'DGTA',
-    name: 'Dangerous Goods Trainers Association',
-    desc: 'Institutional membership and recognized training authority',
+    designation: 'DGSA',
+    issuer: 'Scottish Qualifications Authority',
+    detail: 'Dangerous Goods Safety Adviser',
   },
   {
-    code: 'STPS',
-    name: 'Secretaría del Trabajo y Previsión Social',
-    desc: 'Authorized external training agent registered in Mexico',
+    designation: 'STPS',
+    issuer: 'Secretaría del Trabajo y Previsión Social',
+    detail: 'Agente Capacitador Externo — Mexico',
   },
   {
-    code: 'SQA DGSA',
-    name: 'Scottish Qualifications Authority',
-    desc: 'Dangerous Goods Safety Adviser — UK-recognized certification',
+    designation: 'DGTA',
+    issuer: 'Dangerous Goods Trainers Association',
+    detail: 'Institutional member',
   },
 ];
 
-const CERTIFICATIONS = [
+interface Certification {
+  Icon: typeof GraduationCap;
+  title: string;
+  issuer: string;
+  desc: string;
+  image?: string; // e.g. '/certifications/iata-diploma.jpg' — add when asset is available
+}
+
+const CERTIFICATIONS: Certification[] = [
   {
     Icon: GraduationCap,
     title: 'IATA Professional Diploma',
-    location: 'Geneva, Switzerland',
+    issuer: 'International Air Transport Association — Geneva, Switzerland',
     desc: 'Professional training in Dangerous Goods Regulations completed at IATA headquarters — the primary global standard for air transport compliance.',
+    // image: '/certifications/iata-diploma.jpg',
   },
   {
     Icon: Award,
     title: 'IATA CBTA Provider',
-    location: 'Competency-Based Training & Assessment',
+    issuer: 'Competency-Based Training & Assessment',
     desc: 'Global Gate México certified as an IATA CBTA provider — authorized to train, assess, and certify dangerous goods personnel under the international competency framework.',
+    // image: '/certifications/cbta-provider.jpg',
   },
   {
     Icon: ShieldCheck,
     title: 'CDGP — Certified Dangerous Goods Professional',
-    location: 'Institute of Hazardous Materials Management',
+    issuer: 'Institute of Hazardous Materials Management',
     desc: 'International certification issued by IHMM validating advanced competency in dangerous goods classification, documentation, and regulatory compliance.',
+    // image: '/certifications/ihmm-cdgp.jpg',
   },
   {
     Icon: BadgeCheck,
     title: 'Dangerous Goods Safety Adviser (DGSA)',
-    location: 'Scottish Qualifications Authority',
+    issuer: 'Scottish Qualifications Authority',
     desc: 'Certification recognized under UK dangerous goods transport legislation — demonstrating cross-jurisdictional compliance expertise for international operations.',
+    // image: '/certifications/dgsa.jpg',
   },
   {
     Icon: ClipboardList,
     title: 'STPS External Training Agent',
-    location: 'Secretaría del Trabajo y Previsión Social',
+    issuer: 'Secretaría del Trabajo y Previsión Social — Mexico',
     desc: 'Authorized and registered external training provider before the Mexican labor authority — enabling issuance of official DC-3 and DC-4 training constancias.',
+    // image: '/certifications/stps.jpg',
   },
   {
     Icon: Users,
     title: 'DGTA Membership',
-    location: 'Dangerous Goods Trainers Association',
+    issuer: 'Dangerous Goods Trainers Association',
     desc: 'Institutional member of the Dangerous Goods Trainers Association — connected to a global network of DG training professionals and regulatory specialists.',
+    // image: '/certifications/dgta.jpg',
   },
 ];
 
@@ -304,27 +318,39 @@ export function TrainingPage() {
 
       {/* ── 2. CREDENTIAL STRIP ────────────────────────────────────────────────── */}
       <section className="bg-[#070f1c] border-b border-white/[0.05]">
-        <Container className="py-0">
+        <Container>
 
-          <div className="py-10 mb-8 text-center">
-            <p className="text-[10px] text-white/30 uppercase tracking-[0.25em] font-black">
-              Backed by internationally recognized certifications and real operational experience since 2006
+          {/* Statement */}
+          <div className="py-7 flex items-center justify-between gap-8 border-b border-white/[0.05] flex-wrap">
+            <p className="text-[9px] text-white/25 uppercase tracking-[0.28em] font-black">
+              International credentials. Operational experience. Competency-based training.
+            </p>
+            <p className="text-[9px] text-white/20 uppercase tracking-[0.2em] font-bold shrink-0">
+              Since 2006
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 border-t border-white/[0.05]">
-            {CREDENTIALS.map(({ code, name, desc }, i) => (
+          {/* Six credentials — horizontal, typographic only */}
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 divide-x divide-white/[0.05]">
+            {CREDENTIALS.map(({ designation, issuer, detail }, i) => (
               <div
-                key={code}
+                key={designation}
                 className={cn(
-                  'px-6 py-7 border-r border-white/[0.05] last:border-r-0',
-                  'group hover:bg-white/[0.03] transition-colors duration-200',
-                  i >= 3 ? 'border-t border-white/[0.05] xl:border-t-0' : ''
+                  'px-5 py-6',
+                  'hover:bg-white/[0.02] transition-colors duration-200',
+                  i >= 2 && i < 4 ? 'border-t border-white/[0.05] md:border-t-0' : '',
+                  i >= 4 ? 'border-t border-white/[0.05] xl:border-t-0' : '',
                 )}
               >
-                <div className="text-[18px] font-black text-white mb-2 tracking-tight">{code}</div>
-                <div className="text-[10px] text-white/35 leading-snug mb-2 font-medium">{name}</div>
-                <div className="text-[10px] text-primary/70 leading-snug">{desc}</div>
+                <div className="text-[15px] font-black text-white tracking-tight mb-1.5 leading-none">
+                  {designation}
+                </div>
+                <div className="text-[10px] text-white/30 font-medium leading-snug mb-1">
+                  {issuer}
+                </div>
+                <div className="text-[9px] text-primary/50 leading-snug uppercase tracking-[0.08em] font-bold">
+                  {detail}
+                </div>
               </div>
             ))}
           </div>
@@ -395,45 +421,76 @@ export function TrainingPage() {
       </section>
 
       {/* ── 4. CERTIFICATIONS & RECOGNITIONS ──────────────────────────────────── */}
-      <section className="py-24 lg:py-32 bg-[#f8f9fc] border-y border-black/5">
+      <section className="py-24 lg:py-32 bg-white border-y border-black/5">
         <Container>
-          <FadeIn className="max-w-2xl mb-16">
-            <Eyebrow>Certifications & Recognitions</Eyebrow>
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-5">
-              International Credentials Behind Every Program
-            </h2>
-            <p className="text-secondary text-[15px] leading-relaxed">
-              Our instructors and programs operate under the highest international standards for dangerous goods training — verified by global certification bodies across multiple regulatory frameworks.
-            </p>
-          </FadeIn>
+          <div className="grid lg:grid-cols-[1fr_2fr] gap-16 xl:gap-24 items-start">
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {CERTIFICATIONS.map(({ Icon: CIcon, title, location, desc }, i) => (
-              <FadeIn key={title} delay={i * 0.07}>
-                <div className="group bg-white border border-black/[0.07] hover:border-primary/25 hover:shadow-md transition-all duration-300 h-full flex flex-col overflow-hidden">
-                  {/* Top accent bar */}
-                  <div className="h-[3px] bg-primary w-full group-hover:bg-primary transition-colors" />
+            {/* Left — section intro */}
+            <FadeIn direction="left" className="lg:sticky lg:top-28">
+              <Eyebrow>Certifications & Recognitions</Eyebrow>
+              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-6">
+                International Credentials Behind Every Program
+              </h2>
+              <p className="text-secondary text-[15px] leading-relaxed mb-8">
+                Our instructors and programs operate under the highest international standards for dangerous goods training — verified by global certification bodies across multiple regulatory frameworks.
+              </p>
+              <div className="p-5 bg-[#f8f9fc] border border-black/[0.05] border-l-2 border-l-primary">
+                <p className="text-[11px] font-black uppercase tracking-[0.15em] text-primary mb-1">
+                  Verified credentials
+                </p>
+                <p className="text-[12px] text-secondary leading-relaxed">
+                  Each certification listed is held by Global Gate México personnel and renewed on the schedule required by the issuing body.
+                </p>
+              </div>
+            </FadeIn>
 
-                  {/* Icon area */}
-                  <div className="p-7 pb-0 flex items-center gap-4">
-                    <div className="w-11 h-11 bg-primary/8 flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors">
-                      <CIcon size={22} className="text-primary" />
+            {/* Right — certificate cards */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              {CERTIFICATIONS.map(({ Icon: CIcon, title, issuer, desc, image }, i) => (
+                <FadeIn key={title} delay={i * 0.07}>
+                  <div className="group bg-white border border-black/[0.08] hover:border-primary/30 hover:shadow-[0_4px_24px_rgba(0,0,0,0.07)] transition-all duration-300 h-full flex flex-col overflow-hidden">
+
+                    {/* Visual area — image if available, icon treatment if not */}
+                    {image ? (
+                      <div className="h-44 overflow-hidden bg-[#f0f1f5] border-b border-black/[0.05]">
+                        <img
+                          src={image}
+                          alt={title}
+                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        />
+                      </div>
+                    ) : (
+                      <div className="h-44 bg-[#f8f9fc] border-b border-black/[0.05] flex items-center justify-center relative overflow-hidden">
+                        {/* Subtle document-frame corners */}
+                        <div className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-primary/20" />
+                        <div className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-primary/20" />
+                        <div className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-primary/20" />
+                        <div className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-primary/20" />
+                        <div className="flex flex-col items-center gap-3">
+                          <div className="w-14 h-14 bg-primary/8 flex items-center justify-center group-hover:bg-primary/14 transition-colors">
+                            <CIcon size={26} className="text-primary/60" />
+                          </div>
+                          <p className="text-[8px] text-black/20 uppercase tracking-[0.25em] font-black">Certificate</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Content */}
+                    <div className="p-6 flex-1 flex flex-col">
+                      <p className="text-[9px] text-primary/65 uppercase tracking-[0.18em] font-black mb-2">
+                        {issuer}
+                      </p>
+                      <h3 className="text-[13px] font-extrabold uppercase tracking-wide mb-3 leading-snug">
+                        {title}
+                      </h3>
+                      <p className="text-[12px] text-secondary leading-relaxed flex-1">{desc}</p>
                     </div>
-                    <div>
-                      <p className="text-[9px] text-primary/70 uppercase tracking-[0.18em] font-black">{location}</p>
-                    </div>
-                  </div>
 
-                  {/* Content */}
-                  <div className="p-7 flex-1 flex flex-col">
-                    <h3 className="text-[13px] font-extrabold uppercase tracking-wide mb-3 leading-snug">
-                      {title}
-                    </h3>
-                    <p className="text-[12px] text-secondary leading-relaxed flex-1">{desc}</p>
                   </div>
-                </div>
-              </FadeIn>
-            ))}
+                </FadeIn>
+              ))}
+            </div>
+
           </div>
         </Container>
       </section>
