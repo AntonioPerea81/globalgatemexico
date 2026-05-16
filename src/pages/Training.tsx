@@ -485,10 +485,10 @@ export function TrainingPage() {
 
           {/* Statement */}
           <div className="py-7 flex items-center justify-between gap-8 border-b border-white/[0.05] flex-wrap">
-            <p className="text-[9px] text-white/25 uppercase tracking-[0.28em] font-black">
+            <p className="text-[9px] uppercase tracking-[0.28em] font-bold" style={{ color: '#C8A96B', opacity: 0.55 }}>
               International credentials. Operational experience. Competency-based training.
             </p>
-            <p className="text-[9px] text-white/20 uppercase tracking-[0.2em] font-bold shrink-0">
+            <p className="text-[9px] uppercase tracking-[0.22em] font-bold shrink-0" style={{ color: '#C8A96B', opacity: 0.35 }}>
               Since 2006
             </p>
           </div>
@@ -503,10 +503,10 @@ export function TrainingPage() {
                 <div className="text-[14px] font-black text-white tracking-tight mb-1.5 leading-none">
                   {designation}
                 </div>
-                <div className="text-[10px] text-white/30 font-medium leading-snug mb-1">
+                <div className="text-[10px] text-white/35 font-medium leading-snug mb-1.5 tracking-wide">
                   {issuer}
                 </div>
-                <div className="text-[9px] text-primary/50 leading-snug uppercase tracking-[0.08em] font-bold">
+                <div className="text-[9px] leading-snug uppercase tracking-[0.12em] font-semibold" style={{ color: '#C8A96B', opacity: 0.6 }}>
                   {detail}
                 </div>
               </div>
