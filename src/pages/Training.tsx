@@ -127,7 +127,7 @@ const CERTIFICATIONS: Certification[] = [
     title: 'STPS External Training Agent',
     issuer: 'Secretaría del Trabajo y Previsión Social',
     desc: 'Authorized external training provider registered before the Mexican labor authority.',
-    image: '/certifications/stps-dc5.jpg',
+    image: '/certifications/stps.dc5.jpg',
     tag: 'Mexico Training Authority',
     rotation: 0.7,
     objectPosition: 'center center',
