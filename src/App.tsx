@@ -10,6 +10,13 @@ import {
   DocumentationServicesPage,
 } from './pages/services';
 import { DGConsultingCompliancePage } from './pages/DGConsultingCompliance';
+import {
+  DGCompliancePage,
+  RegulatoryConsultingPage,
+  ComplianceAuditsPage,
+  SDSReviewPage,
+  CrossBorderDGPage,
+} from './pages/compliance';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -27,7 +34,12 @@ export default function App() {
             <Route path="/services/ocean-freight"         element={<OceanFreightPage />} />
             <Route path="/services/dg-packaging"          element={<DGPackagingPage />} />
             <Route path="/services/documentation-services" element={<DocumentationServicesPage />} />
-            <Route path="/dg-consulting-compliance"         element={<DGConsultingCompliancePage />} />
+            <Route path="/dg-consulting-compliance"                      element={<DGConsultingCompliancePage />} />
+            <Route path="/dg-compliance/dg-compliance"               element={<DGCompliancePage />} />
+            <Route path="/dg-compliance/regulatory-consulting"        element={<RegulatoryConsultingPage />} />
+            <Route path="/dg-compliance/compliance-audits"            element={<ComplianceAuditsPage />} />
+            <Route path="/dg-compliance/sds-review"                   element={<SDSReviewPage />} />
+            <Route path="/dg-compliance/cross-border-dg-compliance"   element={<CrossBorderDGPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/about"    element={<AboutPage />} />
             <Route path="/training" element={<TrainingPage />} />
