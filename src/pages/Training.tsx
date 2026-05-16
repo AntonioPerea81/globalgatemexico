@@ -74,7 +74,7 @@ const CERTIFICATIONS: Certification[] = [
     image: '/certifications/iata-diploma.jpg',
     tag: 'International Aviation Training',
     rotation: -1.5,
-    objectPosition: 'center top',
+    objectPosition: '50% 12%',
     tier: 'primary',
   },
   {
@@ -85,7 +85,7 @@ const CERTIFICATIONS: Certification[] = [
     image: '/certifications/icao-tdc.jpg',
     tag: 'ICAO Training Standards',
     rotation: 1.0,
-    objectPosition: 'center center',
+    objectPosition: '50% 8%',
     tier: 'primary',
   },
   {
@@ -96,7 +96,7 @@ const CERTIFICATIONS: Certification[] = [
     image: '/certifications/cbta-provider.jpg',
     tag: 'CBTA Provider',
     rotation: -0.8,
-    objectPosition: 'center top',
+    objectPosition: '50% 18%',
     tier: 'primary',
     verifyUrl: 'https://www.iata.org/en/services/certification/training-development/cbta-center/cbta-certified-companies/global-gate-mexico-s-de-rl-de-cv/440489/',
   },
@@ -108,7 +108,7 @@ const CERTIFICATIONS: Certification[] = [
     image: '/certifications/dgsa-sqa.jpg',
     tag: 'Regulatory Compliance',
     rotation: 1.5,
-    objectPosition: 'center center',
+    objectPosition: '50% 22%',
     tier: 'primary',
   },
   {
@@ -119,7 +119,7 @@ const CERTIFICATIONS: Certification[] = [
     image: '/certifications/ihmm-cdgp.jpg',
     tag: 'Professional Certification',
     rotation: -1.2,
-    objectPosition: 'center top',
+    objectPosition: '50% 14%',
     tier: 'secondary',
   },
   {
@@ -130,7 +130,7 @@ const CERTIFICATIONS: Certification[] = [
     image: '/certifications/stps.dc5.jpg',
     tag: 'Mexico Training Authority',
     rotation: 0.7,
-    objectPosition: 'center center',
+    objectPosition: '50% 20%',
     tier: 'secondary',
   },
   {
@@ -141,7 +141,7 @@ const CERTIFICATIONS: Certification[] = [
     image: '/certifications/dgta-membership.jpg',
     tag: 'Industry Association',
     rotation: -0.5,
-    objectPosition: 'center top',
+    objectPosition: '50% 25%',
     tier: 'secondary',
   },
 ];
@@ -255,14 +255,92 @@ const PROCESS_STEPS = [
 
 // ── CertCard ─────────────────────────────────────────────────────────────────
 
-function CertCard({ cert, height }: { cert: Certification; height: string }) {
+function CertCard({ cert, primary = false }: { cert: Certification; primary?: boolean }) {
   return (
-    <div className={cn('relative overflow-hidden', height)}>
-      <img
-        src={cert.image}
-        alt={cert.title}
-        className="absolute inset-0 w-full h-full object-cover"
+    <div
+      className={cn(
+        'group relative overflow-hidden rounded-xl cursor-default',
+        'bg-[#060e1c]',
+        'ring-1 ring-white/[0.06]',
+        'shadow-[0_4px_20px_rgba(0,0,0,0.45)]',
+        'hover:-translate-y-[3px] hover:shadow-[0_10px_36px_rgba(0,0,0,0.55)] hover:ring-white/[0.1]',
+        'transition-all duration-400 ease-out',
+        primary ? 'h-[17rem]' : 'h-44',
+      )}
+    >
+      {/* ── Image — extended 28% beyond edges, clipped by container ── */}
+      <div className="absolute inset-0 overflow-hidden rounded-xl">
+        {/* Outer: hover scale */}
+        <div className="absolute inset-[-28%] transition-transform duration-500 ease-out group-hover:scale-[1.05]">
+          {/* Inner: static rotation */}
+          <div className="w-full h-full" style={{ transform: `rotate(${cert.rotation}deg)` }}>
+            <img
+              src={cert.image}
+              alt=""
+              aria-hidden="true"
+              className="w-full h-full object-cover"
+              style={{
+                objectPosition: cert.objectPosition,
+                filter: 'grayscale(8%) brightness(0.88) contrast(1.04)',
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* ── Bottom gradient — readable text panel ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to top, rgba(6,14,28,0.97) 0%, rgba(6,14,28,0.72) 28%, rgba(6,14,28,0.08) 52%, transparent 68%)',
+        }}
       />
+      {/* ── Top scrim — tag area ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(6,14,28,0.52) 0%, transparent 32%)',
+        }}
+      />
+
+      {/* ── Tag — top left ── */}
+      <div className="absolute top-3 left-3 z-20">
+        <span className={cn(
+          'inline-flex items-center rounded px-2 py-0.5',
+          'text-[7px] font-black uppercase tracking-[0.14em] text-white/45',
+          'bg-black/30 backdrop-blur-sm border border-white/[0.08]',
+        )}>
+          {cert.tag}
+        </span>
+      </div>
+
+      {/* ── Content — bottom ── */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 px-4 pb-4">
+        <p
+          className={cn('font-semibold uppercase tracking-[0.18em] mb-1 leading-none', primary ? 'text-[8px]' : 'text-[7px]')}
+          style={{ color: '#C8A96B', opacity: 0.65 }}
+        >
+          {cert.issuer}
+        </p>
+        <h3 className={cn('font-extrabold uppercase tracking-wide text-white leading-snug', primary ? 'text-[11px]' : 'text-[10px]')}>
+          {cert.title}
+        </h3>
+        {cert.verifyUrl && (
+          <a
+            href={cert.verifyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={e => e.stopPropagation()}
+            className="inline-flex items-center gap-1 mt-2 text-[8px] font-bold uppercase tracking-[0.13em] text-white/20 hover:text-primary/70 transition-colors duration-200"
+          >
+            Verified in IATA Registry
+            <svg width="8" height="8" viewBox="0 0 9 9" fill="none" aria-hidden="true">
+              <path d="M1.5 7.5L7.5 1.5M7.5 1.5H3M7.5 1.5V6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </a>
+        )}
+      </div>
+
     </div>
   );
 }
@@ -523,7 +601,7 @@ export function TrainingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.55, delay: i * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
                 >
-                  <CertCard cert={cert} height="h-[22rem]" />
+                  <CertCard cert={cert} primary />
                 </motion.div>
               ))}
             </div>
@@ -544,7 +622,7 @@ export function TrainingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.07 + 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
                 >
-                  <CertCard cert={cert} height="h-56" />
+                  <CertCard cert={cert} />
                 </motion.div>
               ))}
             </div>
