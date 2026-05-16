@@ -30,12 +30,13 @@ const NAV_ITEMS: NavItem[] = [
   {
     id: 'dgc',
     label: 'DG Consulting & Compliance',
+    href: '/dg-consulting-compliance',
     dropdown: [
-      { label: 'DG Compliance',              href: '/services' },
-      { label: 'Regulatory Consulting',      href: '/services' },
-      { label: 'Compliance Audits',          href: '/services' },
-      { label: 'SDS Review',                 href: '/services' },
-      { label: 'Cross-Border DG Compliance', href: '/services' },
+      { label: 'DG Compliance',              href: '/dg-consulting-compliance' },
+      { label: 'Regulatory Consulting',      href: '/dg-consulting-compliance' },
+      { label: 'Compliance Audits',          href: '/dg-consulting-compliance' },
+      { label: 'SDS Review',                 href: '/dg-consulting-compliance' },
+      { label: 'Cross-Border DG Compliance', href: '/dg-consulting-compliance' },
     ],
   },
   {
@@ -189,7 +190,7 @@ export const Navbar = () => {
                 >
                   {item.label}
                 </button>
-              ) : item.href ? (
+              ) : item.href && !item.dropdown ? (
                 <Link
                   to={item.href}
                   className="flex items-center gap-1 px-3 2xl:px-4 h-full text-[11px] font-semibold tracking-[0.08em] uppercase text-white/65 hover:text-white transition-colors whitespace-nowrap"
@@ -197,21 +198,41 @@ export const Navbar = () => {
                   {item.label}
                 </Link>
               ) : (
-                <button
-                  className={cn(
-                    'flex items-center gap-1.5 px-3 2xl:px-4 h-full text-[11px] font-semibold tracking-[0.08em] uppercase transition-colors whitespace-nowrap',
-                    activeDropdown === item.id ? 'text-white' : 'text-white/65 hover:text-white'
-                  )}
-                >
-                  {item.label}
-                  <ChevronDown
-                    size={11}
+                /* dropdown trigger — Link when href present, button otherwise */
+                item.href ? (
+                  <Link
+                    to={item.href}
                     className={cn(
-                      'shrink-0 transition-transform duration-200',
-                      activeDropdown === item.id && 'rotate-180'
+                      'flex items-center gap-1.5 px-3 2xl:px-4 h-full text-[11px] font-semibold tracking-[0.08em] uppercase transition-colors whitespace-nowrap',
+                      activeDropdown === item.id ? 'text-white' : 'text-white/65 hover:text-white'
                     )}
-                  />
-                </button>
+                  >
+                    {item.label}
+                    <ChevronDown
+                      size={11}
+                      className={cn(
+                        'shrink-0 transition-transform duration-200',
+                        activeDropdown === item.id && 'rotate-180'
+                      )}
+                    />
+                  </Link>
+                ) : (
+                  <button
+                    className={cn(
+                      'flex items-center gap-1.5 px-3 2xl:px-4 h-full text-[11px] font-semibold tracking-[0.08em] uppercase transition-colors whitespace-nowrap',
+                      activeDropdown === item.id ? 'text-white' : 'text-white/65 hover:text-white'
+                    )}
+                  >
+                    {item.label}
+                    <ChevronDown
+                      size={11}
+                      className={cn(
+                        'shrink-0 transition-transform duration-200',
+                        activeDropdown === item.id && 'rotate-180'
+                      )}
+                    />
+                  </button>
+                )
               )}
 
               {/* Active underline indicator */}

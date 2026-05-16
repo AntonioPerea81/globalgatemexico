@@ -9,6 +9,7 @@ import {
   DGPackagingPage,
   DocumentationServicesPage,
 } from './pages/services';
+import { DGConsultingCompliancePage } from './pages/DGConsultingCompliance';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/services/ocean-freight"         element={<OceanFreightPage />} />
             <Route path="/services/dg-packaging"          element={<DGPackagingPage />} />
             <Route path="/services/documentation-services" element={<DocumentationServicesPage />} />
+            <Route path="/dg-consulting-compliance"         element={<DGConsultingCompliancePage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/about"    element={<AboutPage />} />
             <Route path="/training" element={<TrainingPage />} />
