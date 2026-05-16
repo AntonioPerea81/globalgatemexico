@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, ChevronDown, Instagram, Linkedin } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -64,13 +64,30 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'contact', label: 'Contact',  hash: 'contact' },
 ];
 
+// Route equivalents for EN ↔ ES language switching
+// When user toggles language while on a translated page, navigate to the equivalent.
+const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
+  '/dangerous-goods-transportation':          { EN: '/dangerous-goods-transportation',          ES: '/es/transporte-mercancias-peligrosas' },
+  '/es/transporte-mercancias-peligrosas':     { EN: '/dangerous-goods-transportation',          ES: '/es/transporte-mercancias-peligrosas' },
+};
+
 export const Navbar = () => {
   const [isScrolled, setIsScrolled]         = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen]         = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const { language, setLanguage }           = useLanguage();
+  const navigate                            = useNavigate();
+  const location                            = useLocation();
   const closeTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  function switchLanguage(lang: 'EN' | 'ES') {
+    const equivalent = ROUTE_EQUIVALENTS[location.pathname];
+    if (equivalent) {
+      navigate(equivalent[lang]);
+    }
+    setLanguage(lang);
+  }
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 30);
@@ -146,12 +163,12 @@ export const Navbar = () => {
             </div>
             <div className="flex items-center gap-2 border-l border-white/10 pl-4 text-[10px] tracking-widest">
               <button
-                onClick={() => setLanguage('ES')}
+                onClick={() => switchLanguage('ES')}
                 className={cn('transition-colors uppercase', language === 'ES' ? 'text-white font-bold' : 'text-white/35 hover:text-white/80')}
               >ES</button>
               <span className="text-white/15">|</span>
               <button
-                onClick={() => setLanguage('EN')}
+                onClick={() => switchLanguage('EN')}
                 className={cn('transition-colors uppercase', language === 'EN' ? 'text-white font-bold' : 'text-white/35 hover:text-white/80')}
               >EN</button>
             </div>
@@ -289,12 +306,12 @@ export const Navbar = () => {
             )}
           >
             <button
-              onClick={() => setLanguage('ES')}
+              onClick={() => switchLanguage('ES')}
               className={cn('uppercase transition-colors', language === 'ES' ? 'text-white font-bold' : 'text-white/35 hover:text-white/80')}
             >ES</button>
             <span className="text-white/15">|</span>
             <button
-              onClick={() => setLanguage('EN')}
+              onClick={() => switchLanguage('EN')}
               className={cn('uppercase transition-colors', language === 'EN' ? 'text-white font-bold' : 'text-white/35 hover:text-white/80')}
             >EN</button>
           </div>
@@ -403,14 +420,14 @@ export const Navbar = () => {
             <div className="shrink-0 px-8 py-6 border-t border-white/[0.07]">
               <div className="flex items-center gap-4 text-[12px]">
                 <button
-                  onClick={() => setLanguage('ES')}
+                  onClick={() => switchLanguage('ES')}
                   className={cn('uppercase tracking-widest transition-colors', language === 'ES' ? 'text-white font-bold' : 'text-white/35 hover:text-white/70')}
                 >
                   Español
                 </button>
                 <span className="text-white/15">|</span>
                 <button
-                  onClick={() => setLanguage('EN')}
+                  onClick={() => switchLanguage('EN')}
                   className={cn('uppercase tracking-widest transition-colors', language === 'EN' ? 'text-white font-bold' : 'text-white/35 hover:text-white/70')}
                 >
                   English

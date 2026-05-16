@@ -10,6 +10,7 @@ import {
   DocumentationServicesPage,
 } from './pages/services';
 import { DGConsultingCompliancePage } from './pages/DGConsultingCompliance';
+import { TransporteMercanciasPeligrosasPage } from './pages/TransporteMercanciasPeligrosas';
 import {
   DGCompliancePage,
   RegulatoryConsultingPage,
@@ -29,6 +30,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dangerous-goods-transportation" element={<DangerousGoodsTransportationPage />} />
+            <Route path="/es/transporte-mercancias-peligrosas" element={<TransporteMercanciasPeligrosasPage />} />
             <Route path="/services/air-transportation"    element={<AirTransportationPage />} />
             <Route path="/services/ground-transportation" element={<GroundTransportationPage />} />
             <Route path="/services/ocean-freight"         element={<OceanFreightPage />} />
