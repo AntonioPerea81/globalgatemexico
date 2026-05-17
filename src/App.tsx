@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { ServicesPage, AboutPage } from './pages/Internal';
 import { TrainingPage } from './pages/Training';
+import { CapacitacionPage } from './pages/Capacitacion';
 import { DangerousGoodsTransportationPage } from './pages/DangerousGoodsTransportation';
 import {
   AirTransportationPage,
@@ -75,6 +76,7 @@ export default function App() {
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/about"    element={<AboutPage />} />
             <Route path="/training" element={<TrainingPage />} />
+            <Route path="/es/capacitacion" element={<CapacitacionPage />} />
             <Route path="*"         element={<Home />} />
           </Routes>
         </Layout>
