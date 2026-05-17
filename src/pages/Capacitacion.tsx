@@ -223,18 +223,19 @@ function CertCard({ cert, primary = false }: { cert: Certification; primary?: bo
       className={cn(
         'group flex flex-col',
         'bg-[#0b1221]',
-        'ring-1 ring-white/[0.07]',
-        'shadow-[0_2px_16px_rgba(0,0,0,0.35)]',
-        'hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(0,0,0,0.5)] hover:ring-white/[0.13]',
+        'ring-1 ring-white/[0.06]',
+        'shadow-[0_2px_12px_rgba(0,0,0,0.28)]',
+        'hover:-translate-y-1 hover:scale-[1.02]',
+        'hover:shadow-[0_12px_32px_rgba(7,56,223,0.13),0_4px_16px_rgba(0,0,0,0.4)]',
         'transition-all duration-300 ease-out',
       )}
     >
-      {/* Badge — native 16:9 asset, integrity preserved */}
-      <div className="aspect-video overflow-hidden">
+      {/* Badge — object-contain inside padded neutral mount; normalizes visual weight */}
+      <div className="aspect-video overflow-hidden bg-white flex items-center justify-center p-4">
         <img
           src={cert.image}
           alt={cert.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
         />
       </div>
 
@@ -242,7 +243,7 @@ function CertCard({ cert, primary = false }: { cert: Certification; primary?: bo
       <div className="px-4 py-4 border-t border-white/[0.05]">
         <p
           className="text-[7px] font-semibold uppercase tracking-[0.18em] mb-1.5 leading-none"
-          style={{ color: '#C8A96B', opacity: 0.6 }}
+          style={{ color: '#C8A96B', opacity: 0.5 }}
         >
           {cert.issuer}
         </p>
