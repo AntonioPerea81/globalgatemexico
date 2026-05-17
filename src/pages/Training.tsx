@@ -57,6 +57,7 @@ interface Certification {
   issuer: string;
   image: string;
   location?: string;
+  imgScale?: number;
   tier: 'primary' | 'secondary';
   verifyUrl?: string;
 }
@@ -86,6 +87,7 @@ const CERTIFICATIONS: Certification[] = [
     title: 'Dangerous Goods Safety Adviser',
     issuer: 'Scottish Qualifications Authority',
     image: '/certifications/dgsa-sqa.png',
+    imgScale: 1.12,
     tier: 'primary',
   },
   {
@@ -231,11 +233,12 @@ function CertCard({ cert, primary = false }: { cert: Certification; primary?: bo
       )}
     >
       {/* Badge — object-contain inside padded neutral mount; normalizes visual weight */}
-      <div className="aspect-video overflow-hidden bg-white flex items-center justify-center p-4">
+      <div className="aspect-video overflow-hidden bg-white flex items-center justify-center p-3">
         <img
           src={cert.image}
           alt={cert.title}
           className="w-full h-full object-contain"
+          style={cert.imgScale ? { transform: `scale(${cert.imgScale})` } : undefined}
         />
       </div>
 
