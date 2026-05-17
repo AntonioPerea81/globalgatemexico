@@ -464,25 +464,6 @@ export function CapacitacionPage() {
                 ))}
               </div>
 
-              {/* Franja de cobertura operativa */}
-              <div className="mt-8 p-6 bg-[#060e1c] flex flex-wrap gap-x-8 gap-y-4">
-                <p className="w-full text-[9px] text-white/30 uppercase tracking-[0.2em] font-black mb-1">
-                  Cobertura Operativa
-                </p>
-                {[
-                  { Icon: Plane,     label: 'Aéreo' },
-                  { Icon: Truck,     label: 'Terrestre' },
-                  { Icon: Ship,      label: 'Marítimo' },
-                  { Icon: Radiation, label: 'Radiactivo' },
-                  { Icon: Package,   label: 'Almacén' },
-                  { Icon: Globe,     label: 'Transfronterizo' },
-                ].map(({ Icon: MIcon, label }) => (
-                  <div key={label} className="flex items-center gap-2">
-                    <MIcon size={13} className="text-primary/70" />
-                    <span className="text-[10px] text-white/45 uppercase tracking-[0.12em] font-bold">{label}</span>
-                  </div>
-                ))}
-              </div>
             </FadeIn>
 
           </div>
