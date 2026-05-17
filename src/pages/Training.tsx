@@ -688,29 +688,30 @@ export function TrainingPage() {
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                 style={{ filter: 'saturate(0.75) brightness(0.84) contrast(1.07) hue-rotate(5deg)' }}
               />
-              <div className="absolute inset-0 bg-[#060e1c]/28 pointer-events-none" />
+              <div className="absolute inset-0 bg-[#060e1c]/18 pointer-events-none" />
               <div className="absolute bottom-4 left-4">
-                <div className="bg-black/40 backdrop-blur-sm px-3 py-2 border-l-2 border-primary/70">
-                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/80 leading-none mb-0.5">BMW Group</p>
-                  <p className="text-[8px] uppercase tracking-[0.12em] text-white/40">Automotive · Enterprise Training</p>
+                <div className="bg-black/25 backdrop-blur-sm px-2.5 py-1.5 border-l border-primary/45">
+                  <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/65 leading-none mb-0.5">BMW Group</p>
+                  <p className="text-[7px] uppercase tracking-[0.15em] text-white/32">Automotive · Enterprise Training</p>
                 </div>
               </div>
             </motion.div>
 
-            {/* Three supporting images */}
+            {/* Three supporting images — UN weighted heavier, GGM trimmed */}
             <div className="flex flex-col gap-3 lg:gap-4 lg:h-[540px]">
               {[
-                { src: '/training/un-training.webp',         label: 'United Nations',      detail: 'International Organizations' },
-                { src: '/training/ggm-training-center.webp', label: 'GGM Training Center', detail: 'México' },
-                { src: '/training/canacintra-training.webp', label: 'CANACINTRA',          detail: 'Industrial Sector' },
-              ].map(({ src, label, detail }, i) => (
+                { src: '/training/un-training.webp',         label: 'United Nations',      detail: 'International Organizations', flexGrow: '1.4'  },
+                { src: '/training/ggm-training-center.webp', label: 'GGM Training Center', detail: 'México',                      flexGrow: '0.85' },
+                { src: '/training/canacintra-training.webp', label: 'CANACINTRA',          detail: 'Industrial Sector',           flexGrow: '1'    },
+              ].map(({ src, label, detail, flexGrow }, i) => (
                 <motion.div
                   key={src}
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.55, delay: i * 0.08 + 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="flex-1 relative overflow-hidden group h-[160px] lg:h-auto cursor-default"
+                  className="relative overflow-hidden group h-[160px] lg:h-auto cursor-default"
+                  style={{ flex: flexGrow }}
                 >
                   <img
                     src={src}
@@ -718,11 +719,11 @@ export function TrainingPage() {
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                     style={{ filter: 'saturate(0.75) brightness(0.84) contrast(1.07) hue-rotate(5deg)' }}
                   />
-                  <div className="absolute inset-0 bg-[#060e1c]/28 pointer-events-none" />
+                  <div className="absolute inset-0 bg-[#060e1c]/18 pointer-events-none" />
                   <div className="absolute bottom-3 left-3">
-                    <div className="bg-black/40 backdrop-blur-sm px-2.5 py-1.5 border-l-2 border-primary/50">
-                      <p className="text-[9px] font-black uppercase tracking-[0.16em] text-white/75 leading-none mb-0.5">{label}</p>
-                      <p className="text-[7px] uppercase tracking-[0.1em] text-white/35">{detail}</p>
+                    <div className="bg-black/25 backdrop-blur-sm px-2 py-1 border-l border-primary/30">
+                      <p className="text-[8px] font-medium uppercase tracking-[0.2em] text-white/55 leading-none mb-0.5">{label}</p>
+                      <p className="text-[7px] uppercase tracking-[0.14em] text-white/30">{detail}</p>
                     </div>
                   </div>
                 </motion.div>
