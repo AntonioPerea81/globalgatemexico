@@ -47,11 +47,11 @@ const NAV_ITEMS: NavItem[] = [
     id: 'training',
     label: { EN: 'Training', ES: 'Capacitación' },
     dropdown: [
-      { label: { EN: 'IATA Training',          ES: 'Capacitación IATA' },        href: { EN: '/training', ES: '/training' } },
-      { label: { EN: 'IMDG Training',          ES: 'Capacitación IMDG' },        href: { EN: '/training', ES: '/training' } },
-      { label: { EN: 'Ground Transportation',  ES: 'Transporte Terrestre' },     href: { EN: '/training', ES: '/training' } },
-      { label: { EN: 'WHMIS / HazCom',         ES: 'WHMIS / HazCom' },          href: { EN: '/training', ES: '/training' } },
-      { label: { EN: 'Corporate Training',     ES: 'Capacitación Corporativa' }, href: { EN: '/training', ES: '/training' } },
+      { label: { EN: 'IATA Training',          ES: 'Capacitación IATA' },        href: { EN: '/training', ES: '/es/capacitacion' } },
+      { label: { EN: 'IMDG Training',          ES: 'Capacitación IMDG' },        href: { EN: '/training', ES: '/es/capacitacion' } },
+      { label: { EN: 'Ground Transportation',  ES: 'Transporte Terrestre' },     href: { EN: '/training', ES: '/es/capacitacion' } },
+      { label: { EN: 'WHMIS / HazCom',         ES: 'WHMIS / HazCom' },          href: { EN: '/training', ES: '/es/capacitacion' } },
+      { label: { EN: 'Corporate Training',     ES: 'Capacitación Corporativa' }, href: { EN: '/training', ES: '/es/capacitacion' } },
     ],
   },
   {
@@ -100,6 +100,8 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/es/consultoria-cumplimiento-dg/revision-hds':                          { EN: '/dg-compliance/sds-review',                                             ES: '/es/consultoria-cumplimiento-dg/revision-hds' },
   '/dg-compliance/cross-border-dg-compliance':                             { EN: '/dg-compliance/cross-border-dg-compliance',                             ES: '/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo' },
   '/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo':       { EN: '/dg-compliance/cross-border-dg-compliance',                             ES: '/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo' },
+  '/training':                                                             { EN: '/training',                                                               ES: '/es/capacitacion' },
+  '/es/capacitacion':                                                      { EN: '/training',                                                               ES: '/es/capacitacion' },
 };
 
 export const Navbar = () => {
