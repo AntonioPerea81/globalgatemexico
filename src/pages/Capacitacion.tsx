@@ -87,7 +87,7 @@ const CERTIFICATIONS: Certification[] = [
     title: 'Dangerous Goods Safety Adviser',
     issuer: 'Scottish Qualifications Authority',
     image: '/certifications/dgsa-sqa.png',
-    imgScale: 1.12,
+    imgScale: 1.18,
     tier: 'primary',
   },
   {
@@ -233,7 +233,7 @@ function CertCard({ cert, primary = false }: { cert: Certification; primary?: bo
       )}
     >
       {/* Badge — object-contain inside padded neutral mount; normalizes visual weight */}
-      <div className="aspect-video overflow-hidden bg-white flex items-center justify-center p-3">
+      <div className="aspect-video overflow-hidden bg-white flex items-center justify-center p-2">
         <img
           src={cert.image}
           alt={cert.title}
@@ -491,13 +491,13 @@ export function CapacitacionPage() {
 
       {/* ── 4. CERTIFICACIONES Y RECONOCIMIENTOS ──────────────────────────────── */}
       <section
-        className="py-24 lg:py-32"
+        className="py-28 lg:py-40"
         style={{ background: 'linear-gradient(180deg, #060e1c 0%, #070f1e 60%, #060e1c 100%)' }}
       >
         <Container>
 
           {/* Encabezado de sección — dos columnas en escritorio */}
-          <FadeIn className="mb-14">
+          <FadeIn className="mb-16">
             <div className="grid lg:grid-cols-2 gap-8 items-end">
               <div>
                 <Eyebrow light>Certificaciones y Reconocimientos</Eyebrow>
@@ -515,11 +515,11 @@ export function CapacitacionPage() {
 
           {/* Primer nivel — 4 tarjetas */}
           <FadeIn delay={0.06}>
-            <div className="flex items-center gap-3 mb-5">
+            <div className="flex items-center gap-3 mb-6">
               <span className="text-[8px] text-primary/50 uppercase tracking-[0.22em] font-black">Credenciales Principales</span>
               <div className="flex-1 h-px bg-white/[0.06]" />
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-14">
               {CERTIFICATIONS.filter(c => c.tier === 'primary').map((cert, i) => (
                 <motion.div
                   key={cert.title}
@@ -536,11 +536,11 @@ export function CapacitacionPage() {
 
           {/* Segundo nivel — 3 tarjetas */}
           <FadeIn delay={0.18}>
-            <div className="flex items-center gap-3 mb-5">
+            <div className="flex items-center gap-3 mb-6">
               <span className="text-[8px] text-white/20 uppercase tracking-[0.22em] font-black">Credenciales Adicionales</span>
               <div className="flex-1 h-px bg-white/[0.04]" />
             </div>
-            <div className="grid sm:grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-3 gap-5">
               {CERTIFICATIONS.filter(c => c.tier === 'secondary').map((cert, i) => (
                 <motion.div
                   key={cert.title}
@@ -556,7 +556,7 @@ export function CapacitacionPage() {
           </FadeIn>
 
           {/* Pie de sección */}
-          <FadeIn delay={0.28} className="mt-12 pt-8 border-t border-white/[0.05] flex items-center justify-between gap-6 flex-wrap">
+          <FadeIn delay={0.28} className="mt-14 pt-8 border-t border-white/[0.05] flex items-center justify-between gap-6 flex-wrap">
             <p className="text-[9px] text-white/20 uppercase tracking-[0.22em] font-black leading-relaxed">
               Todas las certificaciones son vigentes y renovadas conforme al calendario de cada organismo emisor
             </p>
