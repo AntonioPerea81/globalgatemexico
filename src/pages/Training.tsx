@@ -650,7 +650,88 @@ export function TrainingPage() {
         </Container>
       </section>
 
-      {/* ── 6. TRAINING PROCESS ───────────────────────────────────────────────── */}
+      {/* ── 6. TRAINING IN ACTION ─────────────────────────────────────────────── */}
+      <section className="py-24 lg:py-32 bg-[#060e1c]">
+        <Container>
+
+          <FadeIn className="mb-12 lg:mb-14">
+            <div className="grid lg:grid-cols-2 gap-8 items-end">
+              <div>
+                <Eyebrow light>Field Operations</Eyebrow>
+                <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-[1.08]">
+                  Training in Action
+                </h2>
+              </div>
+              <p className="text-white/40 text-[14px] leading-relaxed lg:text-right max-w-md lg:ml-auto">
+                Real operational dangerous goods training delivered across aviation, manufacturing, healthcare, logistics, and industrial sectors.
+              </p>
+            </div>
+          </FadeIn>
+
+          {/* 1 hero + 3 supporting — editorial asymmetric grid */}
+          <div className="grid lg:grid-cols-3 gap-3 lg:gap-4">
+
+            {/* Hero — BMW Group */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="lg:col-span-2 relative overflow-hidden group h-[280px] lg:h-[540px] cursor-default"
+            >
+              <img
+                src="/training/bmw-training.webp"
+                alt="Enterprise dangerous goods training — BMW Group"
+                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                style={{ filter: 'saturate(0.75) brightness(0.84) contrast(1.07) hue-rotate(5deg)' }}
+              />
+              <div className="absolute inset-0 bg-[#060e1c]/28 pointer-events-none" />
+              <div className="absolute bottom-4 left-4">
+                <div className="bg-black/40 backdrop-blur-sm px-3 py-2 border-l-2 border-primary/70">
+                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/80 leading-none mb-0.5">BMW Group</p>
+                  <p className="text-[8px] uppercase tracking-[0.12em] text-white/40">Automotive · Enterprise Training</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Three supporting images */}
+            <div className="flex flex-col gap-3 lg:gap-4 lg:h-[540px]">
+              {[
+                { src: '/training/un-training.webp',         label: 'United Nations',      detail: 'International Organizations' },
+                { src: '/training/ggm-training-center.webp', label: 'GGM Training Center', detail: 'México' },
+                { src: '/training/canacintra-training.webp', label: 'CANACINTRA',          detail: 'Industrial Sector' },
+              ].map(({ src, label, detail }, i) => (
+                <motion.div
+                  key={src}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.55, delay: i * 0.08 + 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  className="flex-1 relative overflow-hidden group h-[160px] lg:h-auto cursor-default"
+                >
+                  <img
+                    src={src}
+                    alt={label}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    style={{ filter: 'saturate(0.75) brightness(0.84) contrast(1.07) hue-rotate(5deg)' }}
+                  />
+                  <div className="absolute inset-0 bg-[#060e1c]/28 pointer-events-none" />
+                  <div className="absolute bottom-3 left-3">
+                    <div className="bg-black/40 backdrop-blur-sm px-2.5 py-1.5 border-l-2 border-primary/50">
+                      <p className="text-[9px] font-black uppercase tracking-[0.16em] text-white/75 leading-none mb-0.5">{label}</p>
+                      <p className="text-[7px] uppercase tracking-[0.1em] text-white/35">{detail}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+          </div>
+
+        </Container>
+      </section>
+
+      {/* ── 7. TRAINING PROCESS ───────────────────────────────────────────────── */}
       <section className="py-24 lg:py-32 bg-[#060e1c]">
         <Container>
 
