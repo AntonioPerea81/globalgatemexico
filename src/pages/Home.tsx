@@ -502,11 +502,11 @@ export const Home = () => {
         <Container>
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <Reveal direction="right">
-              <div className="aspect-[4/5] bg-bg-light overflow-hidden">
+              <div className="aspect-[4/5] overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.14)] border border-black/[0.06]">
                 <img
-                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('books rejections.jpeg')}`}
-                  alt="Compliance Books"
-                  className="w-full h-full object-cover"
+                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('precheck-compliance.webp')}`}
+                  alt="Dangerous Goods Pre-Check Compliance Validation Report"
+                  className="w-full h-full object-cover object-top"
                 />
               </div>
             </Reveal>
