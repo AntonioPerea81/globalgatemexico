@@ -56,7 +56,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     id: 'radioactive',
-    label: { EN: 'Radioactive Material Logistics', ES: 'Logística de Material Radiactivo' },
+    label: { EN: 'Class 7 Logistics', ES: 'Logística Clase 7' },
     href: '/radioactive-material-logistics',
   },
   {
