@@ -57,12 +57,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     id: 'radioactive',
     label: { EN: 'Radioactive Material Logistics', ES: 'Logística de Material Radiactivo' },
-    dropdown: [
-      { label: { EN: 'Class 7 Transportation', ES: 'Transporte Clase 7' },       href: { EN: '/services', ES: '/services' } },
-      { label: { EN: 'Radioactive Storage',    ES: 'Almacenamiento Radiactivo' }, href: { EN: '/services', ES: '/services' } },
-      { label: { EN: 'Packaging & Labelling',  ES: 'Embalaje y Etiquetado' },    href: { EN: '/services', ES: '/services' } },
-      { label: { EN: 'CNSNS Compliance',       ES: 'Cumplimiento CNSNS' },       href: { EN: '/services', ES: '/services' } },
-    ],
+    href: '/radioactive-material-logistics',
   },
   {
     id: 'about',
@@ -102,6 +97,7 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo':       { EN: '/dg-compliance/cross-border-dg-compliance',                             ES: '/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo' },
   '/training':                                                             { EN: '/training',                                                               ES: '/es/capacitacion' },
   '/es/capacitacion':                                                      { EN: '/training',                                                               ES: '/es/capacitacion' },
+  '/radioactive-material-logistics':                                       { EN: '/radioactive-material-logistics',                                         ES: '/radioactive-material-logistics' },
 };
 
 export const Navbar = () => {
