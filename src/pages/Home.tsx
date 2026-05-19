@@ -485,10 +485,10 @@ export const Home = () => {
               </div>
             </Reveal>
             <Reveal direction="left" delay={0.2}>
-              <div className="relative h-full min-h-[400px] bg-white shadow-2xl overflow-hidden">
+              <div className="relative h-full min-h-[400px] overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.18)] border border-black/[0.06]">
                 <img
-                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('Regulatory Picture.jpeg')}`}
-                  alt="Regulatory Compliance"
+                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('Regulatory Picture.webp')}`}
+                  alt="Dangerous Goods Regulatory Compliance Operations"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
