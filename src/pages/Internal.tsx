@@ -64,7 +64,7 @@ export const AboutPage = () => {
     <div className="bg-[#060e1c] min-h-screen">
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <section className="relative pt-44 pb-24 lg:pt-56 lg:pb-36 overflow-hidden">
+      <section className="relative pt-40 pb-16 lg:pt-48 lg:pb-24 overflow-hidden">
         {/* Ambient glow blobs */}
         <div className="absolute top-0 left-[10%] w-[700px] h-[500px] rounded-full blur-[140px] pointer-events-none"
           style={{ background: 'radial-gradient(ellipse, rgba(37,99,235,0.07) 0%, transparent 70%)' }} />
@@ -82,22 +82,22 @@ export const AboutPage = () => {
             About Global Gate Mexico
           </motion.p>
 
-          {/* Headline */}
+          {/* Headline — reduced ~12%, more breathing room */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.08 }}
-            className="text-5xl lg:text-[4.5rem] xl:text-[5.5rem] font-black text-white leading-[1.02] tracking-[-0.025em] mb-9 max-w-4xl"
+            className="text-[2.6rem] lg:text-[3.75rem] xl:text-[4.6rem] font-black text-white leading-[1.08] tracking-[-0.025em] mb-8 max-w-[720px]"
           >
             Specialized Dangerous Goods Logistics Since 2006.
           </motion.h1>
 
-          {/* Supporting text */}
+          {/* Supporting text — raised from /40 to /58 */}
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.18 }}
-            className="text-[15px] text-white/40 leading-relaxed max-w-[520px]"
+            className="text-[15px] text-white/58 leading-relaxed max-w-[520px]"
           >
             Integrated transportation, compliance and hazardous materials solutions across Mexico and international markets.
           </motion.p>
@@ -107,7 +107,7 @@ export const AboutPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.9, delay: 0.35 }}
-            className="mt-14 flex items-center gap-3"
+            className="mt-12 flex items-center gap-3"
           >
             <div className="h-px w-20 bg-white/12" />
             <div className="h-px flex-1 bg-white/[0.035]" />
@@ -118,7 +118,8 @@ export const AboutPage = () => {
       {/* ── Metrics Grid ──────────────────────────────────────────────────── */}
       <section>
         <div className="max-w-7xl mx-auto px-8 lg:px-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px" style={{ background: 'rgba(255,255,255,0.045)' }}>
+          {/* gap-px color lifted to 0.07 for crisper definition */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px" style={{ background: 'rgba(255,255,255,0.07)' }}>
             {METRICS.map(({ value, label }, i) => (
               <motion.div
                 key={label}
@@ -128,9 +129,9 @@ export const AboutPage = () => {
                 transition={{ duration: 0.52, delay: i * 0.07 }}
                 className="group relative bg-[#060e1c] hover:bg-[#08121f] transition-colors duration-500 p-10 xl:p-14 cursor-default overflow-hidden"
               >
-                {/* Inset glow on hover */}
+                {/* Inset glow lifted to 0.10 */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{ background: 'radial-gradient(ellipse at 30% 40%, rgba(37,99,235,0.07) 0%, transparent 65%)' }} />
+                  style={{ background: 'radial-gradient(ellipse at 30% 40%, rgba(37,99,235,0.10) 0%, transparent 65%)' }} />
 
                 {/* Top accent bar */}
                 <div className="h-[2px] bg-primary/35 group-hover:bg-primary/75 transition-all duration-400 mb-10"
@@ -141,8 +142,8 @@ export const AboutPage = () => {
                   {value}
                 </div>
 
-                {/* Label */}
-                <div className="text-[10.5px] font-semibold tracking-[0.18em] uppercase text-white/28 group-hover:text-white/52 transition-colors duration-300 leading-relaxed">
+                {/* Label — rest opacity /28 → /38 */}
+                <div className="text-[10.5px] font-semibold tracking-[0.18em] uppercase text-white/38 group-hover:text-white/58 transition-colors duration-300 leading-relaxed">
                   {label}
                 </div>
               </motion.div>
@@ -152,23 +153,26 @@ export const AboutPage = () => {
       </section>
 
       {/* ── Trust Strip ───────────────────────────────────────────────────── */}
-      <section className="mt-16 py-16 lg:py-20 border-t border-white/[0.05]">
+      <section className="mt-12 py-12 lg:py-16 border-t border-white/[0.05]">
         <div className="max-w-7xl mx-auto px-8 lg:px-12">
-          <p className="text-center text-[9px] font-black tracking-[0.28em] uppercase mb-9"
-            style={{ color: 'rgba(255,255,255,0.18)' }}>
+          {/* Label raised from 0.18 to 0.38 */}
+          <p className="text-center text-[9px] font-black tracking-[0.28em] uppercase mb-8"
+            style={{ color: 'rgba(255,255,255,0.38)' }}>
             Industry Affiliations &amp; Authorizations
           </p>
           <div className="flex flex-wrap items-center justify-center">
             {TRUST_ORGS.map((org, i) => (
               <div key={org} className="flex items-center">
+                {/* Org names raised from 0.22 to 0.40; hover /48 → /65 */}
                 <span
-                  className="text-[13px] font-black tracking-[0.22em] uppercase hover:text-white/48 transition-colors duration-300 cursor-default px-8 lg:px-14"
-                  style={{ color: 'rgba(255,255,255,0.22)' }}
+                  className="text-[13px] font-black tracking-[0.22em] uppercase hover:text-white/65 transition-colors duration-300 cursor-default px-8 lg:px-14"
+                  style={{ color: 'rgba(255,255,255,0.40)' }}
                 >
                   {org}
                 </span>
+                {/* Vertical rule separator — more institutional than dot */}
                 {i < TRUST_ORGS.length - 1 && (
-                  <span className="select-none" style={{ color: 'rgba(255,255,255,0.09)', fontSize: '5px' }}>◆</span>
+                  <div className="w-px h-3 shrink-0" style={{ background: 'rgba(255,255,255,0.18)' }} />
                 )}
               </div>
             ))}
@@ -177,7 +181,7 @@ export const AboutPage = () => {
       </section>
 
       {/* ── Closing Statement ─────────────────────────────────────────────── */}
-      <section className="py-36 lg:py-52 border-t border-white/[0.05]">
+      <section className="py-28 lg:py-40 border-t border-white/[0.05]">
         <div className="max-w-5xl mx-auto px-8 lg:px-12 text-center">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
@@ -186,19 +190,20 @@ export const AboutPage = () => {
             transition={{ duration: 0.75 }}
           >
             {/* Vertical accent */}
-            <div className="w-px h-16 mx-auto mb-14" style={{ background: 'rgba(37,99,235,0.28)' }} />
+            <div className="w-px h-16 mx-auto mb-12" style={{ background: 'rgba(37,99,235,0.28)' }} />
 
-            <h2 className="text-4xl lg:text-[3.5rem] xl:text-[4.5rem] font-black text-white leading-[1.06] tracking-[-0.025em] mb-10">
+            <h2 className="text-4xl lg:text-[3.5rem] xl:text-[4.5rem] font-black text-white leading-[1.06] tracking-[-0.025em] mb-8">
               One Partner.<br />Full Dangerous Goods Control.
             </h2>
 
+            {/* Paragraph raised from 0.32 to 0.50 */}
             <p className="text-[14px] lg:text-[15px] leading-[1.9] max-w-2xl mx-auto"
-              style={{ color: 'rgba(255,255,255,0.32)' }}>
+              style={{ color: 'rgba(255,255,255,0.50)' }}>
               From classification and packaging to transportation and regulatory compliance, Global Gate Mexico delivers integrated dangerous goods solutions with operational precision and safety at every stage.
             </p>
 
             {/* Bottom ornament */}
-            <div className="mt-16 flex items-center justify-center gap-5">
+            <div className="mt-12 flex items-center justify-center gap-5">
               <div className="h-px w-20" style={{ background: 'rgba(255,255,255,0.08)' }} />
               <div className="w-[5px] h-[5px] rounded-full" style={{ background: 'rgba(37,99,235,0.45)' }} />
               <div className="h-px w-20" style={{ background: 'rgba(255,255,255,0.08)' }} />
