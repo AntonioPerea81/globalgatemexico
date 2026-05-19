@@ -279,15 +279,21 @@ export const Home = () => {
     setTurnstileToken('');
   };
 
-  // Curated institutional / DG-authority logos only
-  const logos = [
-    "IATA_CARGO_AGENT__1_.png",
-    "COSTHA_NewLogoCMYK_Sm.png",
-    "ANIQ__1_.png",
-    "WCA DGs.png",
-  ];
   const logoBasePath = ((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/');
   const logoSrc = (file: string) => `${logoBasePath}${encodeURIComponent(file)}`;
+
+  // Institutional affiliations: image logos + CNSNS typographic wordmark
+  type LogoItem =
+    | { kind: 'img';  file: string; alt: string }
+    | { kind: 'mark'; primary: string; secondary: string };
+
+  const logoItems: LogoItem[] = [
+    { kind: 'img',  file: 'IATA_CARGO_AGENT__1_.png',  alt: 'IATA Cargo Agent'       },
+    { kind: 'img',  file: 'COSTHA_NewLogoCMYK_Sm.png', alt: 'COSTHA'                  },
+    { kind: 'mark', primary: 'CNSNS',                  secondary: 'México'             },
+    { kind: 'img',  file: 'ANIQ__1_.png',              alt: 'ANIQ'                     },
+    { kind: 'img',  file: 'WCA DGs.png',               alt: 'WCA Dangerous Goods'      },
+  ];
 
   return (
     <>
@@ -434,23 +440,37 @@ export const Home = () => {
               ease: 'linear',
             }}
           >
-            {[...logos, ...logos, ...logos].map((logo, idx) => (
+            {[...logoItems, ...logoItems, ...logoItems].map((item, idx) => (
               <div
-                key={`${logo}-${idx}`}
-                className="flex shrink-0 items-center justify-center px-16 lg:px-20"
+                key={idx}
+                className="group flex shrink-0 items-center justify-center px-16 lg:px-20 cursor-default"
               >
-                <img
-                  src={logoSrc(logo)}
-                  alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
-                  className="h-[44px] w-auto max-w-none object-contain"
-                  style={{
-                    filter: 'grayscale(100%) brightness(0) invert(1)',
-                    opacity: 0.42,
-                  }}
-                  loading="lazy"
-                  decoding="async"
-                  draggable={false}
-                />
+                {item.kind === 'img' ? (
+                  <img
+                    src={logoSrc(item.file)}
+                    alt={item.alt}
+                    className="h-[44px] w-auto max-w-none object-contain grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-85 transition-all duration-500 ease-in-out"
+                    loading="lazy"
+                    decoding="async"
+                    draggable={false}
+                  />
+                ) : (
+                  /* CNSNS typographic wordmark */
+                  <div className="flex flex-col items-center leading-none opacity-50 group-hover:opacity-85 transition-opacity duration-500 ease-in-out">
+                    <span
+                      className="font-black tracking-[0.22em] uppercase text-white"
+                      style={{ fontSize: '16px' }}
+                    >
+                      {item.primary}
+                    </span>
+                    <span
+                      className="tracking-[0.2em] uppercase mt-[3px]"
+                      style={{ fontSize: '6px', color: 'rgba(255,255,255,0.55)' }}
+                    >
+                      {item.secondary}
+                    </span>
+                  </div>
+                )}
               </div>
             ))}
           </motion.div>
