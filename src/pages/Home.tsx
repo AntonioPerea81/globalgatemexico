@@ -279,16 +279,12 @@ export const Home = () => {
     setTurnstileToken('');
   };
 
+  // Curated institutional / DG-authority logos only
   const logos = [
     "IATA_CARGO_AGENT__1_.png",
-    "ANIQ__1_.png",
-    "Logo_AMACARGA_firma.png",
-    "Distintivo.png",
     "COSTHA_NewLogoCMYK_Sm.png",
-    "FIATA_Logo.png",
-    "TIACA_OFFICIAL_LOGO-Blue-2024_24__46__68__94__96_.png",
-    "aws.png",
-    "WCA DGs.png"
+    "ANIQ__1_.png",
+    "WCA DGs.png",
   ];
   const logoBasePath = ((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/');
   const logoSrc = (file: string) => `${logoBasePath}${encodeURIComponent(file)}`;
@@ -312,7 +308,7 @@ export const Home = () => {
           </motion.div>
           <div className="absolute inset-0 bg-linear-to-r from-dark/95 via-dark/70 to-dark/40 z-10" />
           <LogisticsAnimation />
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-white to-transparent z-20" />
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-[#060e1c] to-transparent z-20" />
         </div>
 
         <Container className="relative z-20 w-full py-20 lg:py-32">
@@ -386,19 +382,19 @@ export const Home = () => {
       </section>
 
       {/* 2. STATS SECTION */}
-      <div className="bg-white py-14 border-b border-black/5 relative z-30">
+      <div className="bg-[#060e1c] py-16 border-b border-white/[0.06] relative z-30">
         <Container>
           <Reveal>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-10 items-center justify-between">
               {STATS.map((stat, idx) => (
-                <div 
+                <div
                   key={stat.label}
                   className="flex flex-col md:items-start"
                 >
-                  <span className="text-4xl font-extrabold text-primary mb-1">
+                  <span className="text-4xl font-extrabold text-white mb-1">
                     <CountUp value={stat.value} suffix={stat.suffix} />
                   </span>
-                  <span className="text-[11px] uppercase tracking-widest font-bold text-secondary">
+                  <span className="text-[11px] uppercase tracking-widest font-bold" style={{ color: 'rgba(255,255,255,0.40)' }}>
                     {t(`stats.${stat.id || stat.label.toLowerCase().split(' ')[0]}`)}
                   </span>
                 </div>
@@ -408,39 +404,57 @@ export const Home = () => {
         </Container>
       </div>
 
-      {/* NEW: LOGO SCROLLING BANNER */}
-      <div className="bg-white py-12 overflow-hidden border-b border-black/5">
-        <Reveal>
-          <div className="relative flex overflow-x-hidden">
-            <motion.div
-              className="flex shrink-0 gap-16 items-center whitespace-nowrap px-8 will-change-transform"
-              animate={{ x: ["0%", "-50%"] }}
-              transition={{
-                duration: 38,
-                repeat: Infinity,
-                repeatType: "loop",
-                repeatDelay: 0,
-                ease: "linear",
-              }}
-            >
-              {[...logos, ...logos].map((logo, idx) => (
-                <div
-                  key={`${logo}-${idx}`}
-                  className="flex shrink-0 items-center justify-center px-6"
-                >
-                  <img
-                    src={logoSrc(logo)}
-                    alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
-                    className="h-[80px] w-auto max-w-none object-contain"
-                    loading="lazy"
-                    decoding="async"
-                    draggable={false}
-                  />
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </Reveal>
+      {/* INSTITUTIONAL AFFILIATIONS STRIP */}
+      <div className="bg-[#060e1c] pt-14 pb-16 overflow-hidden border-b border-white/[0.05]">
+        {/* Section label */}
+        <div className="max-w-7xl mx-auto px-8 lg:px-12 mb-11">
+          <p
+            className="text-center text-[9px] font-black tracking-[0.3em] uppercase"
+            style={{ color: 'rgba(255,255,255,0.32)' }}
+          >
+            Institutional Affiliations &amp; Industry Memberships
+          </p>
+        </div>
+
+        {/* Marquee — triple-set for seamless coverage at any viewport width */}
+        <div
+          className="relative flex overflow-x-hidden"
+          style={{
+            maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
+          }}
+        >
+          <motion.div
+            className="flex shrink-0 items-center whitespace-nowrap will-change-transform"
+            animate={{ x: ['0%', '-33.333%'] }}
+            transition={{
+              duration: 65,
+              repeat: Infinity,
+              repeatType: 'loop',
+              ease: 'linear',
+            }}
+          >
+            {[...logos, ...logos, ...logos].map((logo, idx) => (
+              <div
+                key={`${logo}-${idx}`}
+                className="flex shrink-0 items-center justify-center px-16 lg:px-20"
+              >
+                <img
+                  src={logoSrc(logo)}
+                  alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
+                  className="h-[44px] w-auto max-w-none object-contain"
+                  style={{
+                    filter: 'grayscale(100%) brightness(0) invert(1)',
+                    opacity: 0.42,
+                  }}
+                  loading="lazy"
+                  decoding="async"
+                  draggable={false}
+                />
+              </div>
+            ))}
+          </motion.div>
+        </div>
       </div>
 
       {/* NEW: EMPATHY (PROBLEM) SECTION */}
