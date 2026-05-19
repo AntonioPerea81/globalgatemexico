@@ -282,17 +282,16 @@ export const Home = () => {
   const logoBasePath = ((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/');
   const logoSrc = (file: string) => `${logoBasePath}${encodeURIComponent(file)}`;
 
-  // Institutional affiliations: image logos + CNSNS typographic wordmark
-  type LogoItem =
-    | { kind: 'img';  file: string; alt: string }
-    | { kind: 'mark'; primary: string; secondary: string };
-
-  const logoItems: LogoItem[] = [
-    { kind: 'img',  file: 'IATA_CARGO_AGENT__1_.png',  alt: 'IATA Cargo Agent'       },
-    { kind: 'img',  file: 'COSTHA_NewLogoCMYK_Sm.png', alt: 'COSTHA'                  },
-    { kind: 'mark', primary: 'CNSNS',                  secondary: 'México'             },
-    { kind: 'img',  file: 'ANIQ__1_.png',              alt: 'ANIQ'                     },
-    { kind: 'img',  file: 'WCA DGs.png',               alt: 'WCA Dangerous Goods'      },
+  const logos = [
+    "IATA_CARGO_AGENT__1_.png",
+    "ANIQ__1_.png",
+    "Logo_AMACARGA_firma.png",
+    "Distintivo.png",
+    "COSTHA_NewLogoCMYK_Sm.png",
+    "FIATA_Logo.png",
+    "TIACA_OFFICIAL_LOGO-Blue-2024_24__46__68__94__96_.png",
+    "aws.png",
+    "WCA DGs.png",
   ];
 
   return (
@@ -314,7 +313,7 @@ export const Home = () => {
           </motion.div>
           <div className="absolute inset-0 bg-linear-to-r from-dark/95 via-dark/70 to-dark/40 z-10" />
           <LogisticsAnimation />
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-[#060e1c] to-transparent z-20" />
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-white to-transparent z-20" />
         </div>
 
         <Container className="relative z-20 w-full py-20 lg:py-32">
@@ -388,7 +387,7 @@ export const Home = () => {
       </section>
 
       {/* 2. STATS SECTION */}
-      <div className="bg-[#060e1c] py-16 border-b border-white/[0.06] relative z-30">
+      <div className="bg-white py-14 border-b border-black/5 relative z-30">
         <Container>
           <Reveal>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-10 items-center justify-between">
@@ -397,10 +396,10 @@ export const Home = () => {
                   key={stat.label}
                   className="flex flex-col md:items-start"
                 >
-                  <span className="text-4xl font-extrabold text-white mb-1">
+                  <span className="text-4xl font-extrabold text-primary mb-1">
                     <CountUp value={stat.value} suffix={stat.suffix} />
                   </span>
-                  <span className="text-[11px] uppercase tracking-widest font-bold" style={{ color: 'rgba(255,255,255,0.40)' }}>
+                  <span className="text-[11px] uppercase tracking-widest font-bold text-secondary">
                     {t(`stats.${stat.id || stat.label.toLowerCase().split(' ')[0]}`)}
                   </span>
                 </div>
@@ -411,28 +410,25 @@ export const Home = () => {
       </div>
 
       {/* INSTITUTIONAL AFFILIATIONS STRIP */}
-      <div className="bg-[#060e1c] pt-14 pb-16 overflow-hidden border-b border-white/[0.05]">
+      <div className="bg-white pt-10 pb-12 overflow-hidden border-b border-black/5">
         {/* Section label */}
-        <div className="max-w-7xl mx-auto px-8 lg:px-12 mb-11">
-          <p
-            className="text-center text-[9px] font-black tracking-[0.3em] uppercase"
-            style={{ color: 'rgba(255,255,255,0.32)' }}
-          >
+        <div className="max-w-7xl mx-auto px-8 lg:px-12 mb-8">
+          <p className="text-center text-[9px] font-black tracking-[0.28em] uppercase text-black/25">
             Institutional Affiliations &amp; Industry Memberships
           </p>
         </div>
 
-        {/* Marquee — triple-set for seamless coverage at any viewport width */}
+        {/* Marquee — doubled set for seamless loop; 9 logos × 2 is wide enough at all viewports */}
         <div
           className="relative flex overflow-x-hidden"
           style={{
-            maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
+            maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
           }}
         >
           <motion.div
             className="flex shrink-0 items-center whitespace-nowrap will-change-transform"
-            animate={{ x: ['0%', '-33.333%'] }}
+            animate={{ x: ['0%', '-50%'] }}
             transition={{
               duration: 65,
               repeat: Infinity,
@@ -440,37 +436,19 @@ export const Home = () => {
               ease: 'linear',
             }}
           >
-            {[...logoItems, ...logoItems, ...logoItems].map((item, idx) => (
+            {[...logos, ...logos].map((logo, idx) => (
               <div
-                key={idx}
-                className="group flex shrink-0 items-center justify-center px-16 lg:px-20 cursor-default"
+                key={`${logo}-${idx}`}
+                className="group flex shrink-0 items-center justify-center px-10 lg:px-14"
               >
-                {item.kind === 'img' ? (
-                  <img
-                    src={logoSrc(item.file)}
-                    alt={item.alt}
-                    className="h-[44px] w-auto max-w-none object-contain grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-85 transition-all duration-500 ease-in-out"
-                    loading="lazy"
-                    decoding="async"
-                    draggable={false}
-                  />
-                ) : (
-                  /* CNSNS typographic wordmark */
-                  <div className="flex flex-col items-center leading-none opacity-50 group-hover:opacity-85 transition-opacity duration-500 ease-in-out">
-                    <span
-                      className="font-black tracking-[0.22em] uppercase text-white"
-                      style={{ fontSize: '16px' }}
-                    >
-                      {item.primary}
-                    </span>
-                    <span
-                      className="tracking-[0.2em] uppercase mt-[3px]"
-                      style={{ fontSize: '6px', color: 'rgba(255,255,255,0.55)' }}
-                    >
-                      {item.secondary}
-                    </span>
-                  </div>
-                )}
+                <img
+                  src={logoSrc(logo)}
+                  alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
+                  className="h-[72px] w-auto max-w-none object-contain opacity-85 group-hover:opacity-100 group-hover:scale-[1.04] transition-all duration-300 ease-in-out"
+                  loading="lazy"
+                  decoding="async"
+                  draggable={false}
+                />
               </div>
             ))}
           </motion.div>
