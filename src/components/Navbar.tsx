@@ -61,8 +61,8 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     id: 'about',
-    label: { EN: 'About Us', ES: 'Nosotros' },
-    href: '/about',
+    label: { EN: 'About Us', ES: 'Acerca' },
+    href: { EN: '/about', ES: '/acerca' },
   },
   {
     id: 'contact',
@@ -99,6 +99,8 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/es/capacitacion':                                                      { EN: '/training',                                                               ES: '/es/capacitacion' },
   '/radioactive-material-logistics':                                       { EN: '/radioactive-material-logistics',                                         ES: '/logistica-material-radiactivo' },
   '/logistica-material-radiactivo':                                        { EN: '/radioactive-material-logistics',                                         ES: '/logistica-material-radiactivo' },
+  '/about':                                                                { EN: '/about',                                                                  ES: '/acerca' },
+  '/acerca':                                                               { EN: '/about',                                                                  ES: '/acerca' },
 };
 
 export const Navbar = () => {

@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Home } from './pages/Home';
-import { ServicesPage, AboutPage } from './pages/Internal';
+import { ServicesPage, AboutPage, AcercaPage } from './pages/Internal';
 import { TrainingPage } from './pages/Training';
 import { CapacitacionPage } from './pages/Capacitacion';
 import { DangerousGoodsTransportationPage } from './pages/DangerousGoodsTransportation';
@@ -77,6 +77,7 @@ export default function App() {
             <Route path="/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo" element={<CumplimientoTransfronterizoPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/about"    element={<AboutPage />} />
+            <Route path="/acerca"   element={<AcercaPage />} />
             <Route path="/radioactive-material-logistics" element={<RadioactiveMaterialLogisticsPage />} />
             <Route path="/logistica-material-radiactivo" element={<LogisticaMaterialRadiacticoPage />} />
             <Route path="/training" element={<TrainingPage />} />
