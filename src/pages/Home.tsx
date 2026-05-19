@@ -502,12 +502,27 @@ export const Home = () => {
         <Container>
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <Reveal direction="right">
-              <div className="aspect-[4/5] overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.14)] border border-black/[0.06]">
-                <img
-                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('precheck-compliance.webp')}`}
-                  alt="Dangerous Goods Pre-Check Compliance Validation Report"
-                  className="w-full h-full object-cover object-top"
-                />
+              {/* Subtle rotation breaks the flat-PDF feel */}
+              <div style={{ transform: 'rotate(-0.6deg)', transformOrigin: 'bottom center' }}>
+                <div
+                  className="relative aspect-[4/5] overflow-hidden rounded-lg border border-black/[0.07]"
+                  style={{ boxShadow: '0 4px 14px rgba(0,0,0,0.07), 0 22px 52px rgba(0,0,0,0.15)' }}
+                >
+                  <img
+                    src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('precheck-compliance.webp')}`}
+                    alt="Dangerous Goods Pre-Check Compliance Validation Report"
+                    className="w-full h-full object-cover"
+                    style={{
+                      objectPosition: 'center 8%',
+                      filter: 'brightness(0.93) contrast(1.05) saturate(0.80)',
+                    }}
+                  />
+                  {/* Vignette — frames without heavy border */}
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse at 50% 30%, transparent 35%, rgba(0,0,0,0.14) 100%)' }}
+                  />
+                </div>
               </div>
             </Reveal>
             <Reveal direction="left" delay={0.2}>
