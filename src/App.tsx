@@ -20,6 +20,7 @@ import {
 } from './pages/services/es';
 import { DGConsultingCompliancePage } from './pages/DGConsultingCompliance';
 import { RadioactiveMaterialLogisticsPage } from './pages/RadioactiveMaterialLogistics';
+import { LogisticaMaterialRadiacticoPage } from './pages/LogisticaMaterialRadiactivo';
 import { TransporteMercanciasPeligrosasPage } from './pages/TransporteMercanciasPeligrosas';
 import {
   DGCompliancePage,
@@ -77,6 +78,7 @@ export default function App() {
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/about"    element={<AboutPage />} />
             <Route path="/radioactive-material-logistics" element={<RadioactiveMaterialLogisticsPage />} />
+            <Route path="/logistica-material-radiactivo" element={<LogisticaMaterialRadiacticoPage />} />
             <Route path="/training" element={<TrainingPage />} />
             <Route path="/es/capacitacion" element={<CapacitacionPage />} />
             <Route path="*"         element={<Home />} />

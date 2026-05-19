@@ -9,7 +9,7 @@ interface SubItem { label: { EN: string; ES: string }; href: { EN: string; ES: s
 interface NavItem {
   id: string;
   label: { EN: string; ES: string };
-  href?: string;
+  href?: string | { EN: string; ES: string };
   hash?: string;
   dropdown?: SubItem[];
 }
@@ -57,7 +57,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     id: 'radioactive',
     label: { EN: 'Class 7 Logistics', ES: 'Logística Clase 7' },
-    href: '/radioactive-material-logistics',
+    href: { EN: '/radioactive-material-logistics', ES: '/logistica-material-radiactivo' },
   },
   {
     id: 'about',
@@ -97,7 +97,8 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo':       { EN: '/dg-compliance/cross-border-dg-compliance',                             ES: '/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo' },
   '/training':                                                             { EN: '/training',                                                               ES: '/es/capacitacion' },
   '/es/capacitacion':                                                      { EN: '/training',                                                               ES: '/es/capacitacion' },
-  '/radioactive-material-logistics':                                       { EN: '/radioactive-material-logistics',                                         ES: '/radioactive-material-logistics' },
+  '/radioactive-material-logistics':                                       { EN: '/radioactive-material-logistics',                                         ES: '/logistica-material-radiactivo' },
+  '/logistica-material-radiactivo':                                        { EN: '/radioactive-material-logistics',                                         ES: '/logistica-material-radiactivo' },
 };
 
 export const Navbar = () => {
@@ -109,6 +110,11 @@ export const Navbar = () => {
   const navigate                            = useNavigate();
   const location                            = useLocation();
   const closeTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  function resolveHref(href: string | { EN: string; ES: string }): string {
+    if (typeof href === 'string') return href;
+    return href[language];
+  }
 
   function switchLanguage(lang: 'EN' | 'ES') {
     const equivalent = ROUTE_EQUIVALENTS[location.pathname];
@@ -234,7 +240,7 @@ export const Navbar = () => {
                 </button>
               ) : item.href && !item.dropdown ? (
                 <Link
-                  to={item.href}
+                  to={resolveHref(item.href)}
                   className="flex items-center gap-1 px-3 2xl:px-4 h-full text-[11px] font-semibold tracking-[0.08em] uppercase text-white/65 hover:text-white transition-colors whitespace-nowrap"
                 >
                   {item.label[language]}
@@ -242,7 +248,7 @@ export const Navbar = () => {
               ) : (
                 item.href ? (
                   <Link
-                    to={item.href}
+                    to={resolveHref(item.href)}
                     className={cn(
                       'flex items-center gap-1.5 px-3 2xl:px-4 h-full text-[11px] font-semibold tracking-[0.08em] uppercase transition-colors whitespace-nowrap',
                       activeDropdown === item.id ? 'text-white' : 'text-white/65 hover:text-white'
@@ -420,7 +426,7 @@ export const Navbar = () => {
                     </button>
                   ) : (
                     <Link
-                      to={item.href!}
+                      to={resolveHref(item.href!)}
                       onClick={() => setMobileOpen(false)}
                       className="block py-4 text-[11px] font-bold text-white/70 uppercase tracking-[0.1em] hover:text-white transition-colors"
                     >
