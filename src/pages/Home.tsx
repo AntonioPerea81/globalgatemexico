@@ -279,6 +279,9 @@ export const Home = () => {
     setTurnstileToken('');
   };
 
+  const logoBasePath = ((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/');
+  const logoSrc = (file: string) => `${logoBasePath}${encodeURIComponent(file)}`;
+
   const logos = [
     "IATA_CARGO_AGENT__1_.png",
     "ANIQ__1_.png",
@@ -288,10 +291,8 @@ export const Home = () => {
     "FIATA_Logo.png",
     "TIACA_OFFICIAL_LOGO-Blue-2024_24__46__68__94__96_.png",
     "aws.png",
-    "WCA DGs.png"
+    "WCA DGs.png",
   ];
-  const logoBasePath = ((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/');
-  const logoSrc = (file: string) => `${logoBasePath}${encodeURIComponent(file)}`;
 
   return (
     <>
@@ -391,7 +392,7 @@ export const Home = () => {
           <Reveal>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-10 items-center justify-between">
               {STATS.map((stat, idx) => (
-                <div 
+                <div
                   key={stat.label}
                   className="flex flex-col md:items-start"
                 >
@@ -408,39 +409,50 @@ export const Home = () => {
         </Container>
       </div>
 
-      {/* NEW: LOGO SCROLLING BANNER */}
-      <div className="bg-white py-12 overflow-hidden border-b border-black/5">
-        <Reveal>
-          <div className="relative flex overflow-x-hidden">
-            <motion.div
-              className="flex shrink-0 gap-16 items-center whitespace-nowrap px-8 will-change-transform"
-              animate={{ x: ["0%", "-50%"] }}
-              transition={{
-                duration: 38,
-                repeat: Infinity,
-                repeatType: "loop",
-                repeatDelay: 0,
-                ease: "linear",
-              }}
-            >
-              {[...logos, ...logos].map((logo, idx) => (
-                <div
-                  key={`${logo}-${idx}`}
-                  className="flex shrink-0 items-center justify-center px-6"
-                >
-                  <img
-                    src={logoSrc(logo)}
-                    alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
-                    className="h-[80px] w-auto max-w-none object-contain"
-                    loading="lazy"
-                    decoding="async"
-                    draggable={false}
-                  />
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </Reveal>
+      {/* INSTITUTIONAL AFFILIATIONS STRIP */}
+      <div className="bg-white pt-10 pb-12 overflow-hidden border-b border-black/5">
+        {/* Section label */}
+        <div className="max-w-7xl mx-auto px-8 lg:px-12 mb-8">
+          <p className="text-center text-[9px] font-black tracking-[0.28em] uppercase text-black/25">
+            Institutional Affiliations &amp; Industry Memberships
+          </p>
+        </div>
+
+        {/* Marquee — doubled set for seamless loop; 9 logos × 2 is wide enough at all viewports */}
+        <div
+          className="relative flex overflow-x-hidden"
+          style={{
+            maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+          }}
+        >
+          <motion.div
+            className="flex shrink-0 items-center whitespace-nowrap will-change-transform"
+            animate={{ x: ['0%', '-50%'] }}
+            transition={{
+              duration: 65,
+              repeat: Infinity,
+              repeatType: 'loop',
+              ease: 'linear',
+            }}
+          >
+            {[...logos, ...logos].map((logo, idx) => (
+              <div
+                key={`${logo}-${idx}`}
+                className="group flex shrink-0 items-center justify-center px-10 lg:px-14"
+              >
+                <img
+                  src={logoSrc(logo)}
+                  alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
+                  className="h-[72px] w-auto max-w-none object-contain opacity-85 group-hover:opacity-100 group-hover:scale-[1.04] transition-all duration-300 ease-in-out"
+                  loading="lazy"
+                  decoding="async"
+                  draggable={false}
+                />
+              </div>
+            ))}
+          </motion.div>
+        </div>
       </div>
 
       {/* NEW: EMPATHY (PROBLEM) SECTION */}
@@ -450,33 +462,38 @@ export const Home = () => {
             <Reveal direction="right">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold text-dark mb-6 leading-tight">
-                  {t('empathy.title')}
+                  Dangerous goods failures are rarely transportation problems. They are compliance failures.
                 </h2>
                 <p className="text-lg text-secondary mb-10 leading-relaxed font-medium">
-                  {t('empathy.subtitle')}
+                  Most dangerous goods shipments are rejected long before transportation begins. Incorrect classification, incomplete documentation, packaging errors, and regulatory misinterpretation create operational and legal exposure.
                 </p>
                 <div className="space-y-6 mb-10">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="flex gap-4 items-start group">
+                  {[
+                    'Incorrect classification',
+                    'Incomplete dangerous goods documentation',
+                    'Non-compliant packaging configuration',
+                    'Misinterpretation of transport regulations',
+                  ].map((pain) => (
+                    <div key={pain} className="flex gap-4 items-start group">
                       <div className="mt-1 w-6 h-6 rounded-full bg-red-100 flex items-center justify-center shrink-0 border border-red-200">
                         <div className="w-2 h-2 rounded-full bg-red-600" />
                       </div>
                       <p className="text-dark/80 font-bold italic">
-                        {t(`empathy.pain${i}`)}
+                        {pain}
                       </p>
                     </div>
                   ))}
                 </div>
                 <p className="text-dark font-black uppercase tracking-widest text-[11px] border-l-2 border-primary pl-4 py-1">
-                  {t('empathy.closing')}
+                  Most shipment failures are discovered only after the cargo has already been delayed.
                 </p>
               </div>
             </Reveal>
             <Reveal direction="left" delay={0.2}>
-              <div className="relative h-full min-h-[400px] bg-white shadow-2xl overflow-hidden">
+              <div className="relative h-full min-h-[400px] overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.18)] border border-black/[0.06]">
                 <img
-                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('Regulatory Picture.jpeg')}`}
-                  alt="Regulatory Compliance"
+                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('Regulatory Picture.webp')}`}
+                  alt="Dangerous Goods Regulatory Compliance Operations"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
@@ -490,38 +507,58 @@ export const Home = () => {
         <Container>
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <Reveal direction="right">
-              <div className="aspect-[4/5] bg-bg-light overflow-hidden">
-                <img
-                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('books rejections.jpeg')}`}
-                  alt="Compliance Books"
-                  className="w-full h-full object-cover"
-                />
+              {/* Subtle rotation breaks the flat-PDF feel */}
+              <div style={{ transform: 'rotate(-0.6deg)', transformOrigin: 'bottom center' }}>
+                <div
+                  className="relative aspect-[4/5] overflow-hidden rounded-lg border border-black/[0.07]"
+                  style={{ boxShadow: '0 4px 14px rgba(0,0,0,0.07), 0 22px 52px rgba(0,0,0,0.15)' }}
+                >
+                  <img
+                    src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('precheck-compliance.webp')}`}
+                    alt="Dangerous Goods Pre-Check Compliance Validation Report"
+                    className="w-full h-full object-cover"
+                    style={{
+                      objectPosition: 'center 8%',
+                      filter: 'brightness(0.93) contrast(1.05) saturate(0.80)',
+                    }}
+                  />
+                  {/* Vignette — frames without heavy border */}
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse at 50% 30%, transparent 35%, rgba(0,0,0,0.14) 100%)' }}
+                  />
+                </div>
               </div>
             </Reveal>
             <Reveal direction="left" delay={0.2}>
               <div className="space-y-8">
                 <h2 className="text-3xl md:text-4xl font-extrabold text-dark leading-tight">
-                  {t('consequences.title')}
+                  In dangerous goods logistics, mistakes become regulatory liabilities.
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="flex gap-4 items-center">
+                  {[
+                    'Shipment rejections',
+                    'Regulatory penalties',
+                    'Operational delays',
+                    'Customer and carrier disputes',
+                  ].map((item) => (
+                    <div key={item} className="flex gap-4 items-center">
                       <div className="w-8 h-8 rounded-full bg-dark flex items-center justify-center text-white font-bold text-xs">
                         !
                       </div>
                       <span className="font-bold text-dark/70 uppercase tracking-widest text-[11px] leading-tight">
-                        {t(`consequences.item${i}`)}
+                        {item}
                       </span>
                     </div>
                   ))}
                 </div>
                 <div className="pt-8 border-t border-black/5 space-y-6">
                   <Button variant="primary" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
-                    {t('hero.cta.quote')}
+                    VALIDATE YOUR DG SHIPMENT
                   </Button>
                   <div>
                     <p className="text-secondary text-base leading-relaxed">
-                      {t('consequences.closing')}
+                      Compliance costs less than operational failure.
                     </p>
                     <div className="w-10 h-1 bg-accent mt-3" />
                   </div>
@@ -538,10 +575,10 @@ export const Home = () => {
         <Container>
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <Reveal direction="right">
-              <div className="overflow-hidden shadow-2xl">
+              <div className="overflow-hidden rounded-sm shadow-[0_6px_20px_rgba(0,0,0,0.10),_0_24px_56px_rgba(0,0,0,0.16)] border border-black/[0.05]">
                 <img
-                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('transportes.jpeg')}`}
-                  alt="Logistics Operations"
+                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('transportes.png')}`}
+                  alt="Multimodal Dangerous Goods Transportation Operations"
                   className="w-full h-auto object-contain"
                 />
               </div>
@@ -549,27 +586,18 @@ export const Home = () => {
             
             <Reveal direction="left" delay={0.2}>
               <div className="space-y-8">
-                <div className="inline-block px-4 py-1.5 bg-primary/10 rounded-full">
-                  <span className="text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                    <Sparkles size={14} /> {t('about.label')}
-                  </span>
-                </div>
+                <span className="text-primary text-[11px] font-black uppercase tracking-widest">
+                  MULTIMODAL DG OPERATIONS
+                </span>
                 <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-                  {language === 'EN' ? (
-                    <>Authority in <span className="text-primary italic">Dangerous Goods Logistics</span>.</>
-                  ) : (
-                    <>Autoridad en <span className="text-primary italic">Logística de Mercancías Peligrosas</span>.</>
-                  )}
+                  Authority in Dangerous Goods Logistics.
                 </h2>
                 <div className="pt-2 space-y-4">
-                  <span className="text-primary text-xs font-bold uppercase tracking-widest">
-                    {language === 'EN' ? 'Our Solution' : 'Nuestra Solución'}
-                  </span>
                   <p className="text-2xl md:text-3xl font-extrabold text-dark leading-tight">
-                    {t('about.title')}
+                    We don't simply transport dangerous goods. We engineer compliant movement across air, ground, and ocean operations.
                   </p>
                   <p className="text-base text-secondary leading-relaxed">
-                    {t('about.subtitle')}
+                    From classification and documentation to packaging validation and multimodal coordination, Global Gate Mexico manages dangerous goods shipments with operational precision and regulatory control.
                   </p>
                   <div className="w-12 h-1 bg-accent mt-4" />
                 </div>
