@@ -180,6 +180,170 @@ const LogisticsAnimation = () => {
   );
 };
 
+// ─── Mexico Operations Map ────────────────────────────────────────────────────
+
+const OPERATIONS = [
+  {
+    id: 'monterrey',
+    name: 'Monterrey',
+    x: 360, y: 115,
+    ops: 'Dangerous Goods Operations',
+    services: 'Warehousing · Ground Transport · Training',
+    flipCard: true,
+  },
+  {
+    id: 'cdmx',
+    name: 'Mexico City',
+    x: 285, y: 252,
+    ops: 'Air Cargo DG Operations',
+    services: 'Airline Coordination · Radioactive Logistics',
+    flipCard: false,
+  },
+  {
+    id: 'guadalajara',
+    name: 'Guadalajara',
+    x: 212, y: 225,
+    ops: 'Western Mexico Logistics Support',
+    services: 'Freight Coordination · Compliance Support',
+    flipCard: false,
+  },
+  {
+    id: 'villahermosa',
+    name: 'Villahermosa',
+    x: 450, y: 265,
+    ops: 'Oil & Gas Sector Support',
+    services: 'Radioactive Material Operations',
+    flipCard: true,
+  },
+] as const;
+
+const NETWORK_PATHS = [
+  'M 360,115 Q 322,183 285,252',
+  'M 285,252 L 212,225',
+  'M 285,252 Q 368,258 450,265',
+  'M 360,115 Q 408,190 450,265',
+];
+
+const MEXICO_MAINLAND = 'M 92,75 L 96,62 L 170,56 L 240,60 L 285,65 L 335,68 L 375,75 L 405,82 L 422,90 L 438,107 L 444,132 L 447,162 L 451,193 L 448,222 L 451,248 L 462,265 L 478,268 L 502,258 L 525,248 L 540,234 L 547,255 L 538,278 L 523,296 L 508,310 L 490,323 L 470,332 L 448,338 L 422,332 L 400,320 L 373,310 L 350,303 L 325,296 L 298,288 L 272,278 L 248,270 L 225,260 L 205,248 L 185,236 L 168,226 L 155,218 L 140,215 L 122,218 L 108,204 L 98,187 L 90,168 L 84,148 L 80,128 L 82,104 L 87,82 Z';
+const MEXICO_BAJA    = 'M 80,75 L 74,62 L 65,70 L 58,103 L 52,138 L 47,173 L 45,208 L 46,243 L 50,278 L 55,308 L 62,333 L 68,353 L 74,366 L 79,370 L 83,360 L 87,338 L 91,303 L 93,268 L 92,233 L 88,198 L 84,163 L 81,128 L 79,98 L 78,78 Z';
+
+const MexicoMap: FC = () => {
+  const [activeCity, setActiveCity] = useState<string | null>(null);
+
+  return (
+    <div className="relative w-full" style={{ aspectRatio: '560/460' }}>
+      <svg
+        viewBox="0 0 560 460"
+        className="absolute inset-0 w-full h-full"
+        style={{ filter: 'drop-shadow(0 0 30px rgba(0,0,0,0.7))' }}
+      >
+        {/* Subtle ambient glow behind Mexico */}
+        <ellipse cx="300" cy="220" rx="220" ry="160" fill="rgba(30,74,110,0.06)" />
+
+        {/* Network lines */}
+        {NETWORK_PATHS.map((d, i) => (
+          <path
+            key={i}
+            d={d}
+            stroke="#1e4a6e"
+            strokeWidth={0.7}
+            strokeDasharray="3 8"
+            fill="none"
+            opacity={0.55}
+          />
+        ))}
+
+        {/* Mexico outline */}
+        <path d={MEXICO_BAJA}     fill="#16243a" stroke="#253d5a" strokeWidth={0.9} />
+        <path d={MEXICO_MAINLAND} fill="#16243a" stroke="#253d5a" strokeWidth={0.9} />
+
+        {/* State grid lines — very subtle texture */}
+        <line x1="200" y1="60" x2="200" y2="340" stroke="#1e3050" strokeWidth={0.4} strokeDasharray="2 10" />
+        <line x1="310" y1="60" x2="310" y2="340" stroke="#1e3050" strokeWidth={0.4} strokeDasharray="2 10" />
+        <line x1="420" y1="90" x2="420" y2="340" stroke="#1e3050" strokeWidth={0.4} strokeDasharray="2 10" />
+        <line x1="90" y1="160" x2="555" y2="160" stroke="#1e3050" strokeWidth={0.4} strokeDasharray="2 10" />
+        <line x1="90" y1="230" x2="555" y2="230" stroke="#1e3050" strokeWidth={0.4} strokeDasharray="2 10" />
+
+        {/* City operational points */}
+        {OPERATIONS.map((city, i) => (
+          <g
+            key={city.id}
+            onMouseEnter={() => setActiveCity(city.id)}
+            onMouseLeave={() => setActiveCity(null)}
+            style={{ cursor: 'crosshair' }}
+          >
+            {/* Outer pulse ring */}
+            <motion.circle
+              cx={city.x} cy={city.y} r={8}
+              fill="none"
+              stroke={activeCity === city.id ? '#60a5fa' : '#3b82f6'}
+              strokeWidth={0.8}
+              animate={{ r: [7, 18], opacity: [0.55, 0] }}
+              transition={{ duration: 2.6, repeat: Infinity, delay: i * 0.65, ease: 'easeOut' }}
+            />
+            {/* Stable ring */}
+            <circle cx={city.x} cy={city.y} r={6} fill="none" stroke="#1d4ed8" strokeWidth={0.7} opacity={0.7} />
+            {/* Core dot */}
+            <circle
+              cx={city.x} cy={city.y} r={3.5}
+              fill={activeCity === city.id ? '#93c5fd' : '#3b82f6'}
+              style={{ transition: 'fill 0.2s' }}
+            />
+            {/* Hover glow */}
+            {activeCity === city.id && (
+              <circle cx={city.x} cy={city.y} r={10} fill="rgba(59,130,246,0.12)" />
+            )}
+          </g>
+        ))}
+      </svg>
+
+      {/* Hover info cards — positioned over SVG */}
+      {OPERATIONS.map((city) => {
+        const isActive = activeCity === city.id;
+        const leftPct = (city.x / 560) * 100;
+        const topPct  = (city.y / 460) * 100;
+        const cardLeft = city.flipCard
+          ? `calc(${leftPct}% - 194px)`
+          : `calc(${leftPct}% + 14px)`;
+
+        return (
+          <div
+            key={city.id}
+            className="absolute w-[180px] pointer-events-none"
+            style={{
+              left:      cardLeft,
+              top:       `calc(${topPct}% - 56px)`,
+              zIndex:    20,
+              opacity:   isActive ? 1 : 0,
+              transform: isActive ? 'translateY(0)' : 'translateY(4px)',
+              transition: 'opacity 0.2s ease, transform 0.2s ease',
+            }}
+          >
+            <div style={{
+              backgroundColor: 'rgba(10,18,30,0.97)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              backdropFilter: 'blur(8px)',
+              padding: '14px 16px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(59,130,246,0.12)',
+            }}>
+              <div style={{ width: '20px', height: '1px', backgroundColor: '#3b82f6', marginBottom: '10px' }} />
+              <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>
+                {city.name}
+              </p>
+              <p style={{ color: '#60a5fa', fontSize: '9px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '7px' }}>
+                {city.ops}
+              </p>
+              <p style={{ color: 'rgba(255,255,255,0.42)', fontSize: '9.5px', lineHeight: 1.55 }}>
+                {city.services}
+              </p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 export const Home = () => {
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
@@ -209,9 +373,7 @@ export const Home = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' as const } },
   };
 
-  const [formStep, setFormStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [step1Data, setStep1Data] = useState<Record<string, string>>({});
   const [turnstileToken, setTurnstileToken] = useState('');
   const { isLoading: formLoading, error: formError, submit: submitLead } = useFormSubmit();
 
@@ -224,8 +386,7 @@ export const Home = () => {
   const turnstileWidgetId     = useRef<string | undefined>(undefined);
 
   useEffect(() => {
-    console.log('[Turnstile] formStep:', formStep, '| siteKey present:', !!turnstileSiteKey);
-    if (formStep !== 2 || !turnstileSiteKey) return;
+    if (formSubmitted || !turnstileSiteKey) return;
 
     const SCRIPT_ID = 'cf-turnstile-script';
 
@@ -270,12 +431,10 @@ export const Home = () => {
         turnstileWidgetId.current = undefined;
       }
     };
-  }, [formStep, turnstileSiteKey]);
+  }, [formSubmitted, turnstileSiteKey]);
 
   const resetForm = () => {
-    setFormStep(1);
     setFormSubmitted(false);
-    setStep1Data({});
     setTurnstileToken('');
   };
 
@@ -870,344 +1029,294 @@ export const Home = () => {
         </Container>
       </Section>
 
-      {/* 10. CONTACT SECTION - Redesigned 2-Step Validated Shipment Form */}
-      <Section id="contact" className="bg-white border-t border-black/5 relative overflow-hidden">
-        {/* Subtle Decorative Elements */}
-        <div className="absolute bottom-0 right-0 w-1/3 h-px bg-linear-to-r from-transparent to-primary/20" />
+      {/* 10. CONTACT SECTION */}
+      <section id="contact" className="relative overflow-hidden" style={{ backgroundColor: '#0b1320' }}>
+
+        {/* Subtle top edge accent */}
+        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(to right, transparent, rgba(59,130,246,0.3), transparent)' }} />
+
         <Container>
-          <div className="grid lg:grid-cols-2 gap-20">
+          <div className="grid lg:grid-cols-2 gap-16 xl:gap-24 py-20 lg:py-28">
+
+            {/* ── LEFT: FORM ─────────────────────────────────────────────── */}
             <Reveal direction="right">
-              <div>
-                <p className="text-[10px] text-primary font-black uppercase tracking-[0.2em] mb-4">
-                  {t('finalcta.support')}
-                </p>
-                <h2 className="text-3xl md:text-4xl font-extrabold mb-5 leading-tight tracking-tight">{t('contact.title')}</h2>
-                <p className="text-dark/65 text-[15px] font-normal mb-8 leading-relaxed max-w-md border-l-2 border-accent pl-5">{t('contact.subtitle')}</p>
-                
-                {!formSubmitted && (
-                  <div className="hidden lg:block mt-10 space-y-10">
+              <AnimatePresence mode="wait">
+                {!formSubmitted ? (
+                  <motion.div
+                    key="form"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {/* Header */}
+                    <p className="text-[10px] font-black uppercase tracking-[0.22em] mb-5" style={{ color: '#3b82f6' }}>
+                      OPERATIONAL INQUIRY
+                    </p>
+                    <h2 className="text-3xl md:text-[2.2rem] font-extrabold leading-tight tracking-tight mb-4" style={{ color: 'rgba(255,255,255,0.93)' }}>
+                      Tell Us About Your Needs
+                    </h2>
+                    <p className="text-[14px] leading-relaxed mb-10 border-l-2 pl-5" style={{ color: 'rgba(255,255,255,0.42)', borderColor: 'rgba(59,130,246,0.4)' }}>
+                      Not sure where to start? Send us a brief message and our team will help you identify the right logistics or compliance solution.
+                    </p>
 
-                    {/* Step progress */}
-                    <div className="space-y-0">
-                      <div className={cn("flex gap-5 items-center transition-all duration-500 py-4 border-l-2 pl-4", formStep === 1 ? "border-primary" : "border-green-500")}>
-                        <div className={cn("w-9 h-9 rounded-full border-2 flex items-center justify-center font-black text-xs shrink-0", formStep === 1 ? "border-primary text-primary" : "border-green-500 bg-green-500 text-white")}>
-                          {formStep > 1 ? <CheckCircle size={16} /> : "01"}
-                        </div>
-                        <div>
-                          <p className={cn("font-black uppercase tracking-widest text-[10px]", formStep === 1 ? "text-primary" : "text-green-600")}>Step 1</p>
-                          <p className="text-dark/50 text-[11px] font-medium mt-0.5">Contact Information</p>
-                        </div>
-                      </div>
-                      <div className="w-px h-5 bg-black/8 ml-[22px]" />
-                      <div className={cn("flex gap-5 items-center transition-all duration-500 py-4 border-l-2 pl-4", formStep === 2 ? "border-primary" : "border-black/10")}>
-                        <div className={cn("w-9 h-9 rounded-full border-2 flex items-center justify-center font-black text-xs shrink-0", formStep === 2 ? "border-primary text-primary" : "border-black/15 text-dark/25")}>
-                          02
-                        </div>
-                        <div>
-                          <p className={cn("font-black uppercase tracking-widest text-[10px]", formStep === 2 ? "text-primary" : "text-dark/30")}>Step 2</p>
-                          <p className="text-dark/40 text-[11px] font-medium mt-0.5">Shipment Technical Details</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Trust reassurance */}
-                    <div className="border-t border-black/6 pt-8 space-y-4">
-                      <p className="text-[9px] font-black uppercase tracking-[0.2em] text-dark/30 mb-5">What to expect</p>
-                      {(['contact.trust1','contact.trust2','contact.trust3'] as const).map((key) => (
-                        <div key={key} className="flex gap-3 items-start">
-                          <span className="text-primary font-black text-[11px] shrink-0 mt-0.5">✓</span>
-                          <p className="text-[12px] text-dark/55 leading-snug">{t(key)}</p>
-                        </div>
-                      ))}
-                    </div>
-
-                  </div>
-                )}
-
-                {formSubmitted && (
-                  <div className="space-y-6">
-                    <div className="flex gap-4 items-center group">
-                      <div className="w-10 h-10 border border-black/5 flex items-center justify-center text-secondary group-hover:text-primary group-hover:border-primary/20 transition-all">
-                        <Icon name="Phone" size={18} />
-                      </div>
-                      <span className="text-[13px] font-bold text-dark">+52 812 165 4040</span>
-                    </div>
-                    <div className="flex gap-4 items-center group">
-                      <div className="w-10 h-10 border border-black/5 flex items-center justify-center text-secondary group-hover:text-primary group-hover:border-primary/20 transition-all">
-                        <Icon name="Mail" size={18} />
-                      </div>
-                      <span className="text-[13px] font-bold text-dark">ggm@globalgatemexico.com</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </Reveal>
-            
-            <Reveal direction="left" delay={0.2}>
-              <div className="bg-bg-light border border-black/5 shadow-inner overflow-hidden">
-                <AnimatePresence mode="wait">
-                  {!formSubmitted ? (
-                    <motion.div 
-                      key={formStep}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.3 }}
-                      className="p-8"
-                    >
-                      <form className="space-y-6" onSubmit={async e => {
+                    {/* Form */}
+                    <form
+                      className="space-y-5"
+                      onSubmit={async e => {
                         e.preventDefault();
-                        if (formStep === 1) {
-                          const fd = new FormData(e.currentTarget);
-                          setStep1Data(Object.fromEntries(fd.entries()) as Record<string, string>);
-                          setFormStep(2);
-                        } else {
-                          const fd = new FormData(e.currentTarget);
-                          const ok = await submitLead(step1Data as any, fd, turnstileToken);
-                          if (ok) setFormSubmitted(true);
-                        }
-                      }}>
-                        {formStep === 1 && (
-                          <div className="space-y-5">
-                            {/* Step 1 header */}
-                            <div className="pb-4 border-b border-black/5">
-                              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">{t('contact.step1.eyebrow')}</p>
-                              <p className="text-[11px] text-dark/40 mt-1">{t('contact.step1.helper')}</p>
-                            </div>
-                            <div className="grid md:grid-cols-2 gap-4">
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.name')}</label>
-                                <input name="name" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="John Doe" />
-                              </div>
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.company')}</label>
-                                <input name="company" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="Global Logistics Inc." />
-                              </div>
-                            </div>
-                            <div className="grid md:grid-cols-2 gap-4">
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.email')}</label>
-                                <input name="email" type="email" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="john@company.com" />
-                              </div>
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.phone')}</label>
-                                <input name="phone" type="tel" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="+52 ..." />
-                              </div>
-                            </div>
-                            <div className="space-y-1.5">
-                              <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.merchandise')}</label>
-                              <input name="merchandise" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="e.g. Lithium Batteries, Flammable Chemicals…" />
-                            </div>
-                            <Button variant="primary" className="w-full py-4 uppercase font-black tracking-widest text-[11px] mt-2">
-                              {t('contact.btn.next')} <ArrowRight size={14} className="ml-2" />
-                            </Button>
-                          </div>
-                        )}
-
-                        {formStep === 2 && (
-                          <div className="space-y-6">
-                            {/* Step 2 header */}
-                            <div className="pb-4 border-b border-black/5">
-                              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-primary">{t('contact.step2.eyebrow')}</p>
-                              <p className="text-[11px] text-dark/40 mt-1">{t('contact.step2.helper')}</p>
-                            </div>
-
-                            {/* Route */}
-                            <div className="grid md:grid-cols-2 gap-4">
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.origin')}</label>
-                                <input name="origin" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="Mexico City, MX" />
-                              </div>
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.destination')}</label>
-                                <input name="destination" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="Houston, TX" />
-                              </div>
-                            </div>
-
-                            {/* Transport + SDS */}
-                            <div className="grid md:grid-cols-2 gap-5">
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.transport')}</label>
-                                <select name="transport" className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all">
-                                  <option value="air">{t('contact.field.transport.air')}</option>
-                                  <option value="ground">{t('contact.field.transport.ground')}</option>
-                                  <option value="ocean">{t('contact.field.transport.ocean')}</option>
-                                  <option value="not_sure">{t('contact.field.transport.notSure')}</option>
-                                </select>
-                              </div>
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.sds')}</label>
-                                <div className="relative group/upload">
-                                  <input name="sds" type="file" accept=".pdf,.doc,.docx" className="absolute inset-0 opacity-0 cursor-pointer z-10" />
-                                  <div className="w-full bg-white border border-dashed border-black/20 px-4 py-3.5 text-[12px] flex items-center justify-center gap-2 group-hover/upload:border-primary group-hover/upload:bg-primary/[0.02] transition-all">
-                                    <FileText size={14} className="text-primary/40 shrink-0" />
-                                    <span className="text-dark/50 font-medium">Upload SDS / TDS</span>
-                                  </div>
-                                </div>
-                                <p className="text-[9px] text-dark/35 leading-snug px-1">{t('contact.field.sds.helper')}</p>
-                              </div>
-                            </div>
-
-                            {/* Dims + Photos */}
-                            <div className="grid md:grid-cols-2 gap-5">
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.dims')}</label>
-                                <input name="dims" type="text" required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder="e.g. 100 kg · 120×80×100 cm" />
-                              </div>
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.photos')}</label>
-                                <div className="relative group/upload">
-                                  <input name="photos" type="file" multiple accept="image/jpeg,image/jpg,image/png,image/webp" className="absolute inset-0 opacity-0 cursor-pointer z-10" />
-                                  <div className="w-full bg-white border border-dashed border-black/20 px-4 py-3.5 text-[12px] flex items-center justify-center gap-2 group-hover/upload:border-primary group-hover/upload:bg-primary/[0.02] transition-all">
-                                    <Camera size={14} className="text-primary/40 shrink-0" />
-                                    <span className="text-dark/50 font-medium">Upload Photos</span>
-                                  </div>
-                                </div>
-                                <p className="text-[9px] text-dark/35 leading-snug px-1">{t('contact.field.photos.helper')}</p>
-                              </div>
-                            </div>
-
-                            {/* Quantity */}
-                            <div className="space-y-1.5">
-                              <label className="text-[10px] font-black uppercase text-dark/50 tracking-wider ml-1">{t('contact.field.quantity')}</label>
-                              <textarea name="quantity" rows={2} required className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all resize-none" placeholder={t('contact.field.quantity.helper')} />
-                            </div>
-
-                            {/* Instruction support */}
-                            <div className="p-4 bg-slate-50 border border-black/5 space-y-3">
-                              <div className="flex items-start gap-3">
-                                <input name="instruction_support" type="checkbox" id="support" className="mt-0.5 accent-primary shrink-0" />
-                                <label htmlFor="support" className="text-[11px] font-bold text-dark/70 cursor-pointer leading-snug">{t('contact.field.instructionSupport')}</label>
-                              </div>
-                              <div className="space-y-1.5">
-                                <label className="text-[9px] font-black uppercase text-dark/30 tracking-widest block ml-1">{t('contact.field.instructionFile')}</label>
-                                <div className="relative group/upload">
-                                  <input name="instruction_file" type="file" accept=".pdf,.doc,.docx" className="absolute inset-0 opacity-0 cursor-pointer z-10" />
-                                  <div className="w-full bg-white border border-dashed border-black/10 px-4 py-2.5 text-[11px] flex items-center gap-2 group-hover/upload:border-primary transition-colors">
-                                    <Upload size={12} className="text-dark/35 shrink-0" />
-                                    <span className="text-dark/45 font-medium">Upload Document</span>
-                                  </div>
-                                </div>
-                                <p className="text-[9px] text-dark/30 leading-snug px-1">{t('contact.field.instructionFile.helper')}</p>
-                              </div>
-                            </div>
-
-                            {/* Emergency contact */}
-                            <div className="space-y-3">
-                              <div className="border-b border-primary/10 pb-2">
-                                <label className="text-[10px] font-black uppercase text-primary tracking-widest block">{t('contact.field.emergencyContact')}</label>
-                                <p className="text-[10px] text-dark/40 mt-1 leading-snug">{t('contact.field.emergencyContactHelper')}</p>
-                              </div>
-                              <div className="grid md:grid-cols-2 gap-4">
-                                <input name="emergency_name" type="text" className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder={t('contact.field.emergencyName')} />
-                                <input name="emergency_phone" type="tel" className="w-full bg-white border border-black/10 px-4 py-3 text-[13px] outline-none focus:border-primary transition-all" placeholder={t('contact.field.emergencyPhone')} />
-                              </div>
-                            </div>
-
-                            {/* Consent + submit */}
-                            <div className="pt-2 space-y-4 border-t border-black/5">
-                              <div className="flex items-start gap-3 pt-2">
-                                <input type="checkbox" required className="mt-0.5 accent-primary shrink-0" id="consent" />
-                                <label htmlFor="consent" className="text-[11px] text-dark/50 leading-snug cursor-pointer">{t('contact.field.consent')}</label>
-                              </div>
-                              {/* Turnstile diagnostic + native render container */}
-                              {turnstileSiteKey ? (
-                                <div className="space-y-2">
-                                  <p className="text-[10px] text-green-600 font-bold text-center uppercase tracking-wide">
-                                    ✓ Bot protection active
-                                  </p>
-                                  <div className="flex justify-center">
-                                    <div ref={turnstileContainerRef} />
-                                  </div>
-                                </div>
-                              ) : (
-                                <p className="text-[10px] text-amber-600 font-bold text-center uppercase tracking-wide">
-                                  ⚠ Bot protection unavailable — VITE_TURNSTILE_SITE_KEY not set
-                                </p>
-                              )}
-                              {formError && (
-                                <p className="text-red-500 text-[11px] font-bold text-center">{formError}</p>
-                              )}
-                              <div className="flex gap-4">
-                                <button type="button" onClick={() => setFormStep(1)} className="text-[11px] font-black uppercase tracking-widest text-dark/30 hover:text-dark transition-colors shrink-0">← Back</button>
-                                <Button variant="primary" className="flex-grow py-4 uppercase font-black tracking-widest text-[11px]" disabled={formLoading || (!!turnstileSiteKey && !turnstileToken)}>
-                                  {formLoading ? (
-                                    <span className="flex items-center justify-center gap-2">
-                                      <svg className="animate-spin h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                                      </svg>
-                                      Uploading documents &amp; validating…
-                                    </span>
-                                  ) : t('contact.cta')}
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </form>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="success"
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, ease: 'easeOut' }}
-                      className="flex flex-col items-center text-center px-8 py-16 gap-8"
+                        const fd = new FormData(e.currentTarget);
+                        const step2 = new FormData();
+                        step2.set('quantity', fd.get('message') as string);
+                        const ok = await submitLead(
+                          {
+                            name:        fd.get('name')             as string,
+                            company:     fd.get('company')          as string,
+                            email:       fd.get('email')            as string,
+                            phone:       fd.get('phone')            as string,
+                            merchandise: fd.get('service_interest') as string,
+                          },
+                          step2,
+                          turnstileToken
+                        );
+                        if (ok) setFormSubmitted(true);
+                      }}
                     >
-                      {/* Icon */}
-                      <div className="relative">
-                        <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center">
-                          <CheckCircle size={36} className="text-accent" strokeWidth={1.5} />
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="block text-[10px] font-black uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.32)' }}>Full Name</label>
+                          <input name="name" type="text" required placeholder="John Doe"
+                            className="w-full px-4 py-3 text-[13px] outline-none transition-all"
+                            style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.85)' }}
+                            onFocus={e => { e.currentTarget.style.borderColor = 'rgba(59,130,246,0.55)'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)'; }}
+                            onBlur={e  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.04)'; }}
+                          />
                         </div>
-                        <div className="absolute inset-0 rounded-full border border-accent/20 scale-125" />
+                        <div className="space-y-1.5">
+                          <label className="block text-[10px] font-black uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.32)' }}>Company</label>
+                          <input name="company" type="text" required placeholder="Acero Global S.A."
+                            className="w-full px-4 py-3 text-[13px] outline-none transition-all"
+                            style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.85)' }}
+                            onFocus={e => { e.currentTarget.style.borderColor = 'rgba(59,130,246,0.55)'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)'; }}
+                            onBlur={e  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.04)'; }}
+                          />
+                        </div>
                       </div>
 
-                      {/* Copy */}
-                      <div className="space-y-3 max-w-sm">
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-accent">
-                          Submission Confirmed
-                        </p>
-                        <h3 className="text-2xl font-black uppercase tracking-tight text-dark leading-tight">
-                          {t('contact.success.title')}
-                        </h3>
-                        <p className="text-dark/60 text-[13px] leading-relaxed">
-                          {t('contact.success.msg')}
-                        </p>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="block text-[10px] font-black uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.32)' }}>Email</label>
+                          <input name="email" type="email" required placeholder="operations@company.com"
+                            className="w-full px-4 py-3 text-[13px] outline-none transition-all"
+                            style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.85)' }}
+                            onFocus={e => { e.currentTarget.style.borderColor = 'rgba(59,130,246,0.55)'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)'; }}
+                            onBlur={e  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.04)'; }}
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="block text-[10px] font-black uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.32)' }}>Phone / WhatsApp</label>
+                          <input name="phone" type="tel" required placeholder="+52 81 xxxx xxxx"
+                            className="w-full px-4 py-3 text-[13px] outline-none transition-all"
+                            style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.85)' }}
+                            onFocus={e => { e.currentTarget.style.borderColor = 'rgba(59,130,246,0.55)'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)'; }}
+                            onBlur={e  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.04)'; }}
+                          />
+                        </div>
                       </div>
 
-                      {/* Action buttons */}
-                      <div className="flex flex-col sm:flex-row gap-3 w-full max-w-xs">
-                        <Link to="/" className="flex-1">
-                          <Button variant="outline" className="w-full py-3 text-[11px]">
-                            Return Home
-                          </Button>
-                        </Link>
-                        <Button variant="primary" className="flex-1 py-3 text-[11px]" onClick={resetForm}>
-                          Submit Another
-                        </Button>
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-black uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.32)' }}>Service Interest</label>
+                        <select name="service_interest" required
+                          className="w-full px-4 py-3 text-[13px] outline-none transition-all appearance-none"
+                          style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.75)' }}
+                          onFocus={e => { e.currentTarget.style.borderColor = 'rgba(59,130,246,0.55)'; }}
+                          onBlur={e  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)'; }}
+                        >
+                          <option value="" disabled selected style={{ backgroundColor: '#0b1320' }}>Select a service area…</option>
+                          <option value="Dangerous Goods Transportation"   style={{ backgroundColor: '#0b1320' }}>Dangerous Goods Transportation</option>
+                          <option value="Radioactive Material Logistics"   style={{ backgroundColor: '#0b1320' }}>Radioactive Material Logistics</option>
+                          <option value="DG Consulting & Compliance"       style={{ backgroundColor: '#0b1320' }}>DG Consulting &amp; Compliance</option>
+                          <option value="Training"                         style={{ backgroundColor: '#0b1320' }}>Training</option>
+                          <option value="Warehousing"                      style={{ backgroundColor: '#0b1320' }}>Warehousing</option>
+                          <option value="Other / Not Sure Yet"             style={{ backgroundColor: '#0b1320' }}>Other / Not Sure Yet</option>
+                        </select>
                       </div>
 
-                      {/* Contact */}
-                      <div className="w-full max-w-xs border-t border-black/8 pt-5 space-y-1.5">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-dark/30 mb-3 text-center">
-                          Direct Contact
-                        </p>
-                        <a href="tel:+528121654040" className="flex items-center justify-center gap-2 text-[13px] font-bold text-dark/60 hover:text-primary transition-colors">
-                          +52 812 165 4040
-                        </a>
-                        <a href="mailto:ggm@globalgatemexico.com" className="flex items-center justify-center gap-2 text-[13px] font-bold text-dark/60 hover:text-primary transition-colors">
-                          ggm@globalgatemexico.com
-                        </a>
+                      <div className="space-y-1.5">
+                        <label className="block text-[10px] font-black uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.32)' }}>Message</label>
+                        <textarea name="message" rows={4} placeholder="Briefly describe your logistics or compliance need…"
+                          className="w-full px-4 py-3 text-[13px] outline-none transition-all resize-none"
+                          style={{ backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.85)' }}
+                          onFocus={e => { e.currentTarget.style.borderColor = 'rgba(59,130,246,0.55)'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)'; }}
+                          onBlur={e  => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)'; e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.04)'; }}
+                        />
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+
+                      {/* Consent */}
+                      <div className="flex items-start gap-3 pt-1">
+                        <input type="checkbox" id="consent" required className="mt-0.5 shrink-0" style={{ accentColor: '#3b82f6' }} />
+                        <label htmlFor="consent" className="text-[11px] leading-snug cursor-pointer" style={{ color: 'rgba(255,255,255,0.38)' }}>
+                          I agree to the processing of my data according to the Privacy Policy.
+                        </label>
+                      </div>
+
+                      {/* Turnstile */}
+                      {turnstileSiteKey ? (
+                        <div className="flex justify-start">
+                          <div ref={turnstileContainerRef} />
+                        </div>
+                      ) : null}
+
+                      {formError && (
+                        <p className="text-red-400 text-[11px] font-bold">{formError}</p>
+                      )}
+
+                      {/* Submit button */}
+                      <button
+                        type="submit"
+                        disabled={formLoading || (!!turnstileSiteKey && !turnstileToken)}
+                        className="w-full py-4 text-[11px] font-black uppercase tracking-[0.18em] transition-all duration-300 disabled:opacity-40 mt-1"
+                        style={{
+                          backgroundColor: '#0f2744',
+                          border: '1px solid rgba(255,255,255,0.1)',
+                          color: 'rgba(255,255,255,0.88)',
+                        }}
+                        onMouseEnter={e => {
+                          if (!formLoading) {
+                            (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#1a3a5c';
+                            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 24px rgba(59,130,246,0.2)';
+                          }
+                        }}
+                        onMouseLeave={e => {
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#0f2744';
+                          (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';
+                        }}
+                      >
+                        {formLoading ? (
+                          <span className="flex items-center justify-center gap-2">
+                            <svg className="animate-spin h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                            </svg>
+                            Sending…
+                          </span>
+                        ) : 'Send Message'}
+                      </button>
+                    </form>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: 'easeOut' }}
+                    className="flex flex-col gap-8 py-8"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 flex items-center justify-center shrink-0" style={{ border: '1px solid rgba(59,130,246,0.4)', backgroundColor: 'rgba(59,130,246,0.08)' }}>
+                        <CheckCircle size={22} style={{ color: '#60a5fa' }} strokeWidth={1.5} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-1" style={{ color: '#60a5fa' }}>Submission Confirmed</p>
+                        <p className="text-[13px] font-bold" style={{ color: 'rgba(255,255,255,0.85)' }}>We'll be in touch within 4 business hours.</p>
+                      </div>
+                    </div>
+                    <div className="space-y-3 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+                      <a href="tel:+528121654040" className="flex items-center gap-3 group transition-colors">
+                        <Icon name="Phone" size={15} style={{ color: 'rgba(255,255,255,0.3)' }} />
+                        <span className="text-[13px] font-bold" style={{ color: 'rgba(255,255,255,0.55)' }}>+52 812 165 4040</span>
+                      </a>
+                      <a href="mailto:ggm@globalgatemexico.com" className="flex items-center gap-3 group transition-colors">
+                        <Icon name="Mail" size={15} style={{ color: 'rgba(255,255,255,0.3)' }} />
+                        <span className="text-[13px] font-bold" style={{ color: 'rgba(255,255,255,0.55)' }}>ggm@globalgatemexico.com</span>
+                      </a>
+                    </div>
+                    <button
+                      onClick={resetForm}
+                      className="self-start text-[11px] font-black uppercase tracking-widest transition-colors"
+                      style={{ color: 'rgba(255,255,255,0.3)' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.7)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.3)'; }}
+                    >
+                      ← Send Another Message
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Reveal>
+
+            {/* ── RIGHT: MEXICO OPERATIONS MAP ───────────────────────────── */}
+            <Reveal direction="left" delay={0.15}>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.22em] mb-3" style={{ color: 'rgba(255,255,255,0.28)' }}>
+                  NATIONAL COVERAGE · MEXICO
+                </p>
+                <p className="text-[13px] mb-6" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                  Hover over an operational hub to view service coverage.
+                </p>
+                <div
+                  className="relative overflow-visible"
+                  style={{
+                    backgroundColor: '#0d1828',
+                    border: '1px solid rgba(255,255,255,0.07)',
+                    padding: '16px',
+                  }}
+                >
+                  {/* Corner marks */}
+                  <div className="absolute top-0 left-0 w-3 h-3" style={{ borderTop: '1px solid rgba(59,130,246,0.4)', borderLeft: '1px solid rgba(59,130,246,0.4)' }} />
+                  <div className="absolute top-0 right-0 w-3 h-3" style={{ borderTop: '1px solid rgba(59,130,246,0.4)', borderRight: '1px solid rgba(59,130,246,0.4)' }} />
+                  <div className="absolute bottom-0 left-0 w-3 h-3" style={{ borderBottom: '1px solid rgba(59,130,246,0.4)', borderLeft: '1px solid rgba(59,130,246,0.4)' }} />
+                  <div className="absolute bottom-0 right-0 w-3 h-3" style={{ borderBottom: '1px solid rgba(59,130,246,0.4)', borderRight: '1px solid rgba(59,130,246,0.4)' }} />
+
+                  <MexicoMap />
+
+                  {/* City legend */}
+                  <div className="mt-4 pt-4 grid grid-cols-2 gap-x-6 gap-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                    {OPERATIONS.map((city) => (
+                      <div key={city.id} className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: '#3b82f6' }} />
+                        <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.38)' }}>{city.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </Reveal>
+
           </div>
         </Container>
-      </Section>
+
+        {/* ── BOTTOM CONTACT STRIP ─────────────────────────────────────── */}
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+          <Container>
+            <div className="grid grid-cols-2 md:grid-cols-4 py-8 divide-x" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+              {[
+                { icon: 'MessageCircle', label: 'WhatsApp', value: '+52 812 165 4040',           href: 'https://wa.me/528121654040' },
+                { icon: 'Mail',          label: 'Email',     value: 'ggm@globalgatemexico.com',   href: 'mailto:ggm@globalgatemexico.com' },
+                { icon: 'Clock',         label: 'Response Time', value: 'Within 4 Business Hours', href: null },
+                { icon: 'Calendar',      label: 'Office Hours',  value: 'Mon–Fri  8:00–18:00 CST', href: null },
+              ].map(({ icon, label, value, href }, i) => (
+                <div key={i} className="px-6 first:pl-0 last:pr-0 flex items-center gap-4">
+                  <Icon name={icon} size={16} style={{ color: 'rgba(59,130,246,0.6)', flexShrink: 0 }} />
+                  <div>
+                    <p className="text-[9px] font-black uppercase tracking-[0.18em] mb-0.5" style={{ color: 'rgba(255,255,255,0.25)' }}>{label}</p>
+                    {href ? (
+                      <a href={href} className="text-[12px] font-semibold transition-colors" style={{ color: 'rgba(255,255,255,0.65)' }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,0.9)'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,0.65)'; }}>
+                        {value}
+                      </a>
+                    ) : (
+                      <p className="text-[12px] font-semibold" style={{ color: 'rgba(255,255,255,0.65)' }}>{value}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </div>
+
+      </section>
     </>
   );
 };
