@@ -629,7 +629,7 @@ export const Home = () => {
                 const num = i < 10 ? `0${i}` : `${i}`;
                 return (
                   <Reveal key={i} delay={idx * 0.07}>
-                    <div className="flex flex-col gap-4 bg-white border border-black/5 p-8 group hover:shadow-lg transition-shadow duration-300 h-full">
+                    <div className="flex flex-col gap-3 bg-white border border-black/5 px-8 pt-8 pb-7 group hover:shadow-lg transition-shadow duration-300 h-full">
                       <div className="w-12 h-12 bg-primary/10 flex items-center justify-center">
                         <Icon size={22} className="text-primary" />
                       </div>
@@ -640,12 +640,6 @@ export const Home = () => {
                       <p className="text-secondary text-[13px] leading-relaxed flex-1">
                         {t(`about.item${i}.desc`)}
                       </p>
-                      <Link
-                        to="/services"
-                        className="text-primary text-[13px] font-bold flex items-center gap-1 hover:gap-2 transition-all duration-200 mt-2"
-                      >
-                        {language === 'EN' ? 'Learn More' : 'Ver más'} <ArrowRight size={14} />
-                      </Link>
                     </div>
                   </Reveal>
                 );
