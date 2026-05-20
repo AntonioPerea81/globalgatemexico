@@ -629,7 +629,7 @@ export const Home = () => {
                 const num = i < 10 ? `0${i}` : `${i}`;
                 return (
                   <Reveal key={i} delay={idx * 0.07}>
-                    <div className="flex flex-col gap-3 bg-white border border-black/[0.06] px-8 pt-8 pb-7 h-full">
+                    <div className="flex flex-col gap-3 bg-white border border-black/[0.06] px-8 pt-8 pb-7 h-full transition-all duration-300 hover:-translate-y-[3px] hover:shadow-[0_8px_28px_rgba(0,0,0,0.08)] hover:border-black/[0.10]">
                       <div className="w-12 h-12 bg-primary/10 flex items-center justify-center">
                         <Icon size={22} className="text-primary" />
                       </div>
