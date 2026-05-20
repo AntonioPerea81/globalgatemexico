@@ -565,10 +565,10 @@ export const Home = () => {
         <Container>
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <Reveal direction="right">
-              <div className="overflow-hidden shadow-2xl">
+              <div className="overflow-hidden rounded-sm shadow-[0_6px_20px_rgba(0,0,0,0.10),_0_24px_56px_rgba(0,0,0,0.16)] border border-black/[0.05]">
                 <img
-                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('transportes.jpeg')}`}
-                  alt="Logistics Operations"
+                  src={`${((import.meta as any).env?.BASE_URL || '/').replace(/\/?$/, '/')}${encodeURIComponent('transportes.png')}`}
+                  alt="Multimodal Dangerous Goods Transportation Operations"
                   className="w-full h-auto object-contain"
                 />
               </div>
