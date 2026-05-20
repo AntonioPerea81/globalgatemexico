@@ -629,8 +629,14 @@ export const Home = () => {
                 const num = i < 10 ? `0${i}` : `${i}`;
                 return (
                   <Reveal key={i} delay={idx * 0.07}>
-                    <div className="flex flex-col gap-3 bg-white border border-black/5 px-8 pt-8 pb-7 group hover:shadow-lg transition-shadow duration-300 h-full">
-                      <div className="w-12 h-12 bg-primary/10 flex items-center justify-center">
+                    <Link
+                      to="/services"
+                      className="group flex flex-col gap-3 bg-white border border-black/[0.06] px-8 pt-8 pb-7 h-full
+                        transition-all duration-300
+                        hover:-translate-y-[3px] hover:shadow-[0_8px_28px_rgba(0,0,0,0.09)]
+                        hover:border-black/[0.12] hover:bg-[#fafafa]"
+                    >
+                      <div className="w-12 h-12 bg-primary/10 flex items-center justify-center transition-colors duration-300 group-hover:bg-primary/[0.14]">
                         <Icon size={22} className="text-primary" />
                       </div>
                       <span className="text-primary font-black text-sm">{num}</span>
@@ -640,7 +646,10 @@ export const Home = () => {
                       <p className="text-secondary text-[13px] leading-relaxed flex-1">
                         {t(`about.item${i}.desc`)}
                       </p>
-                    </div>
+                      <div className="flex justify-end pt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <ArrowRight size={13} className="text-primary/60" />
+                      </div>
+                    </Link>
                   </Reveal>
                 );
               })}
