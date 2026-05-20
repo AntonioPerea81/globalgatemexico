@@ -462,25 +462,30 @@ export const Home = () => {
             <Reveal direction="right">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold text-dark mb-6 leading-tight">
-                  {t('empathy.title')}
+                  Dangerous goods failures are rarely transportation problems. They are compliance failures.
                 </h2>
                 <p className="text-lg text-secondary mb-10 leading-relaxed font-medium">
-                  {t('empathy.subtitle')}
+                  Most dangerous goods shipments are rejected long before transportation begins. Incorrect classification, incomplete documentation, packaging errors, and regulatory misinterpretation create operational and legal exposure.
                 </p>
                 <div className="space-y-6 mb-10">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="flex gap-4 items-start group">
+                  {[
+                    'Incorrect classification',
+                    'Incomplete dangerous goods documentation',
+                    'Non-compliant packaging configuration',
+                    'Misinterpretation of transport regulations',
+                  ].map((pain) => (
+                    <div key={pain} className="flex gap-4 items-start group">
                       <div className="mt-1 w-6 h-6 rounded-full bg-red-100 flex items-center justify-center shrink-0 border border-red-200">
                         <div className="w-2 h-2 rounded-full bg-red-600" />
                       </div>
                       <p className="text-dark/80 font-bold italic">
-                        {t(`empathy.pain${i}`)}
+                        {pain}
                       </p>
                     </div>
                   ))}
                 </div>
                 <p className="text-dark font-black uppercase tracking-widest text-[11px] border-l-2 border-primary pl-4 py-1">
-                  {t('empathy.closing')}
+                  Most shipment failures are discovered only after the cargo has already been delayed.
                 </p>
               </div>
             </Reveal>
@@ -528,27 +533,32 @@ export const Home = () => {
             <Reveal direction="left" delay={0.2}>
               <div className="space-y-8">
                 <h2 className="text-3xl md:text-4xl font-extrabold text-dark leading-tight">
-                  {t('consequences.title')}
+                  In dangerous goods logistics, mistakes become regulatory liabilities.
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="flex gap-4 items-center">
+                  {[
+                    'Shipment rejections',
+                    'Regulatory penalties',
+                    'Operational delays',
+                    'Customer and carrier disputes',
+                  ].map((item) => (
+                    <div key={item} className="flex gap-4 items-center">
                       <div className="w-8 h-8 rounded-full bg-dark flex items-center justify-center text-white font-bold text-xs">
                         !
                       </div>
                       <span className="font-bold text-dark/70 uppercase tracking-widest text-[11px] leading-tight">
-                        {t(`consequences.item${i}`)}
+                        {item}
                       </span>
                     </div>
                   ))}
                 </div>
                 <div className="pt-8 border-t border-black/5 space-y-6">
                   <Button variant="primary" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
-                    {t('hero.cta.quote')}
+                    VALIDATE YOUR DG SHIPMENT
                   </Button>
                   <div>
                     <p className="text-secondary text-base leading-relaxed">
-                      {t('consequences.closing')}
+                      Compliance costs less than operational failure.
                     </p>
                     <div className="w-10 h-1 bg-accent mt-3" />
                   </div>
@@ -576,27 +586,18 @@ export const Home = () => {
             
             <Reveal direction="left" delay={0.2}>
               <div className="space-y-8">
-                <div className="inline-block px-4 py-1.5 bg-primary/10 rounded-full">
-                  <span className="text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                    <Sparkles size={14} /> {t('about.label')}
-                  </span>
-                </div>
+                <span className="text-primary text-[11px] font-black uppercase tracking-widest">
+                  MULTIMODAL DG OPERATIONS
+                </span>
                 <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-                  {language === 'EN' ? (
-                    <>Authority in <span className="text-primary italic">Dangerous Goods Logistics</span>.</>
-                  ) : (
-                    <>Autoridad en <span className="text-primary italic">Logística de Mercancías Peligrosas</span>.</>
-                  )}
+                  Authority in Dangerous Goods Logistics.
                 </h2>
                 <div className="pt-2 space-y-4">
-                  <span className="text-primary text-xs font-bold uppercase tracking-widest">
-                    {language === 'EN' ? 'Our Solution' : 'Nuestra Solución'}
-                  </span>
                   <p className="text-2xl md:text-3xl font-extrabold text-dark leading-tight">
-                    {t('about.title')}
+                    We don't simply transport dangerous goods. We engineer compliant movement across air, ground, and ocean operations.
                   </p>
                   <p className="text-base text-secondary leading-relaxed">
-                    {t('about.subtitle')}
+                    From classification and documentation to packaging validation and multimodal coordination, Global Gate Mexico manages dangerous goods shipments with operational precision and regulatory control.
                   </p>
                   <div className="w-12 h-1 bg-accent mt-4" />
                 </div>
@@ -628,8 +629,14 @@ export const Home = () => {
                 const num = i < 10 ? `0${i}` : `${i}`;
                 return (
                   <Reveal key={i} delay={idx * 0.07}>
-                    <div className="flex flex-col gap-4 bg-white border border-black/5 p-8 group hover:shadow-lg transition-shadow duration-300 h-full">
-                      <div className="w-12 h-12 bg-primary/10 flex items-center justify-center">
+                    <Link
+                      to="/services"
+                      className="group flex flex-col gap-3 bg-white border border-black/[0.06] px-8 pt-8 pb-7 h-full
+                        transition-all duration-300
+                        hover:-translate-y-[3px] hover:shadow-[0_8px_28px_rgba(0,0,0,0.09)]
+                        hover:border-black/[0.12] hover:bg-[#fafafa]"
+                    >
+                      <div className="w-12 h-12 bg-primary/10 flex items-center justify-center transition-colors duration-300 group-hover:bg-primary/[0.14]">
                         <Icon size={22} className="text-primary" />
                       </div>
                       <span className="text-primary font-black text-sm">{num}</span>
@@ -639,13 +646,10 @@ export const Home = () => {
                       <p className="text-secondary text-[13px] leading-relaxed flex-1">
                         {t(`about.item${i}.desc`)}
                       </p>
-                      <Link
-                        to="/services"
-                        className="text-primary text-[13px] font-bold flex items-center gap-1 hover:gap-2 transition-all duration-200 mt-2"
-                      >
-                        {language === 'EN' ? 'Learn More' : 'Ver más'} <ArrowRight size={14} />
-                      </Link>
-                    </div>
+                      <div className="flex justify-end pt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <ArrowRight size={13} className="text-primary/60" />
+                      </div>
+                    </Link>
                   </Reveal>
                 );
               })}
