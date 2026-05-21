@@ -506,13 +506,13 @@ export const RequestQuotePage = () => {
                   {mode === 'air' ? (
                     /* Air — IATA code only */
                     <div>
-                      <Field label="Airport / IATA Code" required>
+                      <Field label="Airport / City / IATA Code" required>
                         <input value={oTerm} onChange={e => setOTerm(e.target.value)}
-                          placeholder="e.g. MTY — Monterrey Intl"
+                          placeholder="e.g. MTY, Monterrey, Mexico City"
                           style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                       </Field>
                       <p style={{ fontSize: '11px', color: MUTED, marginTop: '6px', lineHeight: 1.5 }}>
-                        The IATA code identifies the airport, city, and country.
+                        Enter an airport code, city name, or airport name.
                       </p>
                     </div>
                   ) : (
@@ -560,13 +560,13 @@ export const RequestQuotePage = () => {
                   {mode === 'air' ? (
                     /* Air — IATA code only */
                     <div>
-                      <Field label="Airport / IATA Code" required>
+                      <Field label="Airport / City / IATA Code" required>
                         <input value={dTerm} onChange={e => setDTerm(e.target.value)}
-                          placeholder="e.g. IAH — George Bush Intl"
+                          placeholder="e.g. IAH, Houston, Frankfurt Airport"
                           style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                       </Field>
                       <p style={{ fontSize: '11px', color: MUTED, marginTop: '6px', lineHeight: 1.5 }}>
-                        The IATA code identifies the airport, city, and country.
+                        Enter an airport code, city name, or airport name.
                       </p>
                     </div>
                   ) : (

@@ -488,13 +488,13 @@ export const SolicitarCotizacionPage = () => {
                   {mode === 'air' ? (
                     /* Aéreo — solo código IATA */
                     <div>
-                      <Field label="Aeropuerto / Código IATA" required>
+                      <Field label="Aeropuerto / Ciudad / Código IATA" required>
                         <input value={oTerm} onChange={e => setOTerm(e.target.value)}
-                          placeholder="Ej. MTY — Aeropuerto Internacional de Monterrey"
+                          placeholder="Ej. MTY, Monterrey, Ciudad de México"
                           style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                       </Field>
                       <p style={{ fontSize: '11px', color: MUTED, marginTop: '6px', lineHeight: 1.5 }}>
-                        El código IATA identifica el aeropuerto, ciudad y país de origen.
+                        Ingrese código de aeropuerto, nombre de ciudad o nombre del aeropuerto.
                       </p>
                     </div>
                   ) : (
@@ -542,13 +542,13 @@ export const SolicitarCotizacionPage = () => {
                   {mode === 'air' ? (
                     /* Aéreo — solo código IATA */
                     <div>
-                      <Field label="Aeropuerto / Código IATA" required>
+                      <Field label="Aeropuerto / Ciudad / Código IATA" required>
                         <input value={dTerm} onChange={e => setDTerm(e.target.value)}
-                          placeholder="Ej. IAH — Aeropuerto Intercontinental George Bush"
+                          placeholder="Ej. IAH, Houston, Aeropuerto de Frankfurt"
                           style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                       </Field>
                       <p style={{ fontSize: '11px', color: MUTED, marginTop: '6px', lineHeight: 1.5 }}>
-                        El código IATA identifica el aeropuerto, ciudad y país de destino.
+                        Ingrese código de aeropuerto, nombre de ciudad o nombre del aeropuerto.
                       </p>
                     </div>
                   ) : (
