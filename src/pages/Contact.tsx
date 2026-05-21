@@ -366,7 +366,7 @@ export const ContactPage = () => {
                   Cross-Border Reach
                 </p>
                 <div className="flex items-center gap-2 flex-wrap">
-                  {['Mexico', 'USA', 'Canada', 'IATA Certified', 'IMDG Compliant', 'ADR Ready'].map((tag, i) => (
+                  {['Mexico', 'USA', 'Canada', 'IATA Certified', 'IMDG Compliant', 'ADR Compliance Knowledge'].map((tag, i) => (
                     <span
                       key={tag}
                       className="text-[10px] font-bold uppercase tracking-wide px-2.5 py-1"
