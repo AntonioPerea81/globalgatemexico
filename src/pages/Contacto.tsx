@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send, MessageSquare, Mail, Clock, MapPin } from 'lucide-react';
 import { Container, Button } from '../components/UI';
-import { supabase } from '../lib/supabase';
 
 declare global {
   interface Window {
@@ -138,31 +137,47 @@ export const ContactoPage = () => {
     setIsLoading(true);
 
     const fd = new FormData(e.currentTarget);
+    const payload = {
+      full_name:        (fd.get('name') as string).trim(),
+      company:          (fd.get('company') as string | null)?.trim()           || undefined,
+      email:            (fd.get('email') as string).trim(),
+      phone:            (fd.get('phone') as string | null)?.trim()             || undefined,
+      service_interest: (fd.get('service_interest') as string | null)?.trim() || undefined,
+      message:          (fd.get('message') as string).trim(),
+      consent:          true,
+      language:         'es',
+      turnstile_token:  turnstileToken || undefined,
+    };
 
     try {
-      const { error: fnError } = await supabase.functions.invoke('contact-inquiry', {
-        body: {
-          full_name:        (fd.get('name') as string).trim(),
-          company:          (fd.get('company') as string | null)?.trim()           || undefined,
-          email:            (fd.get('email') as string).trim(),
-          phone:            (fd.get('phone') as string | null)?.trim()             || undefined,
-          service_interest: (fd.get('service_interest') as string | null)?.trim() || undefined,
-          message:          (fd.get('message') as string).trim(),
-          consent:          true,
-          language:         'es',
-          turnstile_token:  turnstileToken || undefined,
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/contact-inquiry`,
+        {
+          method:  'POST',
+          headers: {
+            'Content-Type':  'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify(payload),
         },
-      });
+      );
 
-      if (fnError) {
-        console.error('[contact-inquiry] Error:', fnError);
-        setError('No pudimos enviar tu mensaje. Inténtalo de nuevo o contáctanos directamente.');
-      } else {
+      let data: Record<string, unknown> = {};
+      try { data = await res.json(); } catch { /* non-JSON body */ }
+      console.log('[contact-inquiry] status:', res.status, 'body:', data);
+
+      if (res.ok) {
         setSubmitted(true);
+      } else {
+        const msg = (data?.error as string) || `Error del servidor (${res.status})`;
+        console.error('[contact-inquiry] Backend error:', msg);
+        setError(msg === 'Bot verification failed'
+          ? 'Verificación de seguridad fallida. Por favor recarga la página e inténtalo de nuevo.'
+          : 'No pudimos enviar tu mensaje. Inténtalo de nuevo o contáctanos directamente.');
       }
     } catch (err) {
-      console.error('[contact-inquiry] Invocation failed:', err);
-      setError('No pudimos enviar tu mensaje. Inténtalo de nuevo o contáctanos directamente.');
+      console.error('[contact-inquiry] Network error:', err);
+      setError('Error de red — por favor verifica tu conexión e inténtalo de nuevo.');
     } finally {
       setIsLoading(false);
     }

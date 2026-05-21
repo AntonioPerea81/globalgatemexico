@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send, MessageSquare, Mail, Clock, MapPin } from 'lucide-react';
 import { Container, Button } from '../components/UI';
-import { supabase } from '../lib/supabase';
 
 declare global {
   interface Window {
@@ -138,31 +137,47 @@ export const ContactPage = () => {
     setIsLoading(true);
 
     const fd = new FormData(e.currentTarget);
+    const payload = {
+      full_name:        (fd.get('name') as string).trim(),
+      company:          (fd.get('company') as string | null)?.trim() || undefined,
+      email:            (fd.get('email') as string).trim(),
+      phone:            (fd.get('phone') as string | null)?.trim() || undefined,
+      service_interest: (fd.get('service_interest') as string | null)?.trim() || undefined,
+      message:          (fd.get('message') as string).trim(),
+      consent:          true,
+      language:         'en',
+      turnstile_token:  turnstileToken || undefined,
+    };
 
     try {
-      const { error: fnError } = await supabase.functions.invoke('contact-inquiry', {
-        body: {
-          full_name:        (fd.get('name') as string).trim(),
-          company:          (fd.get('company') as string | null)?.trim() || undefined,
-          email:            (fd.get('email') as string).trim(),
-          phone:            (fd.get('phone') as string | null)?.trim() || undefined,
-          service_interest: (fd.get('service_interest') as string | null)?.trim() || undefined,
-          message:          (fd.get('message') as string).trim(),
-          consent:          true,
-          language:         'en',
-          turnstile_token:  turnstileToken || undefined,
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/contact-inquiry`,
+        {
+          method:  'POST',
+          headers: {
+            'Content-Type':  'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify(payload),
         },
-      });
+      );
 
-      if (fnError) {
-        console.error('[contact-inquiry] Function error:', fnError);
-        setError("We couldn't send your message. Please try again or contact us directly.");
-      } else {
+      let data: Record<string, unknown> = {};
+      try { data = await res.json(); } catch { /* non-JSON body */ }
+      console.log('[contact-inquiry] status:', res.status, 'body:', data);
+
+      if (res.ok) {
         setSubmitted(true);
+      } else {
+        const msg = (data?.error as string) || `Server error (${res.status})`;
+        console.error('[contact-inquiry] Backend error:', msg);
+        setError(msg === 'Bot verification failed'
+          ? 'Security check failed. Please refresh and try again.'
+          : `Submission failed: ${msg}`);
       }
     } catch (err) {
-      console.error('[contact-inquiry] Invocation failed:', err);
-      setError("We couldn't send your message. Please try again or contact us directly.");
+      console.error('[contact-inquiry] Network error:', err);
+      setError('Network error — please check your connection and try again.');
     } finally {
       setIsLoading(false);
     }
