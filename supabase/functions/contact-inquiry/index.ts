@@ -1,7 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const NOTIFICATION_EMAIL  = Deno.env.get('CONTACT_NOTIFICATION_EMAIL') ?? 'info@globalgatemexico.com';
+const NOTIFICATION_EMAIL  = Deno.env.get('CONTACT_NOTIFICATION_EMAIL') ?? 'ggm@globalgatemexico.com';
 const SUPABASE_URL         = Deno.env.get('SUPABASE_URL')                ?? '';
 const SERVICE_ROLE_KEY     = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')   ?? '';
 const RESEND_API_KEY       = Deno.env.get('RESEND_API_KEY')              ?? '';
