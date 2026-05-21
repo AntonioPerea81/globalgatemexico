@@ -491,7 +491,7 @@ export const RequestQuotePage = () => {
             <SectionCard number="02" title="Origin & Destination">
               <div className="grid md:grid-cols-2 gap-6">
 
-                {/* Origin */}
+                {/* ── Origin ─────────────────────────────────────────────── */}
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px',
                     marginBottom: '14px', paddingBottom: '10px', borderBottom: `1px solid ${BORDER}` }}>
@@ -502,26 +502,50 @@ export const RequestQuotePage = () => {
                       Origin
                     </span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '12px' }}>
-                    <Field label="Country" required>
-                      <input value={oCountry} onChange={e => setOCountry(e.target.value)}
-                        placeholder="e.g. Mexico" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                    <Field label="City">
-                      <input value={oCity} onChange={e => setOCity(e.target.value)}
-                        placeholder="e.g. Monterrey" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                    <Field label={mode === 'air' ? 'Airport / IATA Code' : mode === 'sea' ? 'Port' : 'Terminal / Facility'}>
-                      <input value={oTerm} onChange={e => setOTerm(e.target.value)}
-                        placeholder={mode === 'air' ? "e.g. MTY — Monterrey Int'l" : 'e.g. Port of Veracruz'}
-                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                  </div>
+
+                  {mode === 'air' ? (
+                    /* Air — IATA code only */
+                    <div>
+                      <Field label="Airport / IATA Code" required>
+                        <input value={oTerm} onChange={e => setOTerm(e.target.value)}
+                          placeholder="e.g. MTY — Monterrey Intl"
+                          style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      <p style={{ fontSize: '11px', color: MUTED, marginTop: '6px', lineHeight: 1.5 }}>
+                        The IATA code identifies the airport, city, and country.
+                      </p>
+                    </div>
+                  ) : (
+                    /* Sea / Ground / Multimodal / unset */
+                    <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '12px' }}>
+                      <Field label="Country" required>
+                        <input value={oCountry} onChange={e => setOCountry(e.target.value)}
+                          placeholder="e.g. Mexico" style={inputSt}
+                          onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      <Field label="City">
+                        <input value={oCity} onChange={e => setOCity(e.target.value)}
+                          placeholder="e.g. Monterrey" style={inputSt}
+                          onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      {mode === 'ground' ? (
+                        <Field label="State / Province">
+                          <input value={oTerm} onChange={e => setOTerm(e.target.value)}
+                            placeholder="e.g. Nuevo León"
+                            style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      ) : (
+                        <Field label={mode === 'sea' ? 'Port / Terminal' : 'Airport / Port / Terminal'}>
+                          <input value={oTerm} onChange={e => setOTerm(e.target.value)}
+                            placeholder={mode === 'sea' ? 'e.g. Port of Veracruz' : 'e.g. Port, airport, or terminal'}
+                            style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      )}
+                    </div>
+                  )}
                 </div>
 
-                {/* Destination */}
+                {/* ── Destination ────────────────────────────────────────── */}
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px',
                     marginBottom: '14px', paddingBottom: '10px', borderBottom: `1px solid ${BORDER}` }}>
@@ -532,23 +556,47 @@ export const RequestQuotePage = () => {
                       Destination
                     </span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '12px' }}>
-                    <Field label="Country" required>
-                      <input value={dCountry} onChange={e => setDCountry(e.target.value)}
-                        placeholder="e.g. United States" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                    <Field label="City">
-                      <input value={dCity} onChange={e => setDCity(e.target.value)}
-                        placeholder="e.g. Houston, TX" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                    <Field label={mode === 'air' ? 'Airport / IATA Code' : mode === 'sea' ? 'Port' : 'Terminal / Facility'}>
-                      <input value={dTerm} onChange={e => setDTerm(e.target.value)}
-                        placeholder={mode === 'air' ? "e.g. IAH — George Bush Int'l" : 'e.g. Port of Houston'}
-                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                  </div>
+
+                  {mode === 'air' ? (
+                    /* Air — IATA code only */
+                    <div>
+                      <Field label="Airport / IATA Code" required>
+                        <input value={dTerm} onChange={e => setDTerm(e.target.value)}
+                          placeholder="e.g. IAH — George Bush Intl"
+                          style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      <p style={{ fontSize: '11px', color: MUTED, marginTop: '6px', lineHeight: 1.5 }}>
+                        The IATA code identifies the airport, city, and country.
+                      </p>
+                    </div>
+                  ) : (
+                    /* Sea / Ground / Multimodal / unset */
+                    <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '12px' }}>
+                      <Field label="Country" required>
+                        <input value={dCountry} onChange={e => setDCountry(e.target.value)}
+                          placeholder="e.g. United States" style={inputSt}
+                          onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      <Field label="City">
+                        <input value={dCity} onChange={e => setDCity(e.target.value)}
+                          placeholder="e.g. Houston, TX" style={inputSt}
+                          onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      {mode === 'ground' ? (
+                        <Field label="State / Province">
+                          <input value={dTerm} onChange={e => setDTerm(e.target.value)}
+                            placeholder="e.g. Texas"
+                            style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      ) : (
+                        <Field label={mode === 'sea' ? 'Port / Terminal' : 'Airport / Port / Terminal'}>
+                          <input value={dTerm} onChange={e => setDTerm(e.target.value)}
+                            placeholder={mode === 'sea' ? 'e.g. Port of Houston' : 'e.g. Port, airport, or terminal'}
+                            style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      )}
+                    </div>
+                  )}
                 </div>
 
               </div>

@@ -473,7 +473,7 @@ export const SolicitarCotizacionPage = () => {
             <SectionCard number="02" title="Origen y Destino">
               <div className="grid md:grid-cols-2 gap-6">
 
-                {/* Origen */}
+                {/* ── Origen ─────────────────────────────────────────────── */}
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px',
                     marginBottom: '14px', paddingBottom: '10px', borderBottom: `1px solid ${BORDER}` }}>
@@ -484,26 +484,50 @@ export const SolicitarCotizacionPage = () => {
                       Origen
                     </span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '12px' }}>
-                    <Field label="País" required>
-                      <input value={oCountry} onChange={e => setOCountry(e.target.value)}
-                        placeholder="Ej. México" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                    <Field label="Ciudad">
-                      <input value={oCity} onChange={e => setOCity(e.target.value)}
-                        placeholder="Ej. Monterrey" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                    <Field label={mode === 'air' ? 'Aeropuerto / Código IATA' : mode === 'sea' ? 'Puerto / Terminal' : 'Terminal / Instalación'}>
-                      <input value={oTerm} onChange={e => setOTerm(e.target.value)}
-                        placeholder={mode === 'air' ? 'Ej. MTY — Aeropuerto Internacional de Monterrey' : 'Ej. Puerto de Veracruz'}
-                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                  </div>
+
+                  {mode === 'air' ? (
+                    /* Aéreo — solo código IATA */
+                    <div>
+                      <Field label="Aeropuerto / Código IATA" required>
+                        <input value={oTerm} onChange={e => setOTerm(e.target.value)}
+                          placeholder="Ej. MTY — Aeropuerto Internacional de Monterrey"
+                          style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      <p style={{ fontSize: '11px', color: MUTED, marginTop: '6px', lineHeight: 1.5 }}>
+                        El código IATA identifica el aeropuerto, ciudad y país de origen.
+                      </p>
+                    </div>
+                  ) : (
+                    /* Marítimo / Terrestre / Multimodal / sin selección */
+                    <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '12px' }}>
+                      <Field label="País" required>
+                        <input value={oCountry} onChange={e => setOCountry(e.target.value)}
+                          placeholder="Ej. México" style={inputSt}
+                          onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      <Field label="Ciudad">
+                        <input value={oCity} onChange={e => setOCity(e.target.value)}
+                          placeholder="Ej. Monterrey" style={inputSt}
+                          onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      {mode === 'ground' ? (
+                        <Field label="Estado / Provincia">
+                          <input value={oTerm} onChange={e => setOTerm(e.target.value)}
+                            placeholder="Ej. Nuevo León"
+                            style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      ) : (
+                        <Field label={mode === 'sea' ? 'Puerto / Terminal' : 'Aeropuerto / Puerto / Terminal'}>
+                          <input value={oTerm} onChange={e => setOTerm(e.target.value)}
+                            placeholder={mode === 'sea' ? 'Ej. Puerto de Veracruz' : 'Ej. Puerto, aeropuerto o terminal'}
+                            style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      )}
+                    </div>
+                  )}
                 </div>
 
-                {/* Destino */}
+                {/* ── Destino ────────────────────────────────────────────── */}
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px',
                     marginBottom: '14px', paddingBottom: '10px', borderBottom: `1px solid ${BORDER}` }}>
@@ -514,23 +538,47 @@ export const SolicitarCotizacionPage = () => {
                       Destino
                     </span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '12px' }}>
-                    <Field label="País" required>
-                      <input value={dCountry} onChange={e => setDCountry(e.target.value)}
-                        placeholder="Ej. Estados Unidos" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                    <Field label="Ciudad">
-                      <input value={dCity} onChange={e => setDCity(e.target.value)}
-                        placeholder="Ej. Houston, TX" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                    <Field label={mode === 'air' ? 'Aeropuerto / Código IATA' : mode === 'sea' ? 'Puerto / Terminal' : 'Terminal / Instalación'}>
-                      <input value={dTerm} onChange={e => setDTerm(e.target.value)}
-                        placeholder={mode === 'air' ? 'Ej. IAH — Aeropuerto Intercontinental George Bush' : 'Ej. Puerto de Houston'}
-                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                  </div>
+
+                  {mode === 'air' ? (
+                    /* Aéreo — solo código IATA */
+                    <div>
+                      <Field label="Aeropuerto / Código IATA" required>
+                        <input value={dTerm} onChange={e => setDTerm(e.target.value)}
+                          placeholder="Ej. IAH — Aeropuerto Intercontinental George Bush"
+                          style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      <p style={{ fontSize: '11px', color: MUTED, marginTop: '6px', lineHeight: 1.5 }}>
+                        El código IATA identifica el aeropuerto, ciudad y país de destino.
+                      </p>
+                    </div>
+                  ) : (
+                    /* Marítimo / Terrestre / Multimodal / sin selección */
+                    <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '12px' }}>
+                      <Field label="País" required>
+                        <input value={dCountry} onChange={e => setDCountry(e.target.value)}
+                          placeholder="Ej. Estados Unidos" style={inputSt}
+                          onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      <Field label="Ciudad">
+                        <input value={dCity} onChange={e => setDCity(e.target.value)}
+                          placeholder="Ej. Houston, TX" style={inputSt}
+                          onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      {mode === 'ground' ? (
+                        <Field label="Estado / Provincia">
+                          <input value={dTerm} onChange={e => setDTerm(e.target.value)}
+                            placeholder="Ej. Texas"
+                            style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      ) : (
+                        <Field label={mode === 'sea' ? 'Puerto / Terminal' : 'Aeropuerto / Puerto / Terminal'}>
+                          <input value={dTerm} onChange={e => setDTerm(e.target.value)}
+                            placeholder={mode === 'sea' ? 'Ej. Puerto de Houston' : 'Ej. Puerto, aeropuerto o terminal'}
+                            style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      )}
+                    </div>
+                  )}
                 </div>
 
               </div>
