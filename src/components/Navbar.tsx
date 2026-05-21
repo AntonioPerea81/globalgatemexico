@@ -22,14 +22,11 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     id: 'dgt',
-    label: { EN: 'Dangerous Goods Transportation', ES: 'Transporte de Mercancías Peligrosas' },
+    label: { EN: 'Transportation', ES: 'Transporte' },
     dropdown: [
-      { label: { EN: 'Air Transportation',     ES: 'Transporte Aéreo' },           href: { EN: '/dangerous-goods-transportation/air-transportation',    ES: '/es/transporte-mercancias-peligrosas/transporte-aereo' } },
-      { label: { EN: 'Ground Transportation',  ES: 'Transporte Terrestre' },        href: { EN: '/dangerous-goods-transportation/ground-transportation',  ES: '/es/transporte-mercancias-peligrosas/transporte-terrestre' } },
-      { label: { EN: 'Ocean Freight',          ES: 'Transporte Marítimo' },         href: { EN: '/dangerous-goods-transportation/ocean-freight',          ES: '/es/transporte-mercancias-peligrosas/transporte-maritimo' } },
-      { label: { EN: 'DG Packaging',           ES: 'Embalaje DG' },                href: { EN: '/dangerous-goods-transportation/dg-packaging',           ES: '/es/transporte-mercancias-peligrosas/embalaje-dg' } },
-      { label: { EN: 'Documentation Services', ES: 'Servicios de Documentación' }, href: { EN: '/dangerous-goods-transportation/documentation-services',  ES: '/es/transporte-mercancias-peligrosas/servicios-documentacion' } },
-      { label: { EN: 'Request Quote',           ES: 'Solicitar Cotización' },       href: { EN: '/request-quote',                                             ES: '/request-quote' } },
+      { label: { EN: 'Air Freight',    ES: 'Carga Aérea' },         href: { EN: '/dangerous-goods-transportation/air-transportation', ES: '/es/transporte-mercancias-peligrosas/transporte-aereo' } },
+      { label: { EN: 'Sea Freight',    ES: 'Carga Marítima' },       href: { EN: '/dangerous-goods-transportation/ocean-freight',      ES: '/es/transporte-mercancias-peligrosas/transporte-maritimo' } },
+      { label: { EN: 'Request Quote',  ES: 'Solicitar Cotización' }, href: { EN: '/request-quote',                                     ES: '/request-quote' } },
     ],
   },
   {
