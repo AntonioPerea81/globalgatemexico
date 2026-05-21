@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send, MessageSquare, Mail, Clock, MapPin } from 'lucide-react';
-import { Section, Container, Button } from '../components/UI';
+import { Container, Button } from '../components/UI';
 import { useFormSubmit } from '../hooks/useFormSubmit';
 
 declare global {
@@ -13,28 +13,67 @@ declare global {
   }
 }
 
+const BG   = '#0a1628';
+const BG2  = '#060f1e';
+const CARD = 'rgba(255,255,255,0.04)';
+const BORDER = 'rgba(255,255,255,0.08)';
+const INPUT_BG = 'rgba(255,255,255,0.06)';
+const BLUE_DIM  = 'rgba(59,130,246,0.18)';
+const BLUE_FILL = 'rgba(59,130,246,0.08)';
+
 const HUBS = [
   {
     city: 'Mexico City',
     role: 'Air Cargo DG Operations',
-    services: ['Airline Coordination', 'Radioactive Logistics', 'IATA Documentation'],
+    services: 'Airline Coordination · Radioactive Logistics · IATA Documentation',
   },
   {
     city: 'Monterrey',
     role: 'Dangerous Goods Hub',
-    services: ['Warehousing', 'Ground Transport', 'DG Training'],
+    services: 'Warehousing · Ground Transport · DG Training',
   },
   {
     city: 'Guadalajara',
     role: 'Western Mexico Logistics',
-    services: ['Freight Coordination', 'Compliance Support', 'Cross-Border DG'],
+    services: 'Freight Coordination · Compliance Support · Cross-Border DG',
   },
   {
     city: 'Villahermosa',
     role: 'Oil & Gas Sector',
-    services: ['Radioactive Material Operations', 'Class 7 Logistics'],
+    services: 'Radioactive Material Operations · Class 7 Logistics',
   },
 ] as const;
+
+const inputStyle = {
+  backgroundColor: INPUT_BG,
+  border: `1px solid ${BORDER}`,
+  color: '#fff',
+  width: '100%',
+  padding: '11px 14px',
+  fontSize: '13px',
+  outline: 'none',
+  display: 'block',
+  fontFamily: 'inherit',
+} as const;
+
+const labelStyle = {
+  display: 'block',
+  fontSize: '10px',
+  fontWeight: 900,
+  textTransform: 'uppercase' as const,
+  letterSpacing: '0.12em',
+  color: 'rgba(255,255,255,0.38)',
+  marginBottom: '6px',
+};
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label style={labelStyle}>{label}</label>
+      {children}
+    </div>
+  );
+}
 
 export const ContactPage = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -47,12 +86,9 @@ export const ContactPage = () => {
     import.meta.env.VITE_TURNSTILE_SITE_KEY || undefined;
 
   useEffect(() => {
-    if (!turnstileSiteKey) return;
-    if (!turnstileContainerRef.current) return;
-
+    if (!turnstileSiteKey || !turnstileContainerRef.current) return;
     const tryRender = () => {
-      if (!window.turnstile) return;
-      if (turnstileWidgetId.current) return;
+      if (!window.turnstile || turnstileWidgetId.current) return;
       turnstileWidgetId.current = window.turnstile.render(turnstileContainerRef.current!, {
         sitekey:            turnstileSiteKey,
         theme:              'dark',
@@ -61,15 +97,11 @@ export const ContactPage = () => {
         'error-callback':   () => setTurnstileToken(''),
       });
     };
-
     tryRender();
     if (!window.turnstile) {
-      const interval = setInterval(() => {
-        if (window.turnstile) { tryRender(); clearInterval(interval); }
-      }, 200);
-      return () => clearInterval(interval);
+      const t = setInterval(() => { if (window.turnstile) { tryRender(); clearInterval(t); } }, 200);
+      return () => clearInterval(t);
     }
-
     return () => {
       if (turnstileWidgetId.current && window.turnstile) {
         window.turnstile.remove(turnstileWidgetId.current);
@@ -80,382 +112,314 @@ export const ContactPage = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-
+    const fd = new FormData(e.currentTarget);
     const step1 = {
-      name:        formData.get('name') as string,
-      company:     formData.get('company') as string,
-      email:       formData.get('email') as string,
-      phone:       formData.get('phone') as string,
-      merchandise: formData.get('service_interest') as string,
+      name:        fd.get('name') as string,
+      company:     fd.get('company') as string,
+      email:       fd.get('email') as string,
+      phone:       fd.get('phone') as string,
+      merchandise: fd.get('service_interest') as string,
     };
-
     const step2 = new FormData();
-    step2.set('origin',      '');
-    step2.set('destination', '');
-    step2.set('transport',   '');
-    step2.set('dims',        '');
-    step2.set('quantity',    formData.get('message') as string);
-
+    step2.set('origin', ''); step2.set('destination', '');
+    step2.set('transport', ''); step2.set('dims', '');
+    step2.set('quantity', fd.get('message') as string);
     const ok = await submit(step1, step2, turnstileToken);
     if (ok) setSubmitted(true);
   };
 
+  const focusBorder  = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    (e.currentTarget.style.borderColor = 'rgba(59,130,246,0.55)');
+  const blurBorder   = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    (e.currentTarget.style.borderColor = BORDER);
+
   return (
-    <>
-      {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <section
-        style={{ backgroundColor: '#0b1320', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
-        className="pt-28 pb-14"
-      >
-        <Container>
-          <div className="flex items-center gap-3 mb-5">
-            <div className="h-px w-10 bg-blue-500" />
-            <span className="text-[10px] font-black tracking-[0.22em] uppercase text-blue-400">
-              Global Gate Mexico
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
-            Contact Global Gate Mexico
-          </h1>
-          <p className="text-white/50 text-[15px] max-w-lg leading-relaxed">
-            Not sure where to start? Send us a brief message and our team will help you identify the right logistics or compliance solution.
-          </p>
-        </Container>
-      </section>
+    <div style={{ backgroundColor: BG, minHeight: '100vh' }}>
 
-      {/* ── Main 2-col ───────────────────────────────────────────────────────── */}
-      <Section
-        noPadding
-        style={{ backgroundColor: '#0b1320' } as React.CSSProperties}
-        className="py-16 md:py-20"
-      >
-        <Container>
-          <div className="grid lg:grid-cols-2 gap-16 xl:gap-20">
+      {/* ── Page wrapper: single dark background, no white breaks ── */}
+      <div style={{ backgroundColor: BG, paddingTop: '88px', paddingBottom: 0 }}>
 
-            {/* LEFT — inquiry form */}
-            <div>
-              {!submitted ? (
-                <>
-                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-blue-400 mb-6">
-                    General Inquiry
-                  </p>
-                  <form onSubmit={handleSubmit} className="space-y-4">
-
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-black uppercase text-white/40 tracking-wider ml-1">
-                          Full Name *
-                        </label>
-                        <input
-                          name="name" type="text" required
-                          placeholder="John Doe"
-                          className="w-full px-4 py-3 text-[13px] outline-none transition-colors text-white placeholder-white/20"
-                          style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
-                          onFocus={e => (e.currentTarget.style.borderColor = 'rgba(59,130,246,0.6)')}
-                          onBlur={e  => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-black uppercase text-white/40 tracking-wider ml-1">
-                          Company *
-                        </label>
-                        <input
-                          name="company" type="text" required
-                          placeholder="Your Company"
-                          className="w-full px-4 py-3 text-[13px] outline-none transition-colors text-white placeholder-white/20"
-                          style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
-                          onFocus={e => (e.currentTarget.style.borderColor = 'rgba(59,130,246,0.6)')}
-                          onBlur={e  => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-black uppercase text-white/40 tracking-wider ml-1">
-                          Email *
-                        </label>
-                        <input
-                          name="email" type="email" required
-                          placeholder="you@company.com"
-                          className="w-full px-4 py-3 text-[13px] outline-none transition-colors text-white placeholder-white/20"
-                          style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
-                          onFocus={e => (e.currentTarget.style.borderColor = 'rgba(59,130,246,0.6)')}
-                          onBlur={e  => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-black uppercase text-white/40 tracking-wider ml-1">
-                          Phone / WhatsApp
-                        </label>
-                        <input
-                          name="phone" type="tel"
-                          placeholder="+52 ..."
-                          className="w-full px-4 py-3 text-[13px] outline-none transition-colors text-white placeholder-white/20"
-                          style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
-                          onFocus={e => (e.currentTarget.style.borderColor = 'rgba(59,130,246,0.6)')}
-                          onBlur={e  => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-black uppercase text-white/40 tracking-wider ml-1">
-                        Service Interest *
-                      </label>
-                      <select
-                        name="service_interest" required
-                        className="w-full px-4 py-3 text-[13px] outline-none transition-colors text-white"
-                        style={{ backgroundColor: '#111d2e', border: '1px solid rgba(255,255,255,0.1)' }}
-                        onFocus={e => (e.currentTarget.style.borderColor = 'rgba(59,130,246,0.6)')}
-                        onBlur={e  => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
-                      >
-                        <option value="" style={{ backgroundColor: '#111d2e' }}>Select a service…</option>
-                        <option value="Dangerous Goods Transportation"   style={{ backgroundColor: '#111d2e' }}>Dangerous Goods Transportation</option>
-                        <option value="Radioactive Material Logistics"   style={{ backgroundColor: '#111d2e' }}>Radioactive Material Logistics</option>
-                        <option value="DG Consulting & Compliance"       style={{ backgroundColor: '#111d2e' }}>DG Consulting &amp; Compliance</option>
-                        <option value="Training"                         style={{ backgroundColor: '#111d2e' }}>Training</option>
-                        <option value="Warehousing"                      style={{ backgroundColor: '#111d2e' }}>Warehousing</option>
-                        <option value="Other / Not Sure Yet"             style={{ backgroundColor: '#111d2e' }}>Other / Not Sure Yet</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-black uppercase text-white/40 tracking-wider ml-1">
-                        Message
-                      </label>
-                      <textarea
-                        name="message" rows={4}
-                        placeholder="Briefly describe your shipment or inquiry…"
-                        className="w-full px-4 py-3 text-[13px] outline-none transition-colors resize-none text-white placeholder-white/20"
-                        style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
-                        onFocus={e => (e.currentTarget.style.borderColor = 'rgba(59,130,246,0.6)')}
-                        onBlur={e  => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
-                      />
-                    </div>
-
-                    <div className="flex items-start gap-3">
-                      <input
-                        type="checkbox" required id="contact-consent"
-                        className="mt-0.5 accent-blue-500 shrink-0"
-                      />
-                      <label htmlFor="contact-consent" className="text-[11px] text-white/40 leading-snug cursor-pointer">
-                        I agree to Global Gate Mexico processing my data to respond to this inquiry in accordance with applicable privacy regulations.
-                      </label>
-                    </div>
-
-                    {turnstileSiteKey && (
-                      <div ref={turnstileContainerRef} className="mt-1" />
-                    )}
-
-                    {error && (
-                      <p className="text-red-400 text-[12px] font-semibold">{error}</p>
-                    )}
-
-                    <Button
-                      variant="primary"
-                      type="submit"
-                      className="w-full py-4 uppercase font-black tracking-widest text-[11px] mt-2"
-                      disabled={isLoading || (!!turnstileSiteKey && !turnstileToken)}
-                    >
-                      {isLoading ? (
-                        <span className="flex items-center gap-2">
-                          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                          </svg>
-                          Sending…
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-2">
-                          Send Message <Send size={14} />
-                        </span>
-                      )}
-                    </Button>
-
-                  </form>
-                </>
-              ) : (
-                /* ── Success state ── */
-                <div className="py-10 space-y-5">
-                  <div
-                    className="w-11 h-11 flex items-center justify-center"
-                    style={{ backgroundColor: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)' }}
-                  >
-                    <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">
-                    Message Received
-                  </p>
-                  <h3 className="text-2xl font-black uppercase tracking-tight text-white leading-tight">
-                    Thank You —<br />We'll Be In Touch
-                  </h3>
-                  <p className="text-white/50 text-[13px] leading-relaxed max-w-sm">
-                    A member of our dangerous goods team will review your inquiry and respond within one business day.
-                  </p>
-                  <button
-                    onClick={() => setSubmitted(false)}
-                    className="text-[11px] font-black uppercase tracking-widest text-blue-400 hover:text-blue-300 transition-colors"
-                  >
-                    ← Send Another Message
-                  </button>
-                </div>
-              )}
+        {/* ── Hero band ─────────────────────────────────────────────────────── */}
+        <div style={{ borderBottom: `1px solid ${BORDER}`, paddingTop: '40px', paddingBottom: '40px' }}>
+          <Container>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
+              <div style={{ height: '1px', width: '40px', backgroundColor: '#3b82f6' }} />
+              <span style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60a5fa' }}>
+                Global Gate Mexico
+              </span>
             </div>
+            <h1 style={{ fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.15, marginBottom: '10px' }}>
+              Contact Global Gate Mexico
+            </h1>
+            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '14px', maxWidth: '480px', lineHeight: 1.65 }}>
+              Not sure where to start? Send us a brief message and our team will help you identify the right logistics or compliance solution.
+            </p>
+          </Container>
+        </div>
 
-            {/* RIGHT — Operational Coverage */}
-            <div className="flex flex-col gap-8">
-              <div>
-                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-blue-400 mb-2">
-                  Operational Coverage
-                </p>
-                <h2 className="text-2xl font-extrabold tracking-tight text-white mb-2">
-                  Mexico & Cross-Border Network
-                </h2>
-                <p className="text-white/40 text-[13px] leading-relaxed max-w-sm">
-                  Our specialists operate across Mexico's key logistics corridors, handling dangerous goods for air, ground, and ocean transport.
-                </p>
-              </div>
+        {/* ── Main 2-column ─────────────────────────────────────────────────── */}
+        <div style={{ paddingTop: '48px', paddingBottom: '64px' }}>
+          <Container>
+            <div className="grid lg:grid-cols-2 gap-12 xl:gap-16">
 
-              {/* Hub cards */}
-              <div className="space-y-3">
-                {HUBS.map((hub, i) => (
-                  <div
-                    key={hub.city}
-                    style={{
-                      backgroundColor: i === 0 ? 'rgba(59,130,246,0.06)' : 'rgba(255,255,255,0.03)',
-                      border: i === 0 ? '1px solid rgba(59,130,246,0.18)' : '1px solid rgba(255,255,255,0.06)',
-                    }}
-                    className="px-5 py-4"
-                  >
-                    <div className="flex items-start justify-between gap-4 mb-2">
-                      <div>
-                        <p className="text-white/90 text-[13px] font-black uppercase tracking-wide">
-                          {hub.city}
-                        </p>
-                        <p className="text-blue-400/80 text-[10px] font-semibold uppercase tracking-widest mt-0.5">
-                          {hub.role}
-                        </p>
+              {/* ── LEFT: form card ─────────────────────────────────────────── */}
+              <div style={{ backgroundColor: CARD, border: `1px solid ${BORDER}`, padding: '36px 32px' }}>
+                {!submitted ? (
+                  <>
+                    <div style={{ marginBottom: '24px', paddingBottom: '18px', borderBottom: `1px solid ${BORDER}` }}>
+                      <p style={{ fontSize: '9px', fontWeight: 900, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60a5fa', marginBottom: '6px' }}>
+                        General Inquiry
+                      </p>
+                      <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#fff', letterSpacing: '-0.01em', lineHeight: 1.25 }}>
+                        Tell Us About Your Needs
+                      </h2>
+                      <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.38)', marginTop: '6px', lineHeight: 1.5 }}>
+                        A specialist will respond within one business day.
+                      </p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <Field label="Full Name *">
+                          <input name="name" type="text" required placeholder="John Doe"
+                            style={inputStyle} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                        <Field label="Company *">
+                          <input name="company" type="text" required placeholder="Your Company"
+                            style={inputStyle} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
                       </div>
-                      <div
-                        className="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5"
-                        style={{ backgroundColor: i === 0 ? '#3b82f6' : 'rgba(59,130,246,0.4)' }}
-                      />
+
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <Field label="Email *">
+                          <input name="email" type="email" required placeholder="you@company.com"
+                            style={inputStyle} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                        <Field label="Phone / WhatsApp">
+                          <input name="phone" type="tel" placeholder="+52 ..."
+                            style={inputStyle} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      </div>
+
+                      <Field label="Service Interest *">
+                        <select name="service_interest" required
+                          style={{ ...inputStyle, backgroundColor: '#0d1e35', cursor: 'pointer' }}
+                          onFocus={focusBorder} onBlur={blurBorder}
+                        >
+                          <option value="" style={{ backgroundColor: '#0d1e35' }}>Select a service…</option>
+                          <option value="Dangerous Goods Transportation"  style={{ backgroundColor: '#0d1e35' }}>Dangerous Goods Transportation</option>
+                          <option value="Radioactive Material Logistics"  style={{ backgroundColor: '#0d1e35' }}>Radioactive Material Logistics</option>
+                          <option value="DG Consulting & Compliance"      style={{ backgroundColor: '#0d1e35' }}>DG Consulting &amp; Compliance</option>
+                          <option value="Training"                        style={{ backgroundColor: '#0d1e35' }}>Training</option>
+                          <option value="Warehousing"                     style={{ backgroundColor: '#0d1e35' }}>Warehousing</option>
+                          <option value="Other / Not Sure Yet"            style={{ backgroundColor: '#0d1e35' }}>Other / Not Sure Yet</option>
+                        </select>
+                      </Field>
+
+                      <Field label="Message">
+                        <textarea name="message" rows={4}
+                          placeholder="Briefly describe your shipment or inquiry…"
+                          style={{ ...inputStyle, resize: 'none' }}
+                          onFocus={focusBorder} onBlur={blurBorder}
+                        />
+                      </Field>
+
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginTop: '2px' }}>
+                        <input type="checkbox" required id="contact-consent"
+                          style={{ marginTop: '2px', accentColor: '#3b82f6', flexShrink: 0 }} />
+                        <label htmlFor="contact-consent"
+                          style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', lineHeight: 1.55, cursor: 'pointer' }}>
+                          I agree to Global Gate Mexico processing my data to respond to this inquiry in accordance with applicable privacy regulations.
+                        </label>
+                      </div>
+
+                      {turnstileSiteKey && (
+                        <div ref={turnstileContainerRef} />
+                      )}
+
+                      {error && (
+                        <p style={{ color: '#f87171', fontSize: '12px', fontWeight: 600 }}>{error}</p>
+                      )}
+
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        className="w-full uppercase font-black tracking-widest text-[11px]"
+                        style={{ marginTop: '4px', padding: '14px' }}
+                        disabled={isLoading || (!!turnstileSiteKey && !turnstileToken)}
+                      >
+                        {isLoading ? (
+                          <span className="flex items-center gap-2">
+                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                            </svg>
+                            Sending…
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-2">
+                            Send Message <Send size={14} />
+                          </span>
+                        )}
+                      </Button>
+
+                    </form>
+                  </>
+                ) : (
+                  /* ── Success ── */
+                  <div style={{ padding: '24px 0', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ width: '40px', height: '40px', backgroundColor: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg width="18" height="18" fill="none" stroke="#4ade80" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
                     </div>
-                    <div className="flex flex-wrap gap-x-3 gap-y-1">
-                      {hub.services.map(s => (
-                        <span key={s} className="text-white/35 text-[10.5px]">{s}</span>
-                      ))}
-                    </div>
+                    <p style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60a5fa' }}>Message Received</p>
+                    <h3 style={{ fontSize: '22px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.01em', color: '#fff', lineHeight: 1.2 }}>
+                      Thank You —<br />We'll Be In Touch
+                    </h3>
+                    <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, maxWidth: '320px' }}>
+                      A dangerous goods specialist will review your inquiry and respond within one business day.
+                    </p>
+                    <button
+                      onClick={() => setSubmitted(false)}
+                      style={{ fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#60a5fa', background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginTop: '8px', textAlign: 'left' }}
+                    >
+                      ← Send Another Message
+                    </button>
                   </div>
-                ))}
+                )}
               </div>
 
-              {/* Abstract network visual */}
-              <div
-                style={{
-                  backgroundColor: 'rgba(255,255,255,0.02)',
-                  border: '1px solid rgba(255,255,255,0.05)',
-                  padding: '18px 20px',
-                }}
-              >
-                <p className="text-[9px] font-black uppercase tracking-widest text-white/25 mb-3">
-                  Cross-Border Reach
-                </p>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {['Mexico', 'USA', 'Canada', 'IATA Certified', 'IMDG Compliant', 'ADR Compliance Knowledge'].map((tag, i) => (
-                    <span
-                      key={tag}
-                      className="text-[10px] font-bold uppercase tracking-wide px-2.5 py-1"
+              {/* ── RIGHT: Operational Coverage ─────────────────────────────── */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+                {/* Header */}
+                <div>
+                  <p style={{ fontSize: '9px', fontWeight: 900, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60a5fa', marginBottom: '8px' }}>
+                    Operational Coverage
+                  </p>
+                  <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#fff', letterSpacing: '-0.01em', lineHeight: 1.25, marginBottom: '8px' }}>
+                    Mexico &amp; Cross-Border Network
+                  </h2>
+                  <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.6, maxWidth: '340px' }}>
+                    Our specialists operate across Mexico's key logistics corridors for air, ground, and ocean transport.
+                  </p>
+                </div>
+
+                {/* Hub cards */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {HUBS.map((hub, i) => (
+                    <div
+                      key={hub.city}
                       style={{
-                        backgroundColor: i < 3 ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.04)',
-                        border: i < 3 ? '1px solid rgba(59,130,246,0.2)' : '1px solid rgba(255,255,255,0.07)',
-                        color: i < 3 ? 'rgba(147,197,253,0.8)' : 'rgba(255,255,255,0.3)',
+                        backgroundColor: i === 0 ? BLUE_FILL : CARD,
+                        border: `1px solid ${i === 0 ? BLUE_DIM : BORDER}`,
+                        padding: '16px 18px',
                       }}
                     >
-                      {tag}
-                    </span>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                        <div>
+                          <p style={{ fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.9)', marginBottom: '2px' }}>
+                            {hub.city}
+                          </p>
+                          <p style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: i === 0 ? '#93c5fd' : '#60a5fa', opacity: i === 0 ? 1 : 0.7 }}>
+                            {hub.role}
+                          </p>
+                        </div>
+                        <div style={{
+                          width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0,
+                          backgroundColor: i === 0 ? '#3b82f6' : 'rgba(59,130,246,0.35)',
+                        }} />
+                      </div>
+                      <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.5 }}>
+                        {hub.services}
+                      </p>
+                    </div>
                   ))}
                 </div>
+
+                {/* Cross-border tags */}
+                <div style={{ backgroundColor: 'rgba(255,255,255,0.02)', border: `1px solid ${BORDER}`, padding: '16px 18px' }}>
+                  <p style={{ fontSize: '9px', fontWeight: 900, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.22)', marginBottom: '10px' }}>
+                    Cross-Border Reach
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {[
+                      { label: 'Mexico',                  accent: true },
+                      { label: 'USA',                     accent: true },
+                      { label: 'Canada',                  accent: true },
+                      { label: 'IATA Certified',          accent: false },
+                      { label: 'IMDG Compliant',          accent: false },
+                      { label: 'ADR Compliance Knowledge', accent: false },
+                    ].map(({ label, accent }) => (
+                      <span
+                        key={label}
+                        style={{
+                          fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+                          padding: '4px 10px',
+                          backgroundColor: accent ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
+                          border: accent ? '1px solid rgba(59,130,246,0.22)' : `1px solid ${BORDER}`,
+                          color: accent ? 'rgba(147,197,253,0.85)' : 'rgba(255,255,255,0.35)',
+                        }}
+                      >
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
               </div>
             </div>
+          </Container>
+        </div>
+      </div>
 
-          </div>
-        </Container>
-      </Section>
-
-      {/* ── Bottom strip ─────────────────────────────────────────────────────── */}
-      <div
-        style={{ backgroundColor: '#060d18', borderTop: '1px solid rgba(255,255,255,0.06)' }}
-        className="py-10"
-      >
+      {/* ── Bottom contact strip ─────────────────────────────────────────────── */}
+      <div style={{ backgroundColor: BG2, borderTop: `1px solid ${BORDER}`, padding: '36px 0' }}>
         <Container>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="flex items-start gap-3">
-              <div
-                className="w-8 h-8 flex items-center justify-center shrink-0"
-                style={{ backgroundColor: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.15)' }}
-              >
-                <MessageSquare size={14} className="text-blue-400" />
+            {[
+              { icon: <MessageSquare size={14} />, label: 'WhatsApp',      value: '+52 812 165 4040',       href: 'https://wa.me/528121654040', external: true },
+              { icon: <Mail size={14} />,          label: 'Email',         value: 'ggm@globalgatemexico.com', href: 'mailto:ggm@globalgatemexico.com', external: false },
+              { icon: <Clock size={14} />,         label: 'Response Time', value: 'Within 1 Business Day',  href: null, external: false },
+              { icon: <MapPin size={14} />,        label: 'Office Hours',  value: 'Mon–Fri · 8:00–18:00 CST', href: null, external: false },
+            ].map(item => (
+              <div key={item.label} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <div style={{
+                  width: '32px', height: '32px', flexShrink: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  backgroundColor: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.15)',
+                  color: '#60a5fa',
+                }}>
+                  {item.icon}
+                </div>
+                <div>
+                  <p style={{ fontSize: '9px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.28)', marginBottom: '4px' }}>
+                    {item.label}
+                  </p>
+                  {item.href ? (
+                    <a
+                      href={item.href}
+                      {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      style={{ fontSize: '13px', fontWeight: 700, color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}
+                      onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+                      onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
+                    >
+                      {item.value}
+                    </a>
+                  ) : (
+                    <p style={{ fontSize: '13px', fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>
+                      {item.value}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div>
-                <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">WhatsApp</p>
-                <a
-                  href="https://wa.me/528121654040"
-                  target="_blank" rel="noopener noreferrer"
-                  className="text-white/70 text-[13px] font-bold hover:text-white transition-colors"
-                >
-                  +52 812 165 4040
-                </a>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div
-                className="w-8 h-8 flex items-center justify-center shrink-0"
-                style={{ backgroundColor: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.15)' }}
-              >
-                <Mail size={14} className="text-blue-400" />
-              </div>
-              <div>
-                <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">Email</p>
-                <a
-                  href="mailto:ggm@globalgatemexico.com"
-                  className="text-white/70 text-[13px] font-bold hover:text-white transition-colors"
-                >
-                  ggm@globalgatemexico.com
-                </a>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div
-                className="w-8 h-8 flex items-center justify-center shrink-0"
-                style={{ backgroundColor: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.15)' }}
-              >
-                <Clock size={14} className="text-blue-400" />
-              </div>
-              <div>
-                <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">Response Time</p>
-                <p className="text-white/70 text-[13px] font-bold">Within 1 Business Day</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div
-                className="w-8 h-8 flex items-center justify-center shrink-0"
-                style={{ backgroundColor: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.15)' }}
-              >
-                <MapPin size={14} className="text-blue-400" />
-              </div>
-              <div>
-                <p className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-1">Office Hours</p>
-                <p className="text-white/70 text-[13px] font-bold">Mon–Fri · 8:00–18:00 CST</p>
-              </div>
-            </div>
+            ))}
           </div>
         </Container>
       </div>
-    </>
+
+    </div>
   );
 };
