@@ -135,13 +135,13 @@ export const ContactoPage = () => {
 
       if (fnError) {
         console.error('[contact-inquiry] Error:', fnError);
-        setError('No pudimos enviar tu mensaje. Intenta de nuevo o contáctanos directamente.');
+        setError('No pudimos enviar tu mensaje. Inténtalo de nuevo o contáctanos directamente.');
       } else {
         setSubmitted(true);
       }
     } catch (err) {
       console.error('[contact-inquiry] Invocation failed:', err);
-      setError('No pudimos enviar tu mensaje. Intenta de nuevo o contáctanos directamente.');
+      setError('No pudimos enviar tu mensaje. Inténtalo de nuevo o contáctanos directamente.');
     } finally {
       setIsLoading(false);
     }
@@ -295,12 +295,9 @@ export const ContactoPage = () => {
                     <p style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60a5fa' }}>
                       Mensaje recibido
                     </p>
-                    <h3 style={{ fontSize: '22px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.01em', color: '#fff', lineHeight: 1.2 }}>
-                      Gracias
+                    <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', letterSpacing: '-0.01em', lineHeight: 1.3 }}>
+                      Gracias. Nuestro equipo se pondrá en contacto contigo pronto.
                     </h3>
-                    <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, maxWidth: '320px' }}>
-                      Nuestro equipo se pondrá en contacto contigo pronto.
-                    </p>
                     <button
                       onClick={() => setSubmitted(false)}
                       style={{ fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#60a5fa', background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginTop: '8px', textAlign: 'left' }}
