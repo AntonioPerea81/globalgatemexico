@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import {
   Plane, Anchor, Truck, Layers, Plus, Trash2,
   Upload, FileText, X, Package, AlertTriangle,
-  Atom, HelpCircle, CheckCircle2, ArrowRight, ChevronRight,
+  Atom, HelpCircle, CheckCircle2, ArrowRight, ChevronDown,
 } from 'lucide-react';
 import { Container } from '../components/UI';
 
@@ -247,11 +247,14 @@ export const RequestQuotePage = () => {
     setTimeout(() => { setLoading(false); setSubmitted(true); }, 1400);
   };
 
-  // Expand and scroll to detailed section
+  // Accordion toggle — scroll into view when opening so content is visible
   const expandRef = useRef<HTMLDivElement>(null);
   const handleExpand = () => {
-    setExpanded(true);
-    setTimeout(() => expandRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    const opening = !expanded;
+    setExpanded(prev => !prev);
+    if (opening) {
+      setTimeout(() => expandRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+    }
   };
 
   // ── Success state ────────────────────────────────────────────────────────
@@ -588,55 +591,126 @@ export const RequestQuotePage = () => {
               </p>
             </SectionCard>
 
-            {/* ══════════════════════════════════════════════════════════
-                EXPANSION CTA — shown when not yet expanded
-            ══════════════════════════════════════════════════════════ */}
-            {!expanded && (
-              <div style={{
-                textAlign: 'center' as const,
-                padding: '28px 24px',
-                marginBottom: '14px',
-                backgroundColor: CARD,
-                border: `1.5px dashed ${BORDER_DARK}`,
-                borderRadius: '8px',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-              }}>
-                <p style={{ fontSize: '13px', color: TEXT2, marginBottom: '18px', lineHeight: 1.6 }}>
-                  Need to specify package dimensions, DG classification details, or attach documents?
-                </p>
-                <button
-                  type="button"
-                  onClick={handleExpand}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '8px',
-                    padding: '11px 28px',
-                    backgroundColor: '#fff',
-                    border: `1.5px solid ${ACCENT}`,
-                    borderRadius: '5px',
-                    color: ACCENT,
-                    fontSize: '12px', fontWeight: 700,
-                    textTransform: 'uppercase' as const, letterSpacing: '0.1em',
-                    cursor: 'pointer', transition: 'all 0.15s',
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.backgroundColor = ACCENT_PALE;
-                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(37,99,235,0.18)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.backgroundColor = '#fff';
-                    e.currentTarget.style.boxShadow = 'none';
-                  }}
-                >
-                  Continue with Detailed Shipment Information <ChevronRight size={14} />
-                </button>
-              </div>
-            )}
+            {/* ── Submit — primary CTA, always visible ────────────────── */}
+            <div style={{
+              backgroundColor: CARD, border: `1px solid ${BORDER}`,
+              borderRadius: '8px', padding: '28px 24px',
+              display: 'flex', flexDirection: 'column' as const, alignItems: 'center',
+              gap: '12px', textAlign: 'center' as const,
+              boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+              marginBottom: '10px',
+            }}>
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  padding: '17px 56px',
+                  backgroundColor: loading ? '#93c5fd' : ACCENT,
+                  color: '#fff', border: 'none', borderRadius: '6px',
+                  fontSize: '13px', fontWeight: 900,
+                  textTransform: 'uppercase' as const, letterSpacing: '0.14em',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.18s',
+                  boxShadow: loading ? 'none' : '0 4px 16px rgba(37,99,235,0.32)',
+                  display: 'flex', alignItems: 'center', gap: '10px',
+                  minWidth: '240px', justifyContent: 'center',
+                }}
+                onMouseEnter={e => {
+                  if (!loading) {
+                    e.currentTarget.style.backgroundColor = '#1d4ed8';
+                    e.currentTarget.style.boxShadow = '0 6px 22px rgba(37,99,235,0.46)';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!loading) {
+                    e.currentTarget.style.backgroundColor = ACCENT;
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(37,99,235,0.32)';
+                    e.currentTarget.style.transform = 'none';
+                  }
+                }}
+              >
+                {loading ? (
+                  <>
+                    <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    Processing…
+                  </>
+                ) : (
+                  <>Request Quote <ArrowRight size={15} /></>
+                )}
+              </button>
+              <p style={{ fontSize: '11px', color: MUTED, lineHeight: 1.55, maxWidth: '400px' }}>
+                Our logistics specialists will review your shipment information before
+                issuing the quotation. Response within one business day.
+              </p>
+            </div>
 
             {/* ══════════════════════════════════════════════════════════
-                DETAILED SHIPMENT — revealed after expansion
+                ACCORDION — Detailed Shipment Information (Optional)
             ══════════════════════════════════════════════════════════ */}
-            {expanded && (
-              <div ref={expandRef}>
+            <div style={{ marginBottom: '32px' }}>
+
+              {/* Accordion trigger */}
+              <button
+                type="button"
+                onClick={handleExpand}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '13px 18px',
+                  backgroundColor: expanded ? '#f4f6f9' : '#f9fafb',
+                  border: `1px solid ${BORDER}`,
+                  borderRadius: expanded ? '8px 8px 0 0' : '8px',
+                  cursor: 'pointer', outline: 'none',
+                  transition: 'background-color 0.15s',
+                  textAlign: 'left' as const,
+                }}
+                onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#f0f3f7'; }}
+                onMouseLeave={e => { e.currentTarget.style.backgroundColor = expanded ? '#f4f6f9' : '#f9fafb'; }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <ChevronDown
+                    size={15}
+                    color={TEXT2}
+                    style={{
+                      transform: expanded ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.2s ease',
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span style={{
+                    fontSize: '11px', fontWeight: 700, color: TEXT2,
+                    textTransform: 'uppercase' as const, letterSpacing: '0.1em',
+                  }}>
+                    Detailed Shipment Information
+                  </span>
+                  <span style={{
+                    fontSize: '9px', fontWeight: 700, color: MUTED,
+                    backgroundColor: '#fff', border: `1px solid ${BORDER}`,
+                    padding: '2px 7px', borderRadius: '3px',
+                    textTransform: 'uppercase' as const, letterSpacing: '0.08em',
+                  }}>
+                    Optional
+                  </span>
+                </div>
+                <span style={{ fontSize: '11px', color: MUTED, flexShrink: 0, marginLeft: '12px' }}>
+                  {expanded ? 'Hide' : 'Add dimensions, DG details & documents'}
+                </span>
+              </button>
+
+              {/* Accordion content */}
+              {expanded && (
+              <div
+                ref={expandRef}
+                style={{
+                  border: `1px solid ${BORDER}`, borderTop: 'none',
+                  borderRadius: '0 0 8px 8px', padding: '20px 20px 4px',
+                  backgroundColor: BG,
+                }}
+              >
 
                 {/* ── 05 Package Details ──────────────────────────────── */}
                 <SectionCard number="05" title="Package Details">
@@ -934,63 +1008,9 @@ export const RequestQuotePage = () => {
                 </SectionCard>
 
               </div>
-            )}
+              )}
 
-            {/* ── Submit ──────────────────────────────────────────────── */}
-            <div style={{
-              backgroundColor: CARD, border: `1px solid ${BORDER}`,
-              borderRadius: '8px', padding: '32px 24px',
-              display: 'flex', flexDirection: 'column' as const, alignItems: 'center',
-              gap: '14px', textAlign: 'center' as const,
-              boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-            }}>
-              <button
-                type="submit"
-                disabled={loading}
-                style={{
-                  padding: '17px 56px',
-                  backgroundColor: loading ? '#93c5fd' : ACCENT,
-                  color: '#fff', border: 'none', borderRadius: '6px',
-                  fontSize: '13px', fontWeight: 900,
-                  textTransform: 'uppercase' as const, letterSpacing: '0.14em',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.18s',
-                  boxShadow: loading ? 'none' : '0 4px 16px rgba(37,99,235,0.32)',
-                  display: 'flex', alignItems: 'center', gap: '10px',
-                  minWidth: '240px', justifyContent: 'center',
-                }}
-                onMouseEnter={e => {
-                  if (!loading) {
-                    e.currentTarget.style.backgroundColor = '#1d4ed8';
-                    e.currentTarget.style.boxShadow = '0 6px 22px rgba(37,99,235,0.46)';
-                    e.currentTarget.style.transform = 'translateY(-1px)';
-                  }
-                }}
-                onMouseLeave={e => {
-                  if (!loading) {
-                    e.currentTarget.style.backgroundColor = ACCENT;
-                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(37,99,235,0.32)';
-                    e.currentTarget.style.transform = 'none';
-                  }
-                }}
-              >
-                {loading ? (
-                  <>
-                    <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                    </svg>
-                    Processing…
-                  </>
-                ) : (
-                  <>Request Quote <ArrowRight size={15} /></>
-                )}
-              </button>
-              <p style={{ fontSize: '11px', color: MUTED, lineHeight: 1.55, maxWidth: '400px' }}>
-                Our logistics specialists will review your shipment information before
-                issuing the quotation. Response within one business day.
-              </p>
-            </div>
+            </div>{/* end accordion wrapper */}
 
           </form>
         </Container>
