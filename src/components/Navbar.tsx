@@ -24,9 +24,9 @@ const NAV_ITEMS: NavItem[] = [
     id: 'dgt',
     label: { EN: 'Transportation', ES: 'Transporte' },
     dropdown: [
-      { label: { EN: 'Air Freight',    ES: 'Carga Aérea' },         href: { EN: '/dangerous-goods-transportation/air-transportation', ES: '/es/transporte-mercancias-peligrosas/transporte-aereo' } },
-      { label: { EN: 'Sea Freight',    ES: 'Carga Marítima' },       href: { EN: '/dangerous-goods-transportation/ocean-freight',      ES: '/es/transporte-mercancias-peligrosas/transporte-maritimo' } },
-      { label: { EN: 'Request Quote',  ES: 'Solicitar Cotización' }, href: { EN: '/request-quote',                                     ES: '/request-quote' } },
+      { label: { EN: 'Air Freight',    ES: 'Transporte Aéreo' },     href: { EN: '/dangerous-goods-transportation/air-transportation', ES: '/es/transporte-mercancias-peligrosas/transporte-aereo' } },
+      { label: { EN: 'Sea Freight',   ES: 'Transporte Marítimo' },  href: { EN: '/dangerous-goods-transportation/ocean-freight',      ES: '/es/transporte-mercancias-peligrosas/transporte-maritimo' } },
+      { label: { EN: 'Request Quote', ES: 'Solicitar Cotización' }, href: { EN: '/request-quote',                                     ES: '/solicitar-cotizacion' } },
     ],
   },
   {
@@ -101,7 +101,8 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/acerca':                                                               { EN: '/about',                                                                  ES: '/acerca' },
   '/contact':                                                              { EN: '/contact',                                                                 ES: '/contacto' },
   '/contacto':                                                             { EN: '/contact',                                                                 ES: '/contacto' },
-  '/request-quote':                                                        { EN: '/request-quote',                                                           ES: '/request-quote' },
+  '/request-quote':         { EN: '/request-quote',        ES: '/solicitar-cotizacion' },
+  '/solicitar-cotizacion':  { EN: '/request-quote',        ES: '/solicitar-cotizacion' },
 };
 
 export const Navbar = () => {

@@ -39,6 +39,7 @@ import {
 import { ContactPage } from './pages/Contact';
 import { ContactoPage } from './pages/Contacto';
 import { RequestQuotePage } from './pages/RequestQuote';
+import { SolicitarCotizacionPage } from './pages/SolicitarCotizacion';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -88,6 +89,7 @@ export default function App() {
             <Route path="/contact"  element={<ContactPage />} />
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/request-quote" element={<RequestQuotePage />} />
+            <Route path="/solicitar-cotizacion" element={<SolicitarCotizacionPage />} />
             <Route path="*"         element={<Home />} />
           </Routes>
         </Layout>
