@@ -2,26 +2,26 @@ import { useState, useRef, useCallback } from 'react';
 import {
   Plane, Anchor, Truck, Layers, Plus, Trash2,
   Upload, FileText, X, Package, AlertTriangle,
-  Atom, HelpCircle, CheckCircle2, ArrowRight,
+  Atom, HelpCircle, CheckCircle2, ArrowRight, ChevronRight,
 } from 'lucide-react';
 import { Container } from '../components/UI';
 
-// ── Color tokens ─────────────────────────────────────────────────────────────
-const BG          = '#f0f2f5';
+// ── Color tokens — slightly boosted contrast vs. v1 ──────────────────────────
+const BG          = '#e8eaed';        // darker page bg for better card separation
 const HEADER_BG   = '#0d1729';
 const CARD        = '#ffffff';
-const BORDER      = '#e2e8f0';
-const BORDER_DARK = '#cbd5e1';
+const BORDER      = '#d1d9e0';        // more visible border
+const BORDER_DARK = '#b8c4cf';
 const ACCENT      = '#2563eb';
 const ACCENT_PALE = '#eff6ff';
 const ACCENT_RING = '#bfdbfe';
+const ACCENT_DIM  = '#f0f6ff';        // lighter hover fill for mode cards
 const TEXT        = '#0f172a';
 const TEXT2       = '#475569';
 const MUTED       = '#94a3b8';
 const INPUT_B     = '#d1d5db';
 const LABEL_C     = '#64748b';
-const TH_BG       = '#f8fafc';
-const GOLD        = '#c9a227';
+const TH_BG       = '#f4f6f9';
 const AMBER_BG    = '#fffbeb';
 const AMBER_B     = '#fde68a';
 const AMBER_TXT   = '#92400e';
@@ -51,7 +51,7 @@ const newPkg = (): PkgLine => ({
 
 // ── Shared style atoms ────────────────────────────────────────────────────────
 const inputSt: React.CSSProperties = {
-  width: '100%', padding: '9px 12px', fontSize: '13px',
+  width: '100%', padding: '10px 12px', fontSize: '13px',
   border: `1px solid ${INPUT_B}`, borderRadius: '4px',
   backgroundColor: '#fff', color: TEXT, outline: 'none',
   fontFamily: 'inherit', transition: 'border-color 0.15s',
@@ -64,21 +64,22 @@ const labelSt: React.CSSProperties = {
 };
 
 const thSt: React.CSSProperties = {
-  padding: '9px 12px', textAlign: 'left' as const, fontSize: '9px',
+  padding: '10px 12px', textAlign: 'left' as const, fontSize: '9px',
   fontWeight: 800, textTransform: 'uppercase' as const, letterSpacing: '0.12em',
   color: MUTED, whiteSpace: 'nowrap' as const, borderBottom: `1px solid ${BORDER}`,
   backgroundColor: TH_BG,
 };
 
 const tdSt: React.CSSProperties = {
-  padding: '5px 6px', verticalAlign: 'middle' as const,
-  borderBottom: `1px solid #f1f5f9`,
+  padding: '6px 6px', verticalAlign: 'middle' as const,
+  borderBottom: `1px solid #edf0f4`,
 };
 
+// table cell inputs — taller than previous version
 const tableInputSt: React.CSSProperties = {
-  width: '100%', padding: '7px 9px', fontSize: '13px',
+  width: '100%', padding: '9px 10px', fontSize: '13px',
   border: `1px solid ${INPUT_B}`, borderRadius: '3px',
-  backgroundColor: '#fafafa', color: TEXT, outline: 'none',
+  backgroundColor: '#fafbfc', color: TEXT, outline: 'none',
   fontFamily: 'inherit', transition: 'border-color 0.15s',
 };
 
@@ -92,11 +93,12 @@ function SectionCard({
     <div style={{
       backgroundColor: CARD, border: `1px solid ${BORDER}`,
       borderRadius: '8px', marginBottom: '14px', overflow: 'hidden',
+      boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
     }}>
       <div style={{
         display: 'flex', alignItems: 'center', gap: '12px',
         padding: '14px 24px', borderBottom: `1px solid ${BORDER}`,
-        backgroundColor: '#fcfcfd',
+        backgroundColor: '#f9fafb',
       }}>
         <span style={{
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
@@ -146,7 +148,7 @@ function Field({
   );
 }
 
-// ── Focus/blur border helpers ─────────────────────────────────────────────────
+// ── Focus/blur helpers ────────────────────────────────────────────────────────
 const focusBorder  = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
   (e.currentTarget.style.borderColor = ACCENT);
 const blurBorder   = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -159,42 +161,49 @@ const blurTableIn  = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>)
 // ── Main page component ───────────────────────────────────────────────────────
 export const RequestQuotePage = () => {
 
-  // Transport mode
-  const [mode, setMode]         = useState<TransportMode>('');
+  // Progressive disclosure
+  const [expanded, setExpanded]   = useState(false);
+  // Transport mode + hover tracking
+  const [mode, setMode]           = useState<TransportMode>('');
+  const [hoverMode, setHoverMode] = useState<TransportMode | null>(null);
 
   // Routing
-  const [oCountry, setOCountry] = useState('');
-  const [oCity, setOCity]       = useState('');
-  const [oTerm, setOTerm]       = useState('');
-  const [dCountry, setDCountry] = useState('');
-  const [dCity, setDCity]       = useState('');
-  const [dTerm, setDTerm]       = useState('');
+  const [oCountry, setOCountry]   = useState('');
+  const [oCity, setOCity]         = useState('');
+  const [oTerm, setOTerm]         = useState('');
+  const [dCountry, setDCountry]   = useState('');
+  const [dCity, setDCity]         = useState('');
+  const [dTerm, setDTerm]         = useState('');
 
   // Cargo
-  const [commodity, setCommodity]   = useState('');
-  const [hsCode, setHsCode]         = useState('');
-  const [cargoClass, setCargoClass] = useState<CargoClass>('');
+  const [commodity, setCommodity]     = useState('');
+  const [hsCode, setHsCode]           = useState('');
+  const [cargoClass, setCargoClass]   = useState<CargoClass>('');
 
-  // Packages
-  const [packages, setPackages] = useState<PkgLine[]>([newPkg()]);
+  // Quick package summary (visible before expansion)
+  const [quickCount, setQuickCount]   = useState('');
+  const [quickWeight, setQuickWeight] = useState('');
+
+  // Detailed package lines (revealed after expansion)
+  const [packages, setPackages]       = useState<PkgLine[]>([newPkg()]);
 
   // DG fields
-  const [unNum, setUnNum]           = useState('');
-  const [psn, setPsn]               = useState('');
-  const [hazClass, setHazClass]     = useState('');
-  const [pkgGroup, setPkgGroup]     = useState('');
-  const [pkgType, setPkgType]       = useState('');
-  const [tiIndex, setTiIndex]       = useState('');
-  const [isotope, setIsotope]       = useState('');
-  const [pkgCat, setPkgCat]         = useState('');
+  const [unNum, setUnNum]     = useState('');
+  const [psn, setPsn]         = useState('');
+  const [hazClass, setHazClass] = useState('');
+  const [pkgGroup, setPkgGroup] = useState('');
+  const [pkgType, setPkgType]   = useState('');
+  const [tiIndex, setTiIndex]   = useState('');
+  const [isotope, setIsotope]   = useState('');
+  const [pkgCat, setPkgCat]     = useState('');
 
   // Files
-  const [files, setFiles]         = useState<File[]>([]);
-  const [dragging, setDragging]   = useState(false);
-  const fileRef                   = useRef<HTMLInputElement>(null);
+  const [files, setFiles]     = useState<File[]>([]);
+  const [dragging, setDragging] = useState(false);
+  const fileRef               = useRef<HTMLInputElement>(null);
 
   // Comments
-  const [comments, setComments]   = useState('');
+  const [comments, setComments] = useState('');
 
   // Submission
   const [loading, setLoading]     = useState(false);
@@ -202,11 +211,11 @@ export const RequestQuotePage = () => {
   const [refId]                   = useState(() => 'GGM-' + Date.now().toString(36).toUpperCase().slice(-6));
 
   // Computed
-  const showDG      = cargoClass === 'dg' || cargoClass === 'radioactive';
-  const showRadio   = cargoClass === 'radioactive';
+  const showDG    = cargoClass === 'dg' || cargoClass === 'radioactive';
+  const showRadio = cargoClass === 'radioactive';
   const totalWeight = packages.reduce((s, p) =>
     s + (parseFloat(p.weight) || 0) * (parseInt(p.pieces) || 0), 0);
-  const totalVol    = packages.reduce((s, p) => {
+  const totalVol = packages.reduce((s, p) => {
     const l = parseFloat(p.length) || 0;
     const w = parseFloat(p.width)  || 0;
     const h = parseFloat(p.height) || 0;
@@ -214,9 +223,9 @@ export const RequestQuotePage = () => {
   }, 0);
 
   // Package helpers
-  const addPkg   = () => setPackages(prev => [...prev, newPkg()]);
+  const addPkg    = () => setPackages(prev => [...prev, newPkg()]);
   const removePkg = (id: string) => setPackages(prev => prev.filter(p => p.id !== id));
-  const setPkg   = (id: string, f: keyof PkgLine, v: string) =>
+  const setPkg    = (id: string, f: keyof PkgLine, v: string) =>
     setPackages(prev => prev.map(p => p.id === id ? { ...p, [f]: v } : p));
 
   // File helpers
@@ -224,19 +233,25 @@ export const RequestQuotePage = () => {
     if (!fs) return;
     setFiles(prev => [...prev, ...Array.from(fs)]);
   };
-  const removeFile = (i: number) => setFiles(prev => prev.filter((_, idx) => idx !== i));
-
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const removeFile  = (i: number) => setFiles(prev => prev.filter((_, idx) => idx !== i));
+  const handleDrop  = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setDragging(false);
     addFiles(e.dataTransfer.files);
   }, []);
 
-  // Submit
+  // Submit (mock)
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setTimeout(() => { setLoading(false); setSubmitted(true); }, 1400);
+  };
+
+  // Expand and scroll to detailed section
+  const expandRef = useRef<HTMLDivElement>(null);
+  const handleExpand = () => {
+    setExpanded(true);
+    setTimeout(() => expandRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
   };
 
   // ── Success state ────────────────────────────────────────────────────────
@@ -249,6 +264,7 @@ export const RequestQuotePage = () => {
               maxWidth: '560px', margin: '0 auto',
               backgroundColor: CARD, border: `1px solid ${BORDER}`,
               borderRadius: '10px', padding: '48px 40px', textAlign: 'center',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
             }}>
               <div style={{
                 width: '52px', height: '52px', borderRadius: '50%', margin: '0 auto 20px',
@@ -266,7 +282,7 @@ export const RequestQuotePage = () => {
                 We've received your shipment details
               </h2>
               <p style={{ fontSize: '13px', color: TEXT2, lineHeight: 1.65,
-                marginBottom: '24px', maxWidth: '380px', margin: '0 auto 24px' }}>
+                maxWidth: '380px', margin: '0 auto 24px' }}>
                 Our logistics specialists will review the operational requirements
                 and contact you within one business day.
               </p>
@@ -306,7 +322,6 @@ export const RequestQuotePage = () => {
       <div style={{ backgroundColor: HEADER_BG, paddingTop: '88px' }}>
         <div style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '36px 0 32px' }}>
           <Container>
-            {/* Breadcrumb */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px',
               marginBottom: '16px', fontSize: '10px', fontWeight: 600,
               textTransform: 'uppercase', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.3)' }}>
@@ -315,8 +330,7 @@ export const RequestQuotePage = () => {
               <span style={{ color: 'rgba(255,255,255,0.55)' }}>Request Quote</span>
             </div>
             <h1 style={{ fontSize: 'clamp(24px, 3.5vw, 36px)', fontWeight: 800,
-              color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.15,
-              marginBottom: '10px' }}>
+              color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.15, marginBottom: '10px' }}>
               Request Freight Quote
             </h1>
             <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '14px',
@@ -324,7 +338,6 @@ export const RequestQuotePage = () => {
               Tell us about your shipment and our logistics team will review the
               operational requirements before issuing the quotation.
             </p>
-            {/* Certification strip */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px',
               marginTop: '20px', flexWrap: 'wrap' }}>
               {['IATA Certified', 'IMDG', 'ADR', 'CNSNS', 'Class 7 Logistics'].map(t => (
@@ -344,38 +357,53 @@ export const RequestQuotePage = () => {
       </div>
 
       {/* ── Form body ───────────────────────────────────────────────────── */}
-      <div style={{ padding: '32px 0 72px' }}>
+      <div style={{ padding: '32px 0 80px' }}>
         <Container>
           <form onSubmit={handleSubmit} style={{ maxWidth: '860px', margin: '0 auto' }}>
+
+            {/* ══════════════════════════════════════════════════════════
+                QUICK QUOTE — always visible
+            ══════════════════════════════════════════════════════════ */}
 
             {/* ── 01 Transport Mode ───────────────────────────────────── */}
             <SectionCard number="01" title="Transport Mode">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {([
-                  { id: 'air',       label: 'Air Freight',           icon: <Plane size={22} /> },
-                  { id: 'sea',       label: 'Sea Freight',           icon: <Anchor size={22} /> },
-                  { id: 'ground',    label: 'Ground Transport',      icon: <Truck size={22} /> },
-                  { id: 'multimodal',label: 'Multimodal',            icon: <Layers size={22} /> },
+                  { id: 'air',        label: 'Air Freight',      icon: <Plane size={22} /> },
+                  { id: 'sea',        label: 'Sea Freight',       icon: <Anchor size={22} /> },
+                  { id: 'ground',     label: 'Ground Transport',  icon: <Truck size={22} /> },
+                  { id: 'multimodal', label: 'Multimodal',        icon: <Layers size={22} /> },
                 ] as { id: TransportMode; label: string; icon: React.ReactNode }[]).map(m => {
-                  const active = mode === m.id;
+                  const isActive = mode === m.id;
+                  const isHover  = hoverMode === m.id && !isActive;
                   return (
                     <button
                       key={m.id}
                       type="button"
                       onClick={() => setMode(m.id)}
+                      onMouseEnter={() => setHoverMode(m.id)}
+                      onMouseLeave={() => setHoverMode(null)}
                       style={{
-                        padding: '18px 12px', border: `2px solid ${active ? ACCENT : BORDER}`,
-                        borderRadius: '6px', cursor: 'pointer', textAlign: 'center' as const,
-                        backgroundColor: active ? ACCENT_PALE : '#fff',
-                        transition: 'all 0.15s', outline: 'none',
+                        padding: '20px 12px',
+                        border: `2px solid ${isActive ? ACCENT : isHover ? ACCENT_RING : BORDER}`,
+                        borderRadius: '7px', cursor: 'pointer', textAlign: 'center' as const,
+                        backgroundColor: isActive ? ACCENT_PALE : isHover ? ACCENT_DIM : '#fff',
+                        boxShadow: isActive
+                          ? `0 0 0 3px ${ACCENT_RING}, 0 3px 10px rgba(37,99,235,0.12)`
+                          : isHover ? '0 3px 10px rgba(0,0,0,0.09)' : '0 1px 3px rgba(0,0,0,0.04)',
+                        transform: isHover ? 'translateY(-2px)' : 'none',
+                        transition: 'all 0.16s ease', outline: 'none',
                         display: 'flex', flexDirection: 'column' as const,
                         alignItems: 'center', gap: '10px',
                       }}
                     >
-                      <span style={{ color: active ? ACCENT : MUTED, lineHeight: 1 }}>{m.icon}</span>
+                      <span style={{ color: isActive ? ACCENT : isHover ? ACCENT : MUTED, lineHeight: 1 }}>
+                        {m.icon}
+                      </span>
                       <span style={{
-                        fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' as const,
-                        letterSpacing: '0.08em', color: active ? ACCENT : TEXT2,
+                        fontSize: '11px', fontWeight: 700,
+                        textTransform: 'uppercase' as const, letterSpacing: '0.08em',
+                        color: isActive ? ACCENT : isHover ? ACCENT : TEXT2,
                       }}>
                         {m.label}
                       </span>
@@ -385,7 +413,7 @@ export const RequestQuotePage = () => {
               </div>
             </SectionCard>
 
-            {/* ── 02 Routing ──────────────────────────────────────────── */}
+            {/* ── 02 Origin & Destination ─────────────────────────────── */}
             <SectionCard number="02" title="Origin & Destination">
               <div className="grid md:grid-cols-2 gap-6">
 
@@ -395,30 +423,26 @@ export const RequestQuotePage = () => {
                     marginBottom: '14px', paddingBottom: '10px', borderBottom: `1px solid ${BORDER}` }}>
                     <div style={{ width: '6px', height: '6px', borderRadius: '50%',
                       backgroundColor: '#22c55e', flexShrink: 0 }} />
-                    <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase' as const,
-                      letterSpacing: '0.12em', color: TEXT2 }}>Origin</span>
+                    <span style={{ fontSize: '10px', fontWeight: 800,
+                      textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: TEXT2 }}>
+                      Origin
+                    </span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '10px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '12px' }}>
                     <Field label="Country" required>
-                      <input
-                        value={oCountry} onChange={e => setOCountry(e.target.value)}
+                      <input value={oCountry} onChange={e => setOCountry(e.target.value)}
                         placeholder="e.g. Mexico" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder}
-                      />
+                        onFocus={focusBorder} onBlur={blurBorder} />
                     </Field>
                     <Field label="City">
-                      <input
-                        value={oCity} onChange={e => setOCity(e.target.value)}
+                      <input value={oCity} onChange={e => setOCity(e.target.value)}
                         placeholder="e.g. Monterrey" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder}
-                      />
+                        onFocus={focusBorder} onBlur={blurBorder} />
                     </Field>
                     <Field label={mode === 'air' ? 'Airport / IATA Code' : mode === 'sea' ? 'Port' : 'Terminal / Facility'}>
-                      <input
-                        value={oTerm} onChange={e => setOTerm(e.target.value)}
-                        placeholder={mode === 'air' ? 'e.g. MTY — Monterrey Int\'l' : 'e.g. Port of Veracruz'}
-                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
-                      />
+                      <input value={oTerm} onChange={e => setOTerm(e.target.value)}
+                        placeholder={mode === 'air' ? "e.g. MTY — Monterrey Int'l" : 'e.g. Port of Veracruz'}
+                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                     </Field>
                   </div>
                 </div>
@@ -429,30 +453,26 @@ export const RequestQuotePage = () => {
                     marginBottom: '14px', paddingBottom: '10px', borderBottom: `1px solid ${BORDER}` }}>
                     <div style={{ width: '6px', height: '6px', borderRadius: '3px',
                       backgroundColor: ACCENT, flexShrink: 0 }} />
-                    <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase' as const,
-                      letterSpacing: '0.12em', color: TEXT2 }}>Destination</span>
+                    <span style={{ fontSize: '10px', fontWeight: 800,
+                      textTransform: 'uppercase' as const, letterSpacing: '0.12em', color: TEXT2 }}>
+                      Destination
+                    </span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '10px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '12px' }}>
                     <Field label="Country" required>
-                      <input
-                        value={dCountry} onChange={e => setDCountry(e.target.value)}
+                      <input value={dCountry} onChange={e => setDCountry(e.target.value)}
                         placeholder="e.g. United States" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder}
-                      />
+                        onFocus={focusBorder} onBlur={blurBorder} />
                     </Field>
                     <Field label="City">
-                      <input
-                        value={dCity} onChange={e => setDCity(e.target.value)}
+                      <input value={dCity} onChange={e => setDCity(e.target.value)}
                         placeholder="e.g. Houston, TX" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder}
-                      />
+                        onFocus={focusBorder} onBlur={blurBorder} />
                     </Field>
                     <Field label={mode === 'air' ? 'Airport / IATA Code' : mode === 'sea' ? 'Port' : 'Terminal / Facility'}>
-                      <input
-                        value={dTerm} onChange={e => setDTerm(e.target.value)}
-                        placeholder={mode === 'air' ? 'e.g. IAH — George Bush Int\'l' : 'e.g. Port of Houston'}
-                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
-                      />
+                      <input value={dTerm} onChange={e => setDTerm(e.target.value)}
+                        placeholder={mode === 'air' ? "e.g. IAH — George Bush Int'l" : 'e.g. Port of Houston'}
+                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                     </Field>
                   </div>
                 </div>
@@ -462,22 +482,18 @@ export const RequestQuotePage = () => {
 
             {/* ── 03 Cargo Information ─────────────────────────────────── */}
             <SectionCard number="03" title="Cargo Information">
-              <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '16px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '18px' }}>
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <Field label="Commodity Description" required>
-                    <input
-                      value={commodity} onChange={e => setCommodity(e.target.value)}
+                    <input value={commodity} onChange={e => setCommodity(e.target.value)}
                       placeholder="e.g. Industrial Solvents, Lithium Batteries, Medical Equipment"
-                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
-                    />
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                   </Field>
                   <Field label="HS Code (optional)">
-                    <input
-                      value={hsCode} onChange={e => setHsCode(e.target.value)}
+                    <input value={hsCode} onChange={e => setHsCode(e.target.value)}
                       placeholder="e.g. 2901.10"
-                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
-                    />
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                   </Field>
                 </div>
 
@@ -486,39 +502,37 @@ export const RequestQuotePage = () => {
                   <p style={labelSt}>Cargo Classification <span style={{ color: ACCENT }}>*</span></p>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                     {([
-                      { id: 'general',    label: 'General Cargo',      icon: <Package size={16} />,      desc: 'Standard freight' },
-                      { id: 'dg',         label: 'Dangerous Goods',    icon: <AlertTriangle size={16} />, desc: 'UN regulated' },
-                      { id: 'radioactive',label: 'Radioactive Material',icon: <Atom size={16} />,         desc: 'IAEA / Class 7' },
-                      { id: 'not_sure',   label: 'Not Sure',           icon: <HelpCircle size={16} />,   desc: 'Need guidance' },
+                      { id: 'general',     label: 'General Cargo',       icon: <Package size={16} />,       desc: 'Standard freight' },
+                      { id: 'dg',          label: 'Dangerous Goods',     icon: <AlertTriangle size={16} />, desc: 'UN regulated' },
+                      { id: 'radioactive', label: 'Radioactive Material', icon: <Atom size={16} />,          desc: 'IAEA / Class 7' },
+                      { id: 'not_sure',    label: 'Not Sure',             icon: <HelpCircle size={16} />,    desc: 'Need guidance' },
                     ] as { id: CargoClass; label: string; icon: React.ReactNode; desc: string }[]).map(c => {
-                      const active = cargoClass === c.id;
-                      const isDanger = c.id === 'dg' || c.id === 'radioactive';
+                      const active    = cargoClass === c.id;
+                      const isDanger  = c.id === 'dg' || c.id === 'radioactive';
                       return (
                         <button
                           key={c.id}
                           type="button"
                           onClick={() => setCargoClass(c.id)}
                           style={{
-                            padding: '12px', border: `2px solid ${active
-                              ? isDanger ? '#dc2626' : ACCENT
-                              : BORDER}`,
-                            borderRadius: '5px', cursor: 'pointer', textAlign: 'left' as const,
-                            backgroundColor: active
-                              ? isDanger ? '#fef2f2' : ACCENT_PALE
-                              : '#fff',
-                            transition: 'all 0.15s', outline: 'none',
+                            padding: '12px', textAlign: 'left' as const, cursor: 'pointer',
+                            outline: 'none', transition: 'all 0.15s',
+                            border: `2px solid ${active ? (isDanger ? '#dc2626' : ACCENT) : BORDER}`,
+                            borderRadius: '5px',
+                            backgroundColor: active ? (isDanger ? '#fef2f2' : ACCENT_PALE) : '#fff',
                           }}
                         >
                           <span style={{
-                            color: active ? isDanger ? '#dc2626' : ACCENT : MUTED,
+                            color: active ? (isDanger ? '#dc2626' : ACCENT) : MUTED,
                             display: 'block', marginBottom: '6px', lineHeight: 1,
                           }}>
                             {c.icon}
                           </span>
                           <span style={{
-                            fontSize: '10px', fontWeight: 800, textTransform: 'uppercase' as const,
-                            letterSpacing: '0.08em', display: 'block', marginBottom: '2px',
-                            color: active ? isDanger ? '#dc2626' : ACCENT : TEXT,
+                            fontSize: '10px', fontWeight: 800,
+                            textTransform: 'uppercase' as const, letterSpacing: '0.08em',
+                            display: 'block', marginBottom: '2px',
+                            color: active ? (isDanger ? '#dc2626' : ACCENT) : TEXT,
                           }}>
                             {c.label}
                           </span>
@@ -538,8 +552,8 @@ export const RequestQuotePage = () => {
                   }}>
                     <HelpCircle size={15} color="#d97706" style={{ flexShrink: 0, marginTop: '1px' }} />
                     <p style={{ fontSize: '12px', color: AMBER_TXT, lineHeight: 1.55, margin: 0 }}>
-                      Upload your <strong>SDS</strong> or <strong>technical data sheet</strong> in
-                      Section 06 below for compliance review. Our team will classify the shipment
+                      Upload your <strong>SDS</strong> or <strong>technical data sheet</strong> in the
+                      documents section below for compliance review. Our team will classify the shipment
                       and confirm any regulatory requirements before issuing the quote.
                     </p>
                   </div>
@@ -548,367 +562,417 @@ export const RequestQuotePage = () => {
               </div>
             </SectionCard>
 
-            {/* ── 04 Package Details ───────────────────────────────────── */}
-            <SectionCard number="04" title="Package Details">
-              <div style={{ overflowX: 'auto', marginBottom: '14px' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' as const, minWidth: '620px' }}>
-                  <thead>
-                    <tr>
-                      {['Pieces', 'Package Type', 'L (cm)', 'W (cm)', 'H (cm)', 'Weight (kg)', ''].map(h => (
-                        <th key={h} style={h === '' ? { ...thSt, width: '36px' } : thSt}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {packages.map(pkg => (
-                      <tr key={pkg.id}>
-                        <td style={{ ...tdSt, width: '72px' }}>
-                          <input
-                            type="number" min="1" value={pkg.pieces}
-                            onChange={e => setPkg(pkg.id, 'pieces', e.target.value)}
-                            style={{ ...tableInputSt, width: '60px' }}
-                            onFocus={focusTableIn} onBlur={blurTableIn}
-                          />
-                        </td>
-                        <td style={{ ...tdSt, minWidth: '120px' }}>
-                          <select
-                            value={pkg.packageType}
-                            onChange={e => setPkg(pkg.id, 'packageType', e.target.value)}
-                            style={{ ...tableInputSt, width: '100%', cursor: 'pointer' }}
-                            onFocus={focusTableIn} onBlur={blurTableIn}
-                          >
-                            {['Box','Drum','Pallet','Bag','Case','IBC','Cylinder','Crate','Other'].map(t => (
-                              <option key={t}>{t}</option>
-                            ))}
-                          </select>
-                        </td>
-                        {(['length', 'width', 'height', 'weight'] as const).map(f => (
-                          <td key={f} style={{ ...tdSt, width: '90px' }}>
-                            <input
-                              type="number" min="0" step="0.01"
-                              placeholder="0"
-                              value={pkg[f]}
-                              onChange={e => setPkg(pkg.id, f, e.target.value)}
-                              style={{ ...tableInputSt, width: '78px' }}
-                              onFocus={focusTableIn} onBlur={blurTableIn}
-                            />
-                          </td>
-                        ))}
-                        <td style={{ ...tdSt, width: '36px', textAlign: 'center' as const }}>
-                          {packages.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removePkg(pkg.id)}
-                              style={{
-                                background: 'none', border: 'none', cursor: 'pointer',
-                                color: '#ef4444', padding: '4px', lineHeight: 1,
-                                borderRadius: '3px', transition: 'background 0.12s',
-                              }}
-                              onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#fef2f2')}
-                              onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
-                              title="Remove line"
-                            >
-                              <Trash2 size={13} />
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            {/* ── 04 Package Summary (quick) ───────────────────────────── */}
+            <SectionCard number="04" title="Package Summary">
+              <div className="grid md:grid-cols-2 gap-4" style={{ marginBottom: '12px' }}>
+                <Field label="Number of Packages">
+                  <input
+                    type="number" min="1" value={quickCount}
+                    onChange={e => setQuickCount(e.target.value)}
+                    placeholder="e.g. 4"
+                    style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
+                  />
+                </Field>
+                <Field label="Approx. Total Weight (kg)">
+                  <input
+                    type="number" min="0" step="0.01" value={quickWeight}
+                    onChange={e => setQuickWeight(e.target.value)}
+                    placeholder="e.g. 250"
+                    style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
+                  />
+                </Field>
               </div>
-
-              {/* Add line button */}
-              <button
-                type="button"
-                onClick={addPkg}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '6px',
-                  padding: '7px 14px', border: `1px dashed ${BORDER_DARK}`,
-                  borderRadius: '4px', cursor: 'pointer', backgroundColor: '#fff',
-                  fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' as const,
-                  letterSpacing: '0.08em', color: TEXT2, transition: 'all 0.15s',
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = ACCENT;
-                  e.currentTarget.style.color = ACCENT;
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = BORDER_DARK;
-                  e.currentTarget.style.color = TEXT2;
-                }}
-              >
-                <Plus size={13} /> Add Package Line
-              </button>
-
-              {/* Totals */}
-              {(totalWeight > 0 || totalVol > 0) && (
-                <div style={{
-                  display: 'flex', gap: '24px', flexWrap: 'wrap',
-                  marginTop: '16px', padding: '12px 16px',
-                  backgroundColor: TH_BG, border: `1px solid ${BORDER}`,
-                  borderRadius: '5px',
-                }}>
-                  <div>
-                    <p style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase' as const,
-                      letterSpacing: '0.1em', color: MUTED, marginBottom: '2px' }}>
-                      Total Gross Weight
-                    </p>
-                    <p style={{ fontSize: '15px', fontWeight: 800, color: TEXT }}>
-                      {totalWeight.toFixed(2)} <span style={{ fontSize: '11px', color: TEXT2, fontWeight: 600 }}>kg</span>
-                    </p>
-                  </div>
-                  <div style={{ borderLeft: `1px solid ${BORDER}`, paddingLeft: '24px' }}>
-                    <p style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase' as const,
-                      letterSpacing: '0.1em', color: MUTED, marginBottom: '2px' }}>
-                      Total Volume
-                    </p>
-                    <p style={{ fontSize: '15px', fontWeight: 800, color: TEXT }}>
-                      {totalVol.toFixed(4)} <span style={{ fontSize: '11px', color: TEXT2, fontWeight: 600 }}>CBM</span>
-                    </p>
-                  </div>
-                  <div style={{ borderLeft: `1px solid ${BORDER}`, paddingLeft: '24px' }}>
-                    <p style={{ fontSize: '9px', fontWeight: 700, textTransform: 'uppercase' as const,
-                      letterSpacing: '0.1em', color: MUTED, marginBottom: '2px' }}>
-                      Package Lines
-                    </p>
-                    <p style={{ fontSize: '15px', fontWeight: 800, color: TEXT }}>
-                      {packages.length}
-                    </p>
-                  </div>
-                </div>
-              )}
+              <p style={{ fontSize: '12px', color: MUTED, lineHeight: 1.55 }}>
+                For exact per-package dimensions, individual weights, and DG details,
+                use the detailed section below.
+              </p>
             </SectionCard>
 
-            {/* ── 05 DG Details (conditional) ─────────────────────────── */}
-            {showDG && (
-              <SectionCard
-                number="05"
-                title={showRadio ? 'Radioactive Material Details' : 'Dangerous Goods Details'}
-                badge="Regulated Cargo"
-              >
-                <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '16px' }}>
-
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Field label="UN Number" required>
-                      <input
-                        value={unNum} onChange={e => setUnNum(e.target.value)}
-                        placeholder="e.g. UN3480" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder}
-                      />
-                    </Field>
-                    <Field label="Proper Shipping Name" required>
-                      <input
-                        value={psn} onChange={e => setPsn(e.target.value)}
-                        placeholder="e.g. Lithium ion batteries"
-                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
-                      />
-                    </Field>
-                  </div>
-
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <Field label="Hazard Class" required>
-                      <select
-                        value={hazClass} onChange={e => setHazClass(e.target.value)}
-                        style={{ ...inputSt, cursor: 'pointer' }}
-                        onFocus={focusBorder} onBlur={blurBorder}
-                      >
-                        <option value="">Select class…</option>
-                        <option>Class 1 — Explosives</option>
-                        <option>Class 2 — Gases</option>
-                        <option>Class 3 — Flammable Liquids</option>
-                        <option>Class 4 — Flammable Solids</option>
-                        <option>Class 5 — Oxidizers / Org. Peroxides</option>
-                        <option>Class 6 — Toxic / Infectious</option>
-                        <option>Class 7 — Radioactive</option>
-                        <option>Class 8 — Corrosives</option>
-                        <option>Class 9 — Miscellaneous</option>
-                      </select>
-                    </Field>
-                    <Field label="Packing Group">
-                      <select
-                        value={pkgGroup} onChange={e => setPkgGroup(e.target.value)}
-                        style={{ ...inputSt, cursor: 'pointer' }}
-                        onFocus={focusBorder} onBlur={blurBorder}
-                      >
-                        <option value="">Select…</option>
-                        <option>PG I — High Danger</option>
-                        <option>PG II — Medium Danger</option>
-                        <option>PG III — Low Danger</option>
-                        <option>N/A</option>
-                      </select>
-                    </Field>
-                    <Field label="Packaging Type">
-                      <input
-                        value={pkgType} onChange={e => setPkgType(e.target.value)}
-                        placeholder="e.g. 4G Box, 1A2 Drum" style={inputSt}
-                        onFocus={focusBorder} onBlur={blurBorder}
-                      />
-                    </Field>
-                  </div>
-
-                  {/* Radioactive-specific fields */}
-                  {showRadio && (
-                    <>
-                      <div style={{
-                        height: '1px', backgroundColor: BORDER, margin: '4px 0',
-                      }} />
-                      <p style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase' as const,
-                        letterSpacing: '0.12em', color: TEXT2, marginBottom: '4px' }}>
-                        Radioactive — Additional Details (optional)
-                      </p>
-                      <div className="grid md:grid-cols-3 gap-4">
-                        <Field label="Transport Index (TI)">
-                          <input
-                            value={tiIndex} onChange={e => setTiIndex(e.target.value)}
-                            placeholder="e.g. 0.5" style={inputSt}
-                            onFocus={focusBorder} onBlur={blurBorder}
-                          />
-                        </Field>
-                        <Field label="Isotope / Radionuclide">
-                          <input
-                            value={isotope} onChange={e => setIsotope(e.target.value)}
-                            placeholder="e.g. Co-57" style={inputSt}
-                            onFocus={focusBorder} onBlur={blurBorder}
-                          />
-                        </Field>
-                        <Field label="Package Category">
-                          <select
-                            value={pkgCat} onChange={e => setPkgCat(e.target.value)}
-                            style={{ ...inputSt, cursor: 'pointer' }}
-                            onFocus={focusBorder} onBlur={blurBorder}
-                          >
-                            <option value="">Select…</option>
-                            <option>Category I-WHITE</option>
-                            <option>Category II-YELLOW</option>
-                            <option>Category III-YELLOW</option>
-                            <option>EXCEPTED</option>
-                          </select>
-                        </Field>
-                      </div>
-                    </>
-                  )}
-
-                </div>
-              </SectionCard>
+            {/* ══════════════════════════════════════════════════════════
+                EXPANSION CTA — shown when not yet expanded
+            ══════════════════════════════════════════════════════════ */}
+            {!expanded && (
+              <div style={{
+                textAlign: 'center' as const,
+                padding: '28px 24px',
+                marginBottom: '14px',
+                backgroundColor: CARD,
+                border: `1.5px dashed ${BORDER_DARK}`,
+                borderRadius: '8px',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+              }}>
+                <p style={{ fontSize: '13px', color: TEXT2, marginBottom: '18px', lineHeight: 1.6 }}>
+                  Need to specify package dimensions, DG classification details, or attach documents?
+                </p>
+                <button
+                  type="button"
+                  onClick={handleExpand}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '8px',
+                    padding: '11px 28px',
+                    backgroundColor: '#fff',
+                    border: `1.5px solid ${ACCENT}`,
+                    borderRadius: '5px',
+                    color: ACCENT,
+                    fontSize: '12px', fontWeight: 700,
+                    textTransform: 'uppercase' as const, letterSpacing: '0.1em',
+                    cursor: 'pointer', transition: 'all 0.15s',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.backgroundColor = ACCENT_PALE;
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(37,99,235,0.18)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.backgroundColor = '#fff';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  Continue with Detailed Shipment Information <ChevronRight size={14} />
+                </button>
+              </div>
             )}
 
-            {/* ── 06 Documents ────────────────────────────────────────── */}
-            <SectionCard number="06" title="Supporting Documents">
+            {/* ══════════════════════════════════════════════════════════
+                DETAILED SHIPMENT — revealed after expansion
+            ══════════════════════════════════════════════════════════ */}
+            {expanded && (
+              <div ref={expandRef}>
 
-              {/* Drop zone */}
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => fileRef.current?.click()}
-                onKeyDown={e => e.key === 'Enter' && fileRef.current?.click()}
-                onDragOver={e => { e.preventDefault(); setDragging(true); }}
-                onDragEnter={e => { e.preventDefault(); setDragging(true); }}
-                onDragLeave={() => setDragging(false)}
-                onDrop={handleDrop}
-                style={{
-                  border: `2px dashed ${dragging ? ACCENT : BORDER_DARK}`,
-                  borderRadius: '6px', padding: '32px 24px', textAlign: 'center' as const,
-                  cursor: 'pointer', backgroundColor: dragging ? ACCENT_PALE : '#fafbfc',
-                  transition: 'all 0.15s', marginBottom: files.length ? '12px' : 0,
-                  outline: 'none',
-                }}
-              >
-                <Upload size={22} color={dragging ? ACCENT : MUTED} style={{ margin: '0 auto 10px' }} />
-                <p style={{ fontSize: '13px', color: TEXT2, marginBottom: '4px' }}>
-                  Drop files here or{' '}
-                  <span style={{ color: ACCENT, fontWeight: 600 }}>browse</span>
-                </p>
-                <p style={{ fontSize: '11px', color: MUTED }}>
-                  SDS · Photos · Packing List · Technical Data Sheet
-                </p>
-                <p style={{ fontSize: '10px', color: MUTED, marginTop: '4px' }}>
-                  PDF, PNG, JPG, XLSX — max 20 MB each
-                </p>
-              </div>
-              <input
-                ref={fileRef}
-                type="file"
-                multiple
-                accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.doc,.docx"
-                onChange={e => addFiles(e.target.files)}
-                style={{ display: 'none' }}
-              />
+                {/* ── 05 Package Details ──────────────────────────────── */}
+                <SectionCard number="05" title="Package Details">
+                  <div style={{ overflowX: 'auto', marginBottom: '14px' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' as const, minWidth: '680px' }}>
+                      <thead>
+                        <tr>
+                          {[
+                            'Pieces', 'Package Type',
+                            'Length (cm)', 'Width (cm)', 'Height (cm)',
+                            'Weight (kg)', '',
+                          ].map(h => (
+                            <th key={h} style={h === '' ? { ...thSt, width: '36px' } : thSt}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {packages.map(pkg => (
+                          <tr key={pkg.id}>
+                            <td style={{ ...tdSt, width: '76px' }}>
+                              <input
+                                type="number" min="1" value={pkg.pieces}
+                                onChange={e => setPkg(pkg.id, 'pieces', e.target.value)}
+                                style={{ ...tableInputSt, width: '64px' }}
+                                onFocus={focusTableIn} onBlur={blurTableIn}
+                              />
+                            </td>
+                            <td style={{ ...tdSt, minWidth: '130px' }}>
+                              <select
+                                value={pkg.packageType}
+                                onChange={e => setPkg(pkg.id, 'packageType', e.target.value)}
+                                style={{ ...tableInputSt, width: '100%', cursor: 'pointer' }}
+                                onFocus={focusTableIn} onBlur={blurTableIn}
+                              >
+                                {['Box','Drum','Pallet','Bag','Case','IBC','Cylinder','Crate','Other'].map(t => (
+                                  <option key={t}>{t}</option>
+                                ))}
+                              </select>
+                            </td>
+                            {(['length', 'width', 'height', 'weight'] as const).map(f => (
+                              <td key={f} style={{ ...tdSt, width: '100px' }}>
+                                <input
+                                  type="number" min="0" step="0.01" placeholder="0"
+                                  value={pkg[f]}
+                                  onChange={e => setPkg(pkg.id, f, e.target.value)}
+                                  style={{ ...tableInputSt, width: '88px' }}
+                                  onFocus={focusTableIn} onBlur={blurTableIn}
+                                />
+                              </td>
+                            ))}
+                            <td style={{ ...tdSt, width: '36px', textAlign: 'center' as const }}>
+                              {packages.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => removePkg(pkg.id)}
+                                  style={{
+                                    background: 'none', border: 'none', cursor: 'pointer',
+                                    color: '#ef4444', padding: '4px', lineHeight: 1,
+                                    borderRadius: '3px', transition: 'background 0.12s',
+                                  }}
+                                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#fef2f2')}
+                                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+                                  title="Remove line"
+                                >
+                                  <Trash2 size={13} />
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
 
-              {/* File list */}
-              {files.length > 0 && (
-                <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px' }}>
-                  {files.map((f, i) => (
-                    <div
-                      key={`${f.name}-${i}`}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: '10px',
-                        padding: '9px 12px', backgroundColor: TH_BG,
-                        border: `1px solid ${BORDER}`, borderRadius: '4px',
-                      }}
-                    >
-                      <FileText size={14} color={ACCENT} style={{ flexShrink: 0 }} />
-                      <span style={{ fontSize: '12px', color: TEXT2, flex: 1,
-                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>
-                        {f.name}
-                      </span>
-                      <span style={{ fontSize: '11px', color: MUTED, flexShrink: 0 }}>
-                        {(f.size / 1024).toFixed(0)} KB
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => removeFile(i)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer',
-                          color: MUTED, padding: '2px', lineHeight: 1, flexShrink: 0,
-                          borderRadius: '3px', transition: 'color 0.12s' }}
-                        onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
-                        onMouseLeave={e => (e.currentTarget.style.color = MUTED)}
-                      >
-                        <X size={13} />
-                      </button>
+                  <button
+                    type="button"
+                    onClick={addPkg}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '6px',
+                      padding: '8px 16px', border: `1px dashed ${BORDER_DARK}`,
+                      borderRadius: '4px', cursor: 'pointer', backgroundColor: '#fff',
+                      fontSize: '11px', fontWeight: 700,
+                      textTransform: 'uppercase' as const, letterSpacing: '0.08em',
+                      color: TEXT2, transition: 'all 0.15s',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.color = ACCENT; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = BORDER_DARK; e.currentTarget.style.color = TEXT2; }}
+                  >
+                    <Plus size={13} /> Add Package Line
+                  </button>
+
+                  {(totalWeight > 0 || totalVol > 0) && (
+                    <div style={{
+                      display: 'flex', gap: '24px', flexWrap: 'wrap',
+                      marginTop: '16px', padding: '14px 18px',
+                      backgroundColor: TH_BG, border: `1px solid ${BORDER}`, borderRadius: '5px',
+                    }}>
+                      {[
+                        { label: 'Total Gross Weight', value: `${totalWeight.toFixed(2)}`, unit: 'kg' },
+                        { label: 'Total Volume',       value: `${totalVol.toFixed(4)}`,    unit: 'CBM' },
+                        { label: 'Package Lines',      value: `${packages.length}`,        unit: '' },
+                      ].map((t, i) => (
+                        <div key={t.label} style={i > 0 ? { borderLeft: `1px solid ${BORDER}`, paddingLeft: '24px' } : {}}>
+                          <p style={{ fontSize: '9px', fontWeight: 700,
+                            textTransform: 'uppercase' as const, letterSpacing: '0.1em',
+                            color: MUTED, marginBottom: '2px' }}>
+                            {t.label}
+                          </p>
+                          <p style={{ fontSize: '15px', fontWeight: 800, color: TEXT }}>
+                            {t.value}{' '}
+                            {t.unit && <span style={{ fontSize: '11px', color: TEXT2, fontWeight: 600 }}>{t.unit}</span>}
+                          </p>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
+                  )}
+                </SectionCard>
 
-            </SectionCard>
+                {/* ── 06 DG Details (conditional) ─────────────────────── */}
+                {showDG && (
+                  <SectionCard
+                    number="06"
+                    title={showRadio ? 'Radioactive Material Details' : 'Dangerous Goods Details'}
+                    badge="Regulated Cargo"
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '16px' }}>
 
-            {/* ── 07 Additional Comments ───────────────────────────────── */}
-            <SectionCard number="07" title="Additional Comments">
-              <textarea
-                value={comments}
-                onChange={e => setComments(e.target.value)}
-                rows={4}
-                placeholder="Special handling requirements, delivery constraints, Incoterms preference, or any other relevant details…"
-                style={{ ...inputSt, resize: 'none', lineHeight: 1.6 }}
-                onFocus={e => (e.currentTarget.style.borderColor = ACCENT)}
-                onBlur={e => (e.currentTarget.style.borderColor = INPUT_B)}
-              />
-            </SectionCard>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <Field label="UN Number" required>
+                          <input value={unNum} onChange={e => setUnNum(e.target.value)}
+                            placeholder="e.g. UN3480" style={inputSt}
+                            onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                        <Field label="Proper Shipping Name" required>
+                          <input value={psn} onChange={e => setPsn(e.target.value)}
+                            placeholder="e.g. Lithium ion batteries"
+                            style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      </div>
+
+                      <div className="grid md:grid-cols-3 gap-4">
+                        <Field label="Hazard Class" required>
+                          <select value={hazClass} onChange={e => setHazClass(e.target.value)}
+                            style={{ ...inputSt, cursor: 'pointer' }}
+                            onFocus={focusBorder} onBlur={blurBorder}>
+                            <option value="">Select class…</option>
+                            <option>Class 1 — Explosives</option>
+                            <option>Class 2 — Gases</option>
+                            <option>Class 3 — Flammable Liquids</option>
+                            <option>Class 4 — Flammable Solids</option>
+                            <option>Class 5 — Oxidizers / Org. Peroxides</option>
+                            <option>Class 6 — Toxic / Infectious</option>
+                            <option>Class 7 — Radioactive</option>
+                            <option>Class 8 — Corrosives</option>
+                            <option>Class 9 — Miscellaneous</option>
+                          </select>
+                        </Field>
+                        <Field label="Packing Group">
+                          <select value={pkgGroup} onChange={e => setPkgGroup(e.target.value)}
+                            style={{ ...inputSt, cursor: 'pointer' }}
+                            onFocus={focusBorder} onBlur={blurBorder}>
+                            <option value="">Select…</option>
+                            <option>PG I — High Danger</option>
+                            <option>PG II — Medium Danger</option>
+                            <option>PG III — Low Danger</option>
+                            <option>N/A</option>
+                          </select>
+                        </Field>
+                        <Field label="Packaging Type">
+                          <input value={pkgType} onChange={e => setPkgType(e.target.value)}
+                            placeholder="e.g. 4G Box, 1A2 Drum" style={inputSt}
+                            onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      </div>
+
+                      {showRadio && (
+                        <>
+                          <div style={{ height: '1px', backgroundColor: BORDER, margin: '4px 0' }} />
+                          <p style={{ fontSize: '10px', fontWeight: 800,
+                            textTransform: 'uppercase' as const, letterSpacing: '0.12em',
+                            color: TEXT2, marginBottom: '4px' }}>
+                            Radioactive — Additional Details (optional)
+                          </p>
+                          <div className="grid md:grid-cols-3 gap-4">
+                            <Field label="Transport Index (TI)">
+                              <input value={tiIndex} onChange={e => setTiIndex(e.target.value)}
+                                placeholder="e.g. 0.5" style={inputSt}
+                                onFocus={focusBorder} onBlur={blurBorder} />
+                            </Field>
+                            <Field label="Isotope / Radionuclide">
+                              <input value={isotope} onChange={e => setIsotope(e.target.value)}
+                                placeholder="e.g. Co-57" style={inputSt}
+                                onFocus={focusBorder} onBlur={blurBorder} />
+                            </Field>
+                            <Field label="Package Category">
+                              <select value={pkgCat} onChange={e => setPkgCat(e.target.value)}
+                                style={{ ...inputSt, cursor: 'pointer' }}
+                                onFocus={focusBorder} onBlur={blurBorder}>
+                                <option value="">Select…</option>
+                                <option>Category I-WHITE</option>
+                                <option>Category II-YELLOW</option>
+                                <option>Category III-YELLOW</option>
+                                <option>EXCEPTED</option>
+                              </select>
+                            </Field>
+                          </div>
+                        </>
+                      )}
+
+                    </div>
+                  </SectionCard>
+                )}
+
+                {/* ── 07 Supporting Documents ─────────────────────────── */}
+                <SectionCard number={showDG ? '07' : '06'} title="Supporting Documents">
+                  <p style={{ fontSize: '12px', color: TEXT2, marginBottom: '14px', lineHeight: 1.55 }}>
+                    Upload SDS, packing list, photos or technical documents.
+                  </p>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => fileRef.current?.click()}
+                    onKeyDown={e => e.key === 'Enter' && fileRef.current?.click()}
+                    onDragOver={e => { e.preventDefault(); setDragging(true); }}
+                    onDragEnter={e => { e.preventDefault(); setDragging(true); }}
+                    onDragLeave={() => setDragging(false)}
+                    onDrop={handleDrop}
+                    style={{
+                      border: `2px dashed ${dragging ? ACCENT : BORDER_DARK}`,
+                      borderRadius: '6px', padding: '32px 24px', textAlign: 'center' as const,
+                      cursor: 'pointer', backgroundColor: dragging ? ACCENT_PALE : '#fafbfc',
+                      transition: 'all 0.15s', marginBottom: files.length ? '12px' : 0,
+                      outline: 'none',
+                    }}
+                  >
+                    <Upload size={22} color={dragging ? ACCENT : MUTED} style={{ margin: '0 auto 10px' }} />
+                    <p style={{ fontSize: '13px', color: TEXT2, marginBottom: '4px' }}>
+                      Drop files here or{' '}
+                      <span style={{ color: ACCENT, fontWeight: 600 }}>browse</span>
+                    </p>
+                    <p style={{ fontSize: '11px', color: MUTED }}>
+                      SDS · Photos · Packing List · Technical Data Sheet
+                    </p>
+                    <p style={{ fontSize: '10px', color: MUTED, marginTop: '4px' }}>
+                      PDF, PNG, JPG, XLSX — max 20 MB each
+                    </p>
+                  </div>
+                  <input
+                    ref={fileRef} type="file" multiple
+                    accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.doc,.docx"
+                    onChange={e => addFiles(e.target.files)}
+                    style={{ display: 'none' }}
+                  />
+                  {files.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px' }}>
+                      {files.map((f, i) => (
+                        <div key={`${f.name}-${i}`} style={{
+                          display: 'flex', alignItems: 'center', gap: '10px',
+                          padding: '9px 12px', backgroundColor: TH_BG,
+                          border: `1px solid ${BORDER}`, borderRadius: '4px',
+                        }}>
+                          <FileText size={14} color={ACCENT} style={{ flexShrink: 0 }} />
+                          <span style={{ fontSize: '12px', color: TEXT2, flex: 1,
+                            overflow: 'hidden', textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap' as const }}>{f.name}</span>
+                          <span style={{ fontSize: '11px', color: MUTED, flexShrink: 0 }}>
+                            {(f.size / 1024).toFixed(0)} KB
+                          </span>
+                          <button
+                            type="button" onClick={() => removeFile(i)}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer',
+                              color: MUTED, padding: '2px', lineHeight: 1, flexShrink: 0,
+                              borderRadius: '3px', transition: 'color 0.12s' }}
+                            onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+                            onMouseLeave={e => (e.currentTarget.style.color = MUTED)}
+                          >
+                            <X size={13} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </SectionCard>
+
+                {/* ── 08 Additional Comments ───────────────────────────── */}
+                <SectionCard number={showDG ? '08' : '07'} title="Additional Comments">
+                  <textarea
+                    value={comments} onChange={e => setComments(e.target.value)}
+                    rows={4}
+                    placeholder="Special handling requirements, delivery constraints, Incoterms preference, or any other relevant details…"
+                    style={{ ...inputSt, resize: 'none', lineHeight: 1.6 }}
+                    onFocus={e => (e.currentTarget.style.borderColor = ACCENT)}
+                    onBlur={e => (e.currentTarget.style.borderColor = INPUT_B)}
+                  />
+                </SectionCard>
+
+              </div>
+            )}
 
             {/* ── Submit ──────────────────────────────────────────────── */}
             <div style={{
               backgroundColor: CARD, border: `1px solid ${BORDER}`,
-              borderRadius: '8px', padding: '28px 24px',
+              borderRadius: '8px', padding: '32px 24px',
               display: 'flex', flexDirection: 'column' as const, alignItems: 'center',
-              gap: '12px', textAlign: 'center' as const,
+              gap: '14px', textAlign: 'center' as const,
+              boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
             }}>
               <button
                 type="submit"
                 disabled={loading}
                 style={{
-                  padding: '15px 48px',
+                  padding: '17px 56px',
                   backgroundColor: loading ? '#93c5fd' : ACCENT,
-                  color: '#fff', border: 'none', borderRadius: '5px',
-                  fontSize: '12px', fontWeight: 900,
+                  color: '#fff', border: 'none', borderRadius: '6px',
+                  fontSize: '13px', fontWeight: 900,
                   textTransform: 'uppercase' as const, letterSpacing: '0.14em',
                   cursor: loading ? 'not-allowed' : 'pointer',
-                  transition: 'background-color 0.15s',
+                  transition: 'all 0.18s',
+                  boxShadow: loading ? 'none' : '0 4px 16px rgba(37,99,235,0.32)',
                   display: 'flex', alignItems: 'center', gap: '10px',
-                  minWidth: '220px', justifyContent: 'center',
+                  minWidth: '240px', justifyContent: 'center',
                 }}
-                onMouseEnter={e => { if (!loading) e.currentTarget.style.backgroundColor = '#1d4ed8'; }}
-                onMouseLeave={e => { if (!loading) e.currentTarget.style.backgroundColor = ACCENT; }}
+                onMouseEnter={e => {
+                  if (!loading) {
+                    e.currentTarget.style.backgroundColor = '#1d4ed8';
+                    e.currentTarget.style.boxShadow = '0 6px 22px rgba(37,99,235,0.46)';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!loading) {
+                    e.currentTarget.style.backgroundColor = ACCENT;
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(37,99,235,0.32)';
+                    e.currentTarget.style.transform = 'none';
+                  }
+                }}
               >
                 {loading ? (
                   <>
@@ -919,7 +983,7 @@ export const RequestQuotePage = () => {
                     Processing…
                   </>
                 ) : (
-                  <>Request Quote <ArrowRight size={14} /></>
+                  <>Request Quote <ArrowRight size={15} /></>
                 )}
               </button>
               <p style={{ fontSize: '11px', color: MUTED, lineHeight: 1.55, maxWidth: '400px' }}>
