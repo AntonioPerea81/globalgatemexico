@@ -29,6 +29,7 @@ const NAV_ITEMS: NavItem[] = [
       { label: { EN: 'Ocean Freight',          ES: 'Transporte Marítimo' },         href: { EN: '/dangerous-goods-transportation/ocean-freight',          ES: '/es/transporte-mercancias-peligrosas/transporte-maritimo' } },
       { label: { EN: 'DG Packaging',           ES: 'Embalaje DG' },                href: { EN: '/dangerous-goods-transportation/dg-packaging',           ES: '/es/transporte-mercancias-peligrosas/embalaje-dg' } },
       { label: { EN: 'Documentation Services', ES: 'Servicios de Documentación' }, href: { EN: '/dangerous-goods-transportation/documentation-services',  ES: '/es/transporte-mercancias-peligrosas/servicios-documentacion' } },
+      { label: { EN: 'Request Quote',           ES: 'Solicitar Cotización' },       href: { EN: '/request-quote',                                             ES: '/request-quote' } },
     ],
   },
   {
@@ -103,6 +104,7 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/acerca':                                                               { EN: '/about',                                                                  ES: '/acerca' },
   '/contact':                                                              { EN: '/contact',                                                                 ES: '/contacto' },
   '/contacto':                                                             { EN: '/contact',                                                                 ES: '/contacto' },
+  '/request-quote':                                                        { EN: '/request-quote',                                                           ES: '/request-quote' },
 };
 
 export const Navbar = () => {

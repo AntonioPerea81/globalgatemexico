@@ -38,6 +38,7 @@ import {
 } from './pages/compliance/es';
 import { ContactPage } from './pages/Contact';
 import { ContactoPage } from './pages/Contacto';
+import { RequestQuotePage } from './pages/RequestQuote';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -86,6 +87,7 @@ export default function App() {
             <Route path="/es/capacitacion" element={<CapacitacionPage />} />
             <Route path="/contact"  element={<ContactPage />} />
             <Route path="/contacto" element={<ContactoPage />} />
+            <Route path="/request-quote" element={<RequestQuotePage />} />
             <Route path="*"         element={<Home />} />
           </Routes>
         </Layout>
