@@ -67,7 +67,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     id: 'contact',
     label: { EN: 'Contact', ES: 'Contacto' },
-    hash: 'contact',
+    href: '/contact',
   },
 ];
 

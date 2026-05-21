@@ -36,6 +36,7 @@ import {
   RevisionHDSPage,
   CumplimientoTransfronterizoPage,
 } from './pages/compliance/es';
+import { ContactPage } from './pages/Contact';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -82,6 +83,7 @@ export default function App() {
             <Route path="/logistica-material-radiactivo" element={<LogisticaMaterialRadiacticoPage />} />
             <Route path="/training" element={<TrainingPage />} />
             <Route path="/es/capacitacion" element={<CapacitacionPage />} />
+            <Route path="/contact"  element={<ContactPage />} />
             <Route path="*"         element={<Home />} />
           </Routes>
         </Layout>
