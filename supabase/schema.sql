@@ -91,3 +91,35 @@ CREATE POLICY "service role can read shipment-docs"
   ON storage.objects FOR SELECT
   TO service_role
   USING (bucket_id = 'shipment-docs');
+
+-- ============================================================
+-- Table: contact_inquiries
+-- General inquiry form submissions from /contact page
+-- Inserted by the contact-inquiry Edge Function (service role)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS public.contact_inquiries (
+  id               UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+  full_name        TEXT        NOT NULL,
+  company          TEXT,
+  email            TEXT        NOT NULL,
+  phone            TEXT,
+  service_interest TEXT,
+  message          TEXT        NOT NULL,
+  consent          BOOLEAN     NOT NULL DEFAULT false,
+  turnstile_token  TEXT
+);
+
+ALTER TABLE public.contact_inquiries ENABLE ROW LEVEL SECURITY;
+
+-- Edge Function uses service role key — only service_role needs INSERT/SELECT
+CREATE POLICY "service role can insert contact_inquiries"
+  ON public.contact_inquiries FOR INSERT
+  TO service_role
+  WITH CHECK (true);
+
+CREATE POLICY "service role can read contact_inquiries"
+  ON public.contact_inquiries FOR SELECT
+  TO service_role
+  USING (true);

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send, MessageSquare, Mail, Clock, MapPin } from 'lucide-react';
 import { Container, Button } from '../components/UI';
-import { useFormSubmit } from '../hooks/useFormSubmit';
+import { supabase } from '../lib/supabase';
 
 declare global {
   interface Window {
@@ -77,10 +77,11 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 export const ContactPage = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState('');
   const turnstileContainerRef = useRef<HTMLDivElement>(null);
   const turnstileWidgetId = useRef<string | null>(null);
-  const { isLoading, error, submit } = useFormSubmit();
 
   const turnstileSiteKey: string | undefined =
     import.meta.env.VITE_TURNSTILE_SITE_KEY || undefined;
@@ -112,20 +113,37 @@ export const ContactPage = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
     const fd = new FormData(e.currentTarget);
-    const step1 = {
-      name:        fd.get('name') as string,
-      company:     fd.get('company') as string,
-      email:       fd.get('email') as string,
-      phone:       fd.get('phone') as string,
-      merchandise: fd.get('service_interest') as string,
-    };
-    const step2 = new FormData();
-    step2.set('origin', ''); step2.set('destination', '');
-    step2.set('transport', ''); step2.set('dims', '');
-    step2.set('quantity', fd.get('message') as string);
-    const ok = await submit(step1, step2, turnstileToken);
-    if (ok) setSubmitted(true);
+
+    try {
+      const { error: fnError } = await supabase.functions.invoke('contact-inquiry', {
+        body: {
+          full_name:        (fd.get('name') as string).trim(),
+          company:          (fd.get('company') as string | null)?.trim() || undefined,
+          email:            (fd.get('email') as string).trim(),
+          phone:            (fd.get('phone') as string | null)?.trim() || undefined,
+          service_interest: (fd.get('service_interest') as string | null)?.trim() || undefined,
+          message:          (fd.get('message') as string).trim(),
+          consent:          true,
+          turnstile_token:  turnstileToken || undefined,
+        },
+      });
+
+      if (fnError) {
+        console.error('[contact-inquiry] Function error:', fnError);
+        setError("We couldn't send your message. Please try again or contact us directly.");
+      } else {
+        setSubmitted(true);
+      }
+    } catch (err) {
+      console.error('[contact-inquiry] Invocation failed:', err);
+      setError("We couldn't send your message. Please try again or contact us directly.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const focusBorder  = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -255,7 +273,7 @@ export const ContactPage = () => {
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                             </svg>
-                            Sending…
+                            Sending...
                           </span>
                         ) : (
                           <span className="flex items-center gap-2">
@@ -276,10 +294,10 @@ export const ContactPage = () => {
                     </div>
                     <p style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60a5fa' }}>Message Received</p>
                     <h3 style={{ fontSize: '22px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.01em', color: '#fff', lineHeight: 1.2 }}>
-                      Thank You —<br />We'll Be In Touch
+                      Thank You
                     </h3>
                     <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, maxWidth: '320px' }}>
-                      A dangerous goods specialist will review your inquiry and respond within one business day.
+                      Our team will contact you shortly.
                     </p>
                     <button
                       onClick={() => setSubmitted(false)}
