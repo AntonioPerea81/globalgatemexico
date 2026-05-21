@@ -825,7 +825,7 @@ export const SolicitarCotizacionPage = () => {
                             placeholder="Ej. UN3480" style={inputSt}
                             onFocus={focusBorder} onBlur={blurBorder} />
                         </Field>
-                        <Field label="Nombre Técnico Apropiado" required>
+                        <Field label="Nombre Apropiado de Expedición" required>
                           <input value={psn} onChange={e => setPsn(e.target.value)}
                             placeholder="Ej. Baterías de iones de litio"
                             style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
@@ -833,7 +833,7 @@ export const SolicitarCotizacionPage = () => {
                       </div>
 
                       <div className="grid md:grid-cols-3 gap-4">
-                        <Field label="Clase de Riesgo" required>
+                        <Field label="Clase de Peligro" required>
                           <select value={hazClass} onChange={e => setHazClass(e.target.value)}
                             style={{ ...inputSt, cursor: 'pointer' }}
                             onFocus={focusBorder} onBlur={blurBorder}>
