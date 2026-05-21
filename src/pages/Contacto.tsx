@@ -113,8 +113,14 @@ export const ContactoPage = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
     setError(null);
+
+    if (turnstileSiteKey && !turnstileToken) {
+      setError('Por favor completa la verificación de seguridad antes de enviar.');
+      return;
+    }
+
+    setIsLoading(true);
 
     const fd = new FormData(e.currentTarget);
 
@@ -235,8 +241,8 @@ export const ContactoPage = () => {
                         </select>
                       </Field>
 
-                      <Field label="Mensaje">
-                        <textarea name="message" rows={4}
+                      <Field label="Mensaje *">
+                        <textarea name="message" rows={4} required
                           placeholder="Describe brevemente tu embarque o consulta…"
                           style={{ ...inputStyle, resize: 'none' }}
                           onFocus={focusBorder} onBlur={blurBorder}
@@ -253,7 +259,12 @@ export const ContactoPage = () => {
                       </div>
 
                       {turnstileSiteKey && (
-                        <div ref={turnstileContainerRef} />
+                        <div>
+                          <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.35)', marginBottom: '8px' }}>
+                            Completa la verificación de seguridad para habilitar el envío.
+                          </p>
+                          <div ref={turnstileContainerRef} />
+                        </div>
                       )}
 
                       {error && (
@@ -263,9 +274,9 @@ export const ContactoPage = () => {
                       <Button
                         variant="primary"
                         type="submit"
-                        className="w-full uppercase font-black tracking-widest text-[11px]"
+                        className="w-full uppercase font-black tracking-widest text-[11px] disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ marginTop: '4px', padding: '14px' }}
-                        disabled={isLoading || (!!turnstileSiteKey && !turnstileToken)}
+                        disabled={isLoading}
                       >
                         {isLoading ? (
                           <span className="flex items-center gap-2">

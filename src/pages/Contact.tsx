@@ -113,8 +113,14 @@ export const ContactPage = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
     setError(null);
+
+    if (turnstileSiteKey && !turnstileToken) {
+      setError('Please complete the security check below before submitting.');
+      return;
+    }
+
+    setIsLoading(true);
 
     const fd = new FormData(e.currentTarget);
 
@@ -236,8 +242,8 @@ export const ContactPage = () => {
                         </select>
                       </Field>
 
-                      <Field label="Message">
-                        <textarea name="message" rows={4}
+                      <Field label="Message *">
+                        <textarea name="message" rows={4} required
                           placeholder="Briefly describe your shipment or inquiry…"
                           style={{ ...inputStyle, resize: 'none' }}
                           onFocus={focusBorder} onBlur={blurBorder}
@@ -254,7 +260,12 @@ export const ContactPage = () => {
                       </div>
 
                       {turnstileSiteKey && (
-                        <div ref={turnstileContainerRef} />
+                        <div>
+                          <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.35)', marginBottom: '8px' }}>
+                            Complete the security check to enable sending.
+                          </p>
+                          <div ref={turnstileContainerRef} />
+                        </div>
                       )}
 
                       {error && (
@@ -264,9 +275,9 @@ export const ContactPage = () => {
                       <Button
                         variant="primary"
                         type="submit"
-                        className="w-full uppercase font-black tracking-widest text-[11px]"
+                        className="w-full uppercase font-black tracking-widest text-[11px] disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ marginTop: '4px', padding: '14px' }}
-                        disabled={isLoading || (!!turnstileSiteKey && !turnstileToken)}
+                        disabled={isLoading}
                       >
                         {isLoading ? (
                           <span className="flex items-center gap-2">
