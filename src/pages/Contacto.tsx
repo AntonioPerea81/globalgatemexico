@@ -88,9 +88,12 @@ export const ContactoPage = () => {
 
   useEffect(() => {
     if (!turnstileSiteKey || !turnstileContainerRef.current) return;
-    const tryRender = () => {
-      if (!window.turnstile || turnstileWidgetId.current) return;
-      turnstileWidgetId.current = window.turnstile.render(turnstileContainerRef.current!, {
+
+    const SCRIPT_ID = 'cf-turnstile-script';
+
+    const renderWidget = () => {
+      if (!window.turnstile || !turnstileContainerRef.current || turnstileWidgetId.current) return;
+      turnstileWidgetId.current = window.turnstile.render(turnstileContainerRef.current, {
         sitekey:            turnstileSiteKey,
         theme:              'dark',
         callback:           (token: string) => setTurnstileToken(token),
@@ -98,14 +101,26 @@ export const ContactoPage = () => {
         'error-callback':   () => setTurnstileToken(''),
       });
     };
-    tryRender();
-    if (!window.turnstile) {
-      const t = setInterval(() => { if (window.turnstile) { tryRender(); clearInterval(t); } }, 200);
+
+    if (window.turnstile) {
+      renderWidget();
+    } else if (!document.getElementById(SCRIPT_ID)) {
+      const script    = document.createElement('script');
+      script.id       = SCRIPT_ID;
+      script.src      = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async    = true;
+      script.defer    = true;
+      script.onload   = renderWidget;
+      script.onerror  = () => console.error('[Turnstile] script failed to load');
+      document.head.appendChild(script);
+    } else {
+      const t = setInterval(() => { if (window.turnstile) { renderWidget(); clearInterval(t); } }, 200);
       return () => clearInterval(t);
     }
+
     return () => {
       if (turnstileWidgetId.current && window.turnstile) {
-        window.turnstile.remove(turnstileWidgetId.current);
+        try { window.turnstile.remove(turnstileWidgetId.current); } catch { /* noop */ }
         turnstileWidgetId.current = null;
       }
     };
