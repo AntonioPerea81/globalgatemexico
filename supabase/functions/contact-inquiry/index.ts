@@ -14,14 +14,15 @@ const corsHeaders = {
 };
 
 interface ContactPayload {
-  full_name:        string;
-  company?:         string;
-  email:            string;
-  phone?:           string;
+  full_name:         string;
+  company?:          string;
+  email:             string;
+  phone?:            string;
   service_interest?: string;
-  message:          string;
-  consent:          boolean;
-  turnstile_token?: string;
+  message:           string;
+  consent:           boolean;
+  language?:         string;
+  turnstile_token?:  string;
 }
 
 function json(body: unknown, status = 200) {
@@ -42,7 +43,7 @@ serve(async (req: Request) => {
     return json({ error: 'Bad Request — invalid JSON' }, 400);
   }
 
-  const { full_name, company, email, phone, service_interest, message, consent, turnstile_token } = payload;
+  const { full_name, company, email, phone, service_interest, message, consent, language, turnstile_token } = payload;
 
   // ── 1. Validate required fields ────────────────────────────────────────────
   if (!full_name?.trim()) return json({ error: 'full_name is required' }, 400);
@@ -80,7 +81,8 @@ serve(async (req: Request) => {
       service_interest: service_interest?.trim() || null,
       message:          message.trim(),
       consent:          true,
-      turnstile_token:  turnstile_token          || null,
+      language:         language === 'es' ? 'es' : 'en',
+      turnstile_token:  turnstile_token || null,
     })
     .select('id, created_at')
     .single();
@@ -202,7 +204,7 @@ serve(async (req: Request) => {
     body: JSON.stringify({
       from:    'Global Gate México <noreply@globalgatemexico.com>',
       to:      [NOTIFICATION_EMAIL],
-      subject: `New Contact Inquiry - Global Gate Mexico`,
+      subject: `New Contact Inquiry - Global Gate Mexico${language === 'es' ? ' [ES]' : ''}`,
       html:    htmlBody,
     }),
   });

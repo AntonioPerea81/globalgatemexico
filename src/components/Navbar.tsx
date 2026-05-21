@@ -67,7 +67,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     id: 'contact',
     label: { EN: 'Contact', ES: 'Contacto' },
-    href: '/contact',
+    href: { EN: '/contact', ES: '/contacto' },
   },
 ];
 
@@ -101,6 +101,8 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/logistica-material-radiactivo':                                        { EN: '/radioactive-material-logistics',                                         ES: '/logistica-material-radiactivo' },
   '/about':                                                                { EN: '/about',                                                                  ES: '/acerca' },
   '/acerca':                                                               { EN: '/about',                                                                  ES: '/acerca' },
+  '/contact':                                                              { EN: '/contact',                                                                 ES: '/contacto' },
+  '/contacto':                                                             { EN: '/contact',                                                                 ES: '/contacto' },
 };
 
 export const Navbar = () => {

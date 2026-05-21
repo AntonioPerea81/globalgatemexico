@@ -108,6 +108,7 @@ CREATE TABLE IF NOT EXISTS public.contact_inquiries (
   service_interest TEXT,
   message          TEXT        NOT NULL,
   consent          BOOLEAN     NOT NULL DEFAULT false,
+  language         TEXT        NOT NULL DEFAULT 'en' CHECK (language IN ('en', 'es')),
   turnstile_token  TEXT
 );
 
@@ -123,3 +124,7 @@ CREATE POLICY "service role can read contact_inquiries"
   ON public.contact_inquiries FOR SELECT
   TO service_role
   USING (true);
+
+-- If contact_inquiries was already created without the language column, run:
+-- ALTER TABLE public.contact_inquiries
+--   ADD COLUMN IF NOT EXISTS language TEXT NOT NULL DEFAULT 'en' CHECK (language IN ('en', 'es'));
