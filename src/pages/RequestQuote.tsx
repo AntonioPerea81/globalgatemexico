@@ -5,6 +5,7 @@ import {
   Atom, HelpCircle, CheckCircle2, ArrowRight, ChevronDown,
 } from 'lucide-react';
 import { Container } from '../components/UI';
+import { supabase } from '../lib/supabase';
 
 // ── Color tokens — slightly boosted contrast vs. v1 ──────────────────────────
 const BG          = '#e8eaed';        // darker page bg for better card separation
@@ -208,6 +209,7 @@ export const RequestQuotePage = () => {
   // Submission
   const [loading, setLoading]     = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError]         = useState<string | null>(null);
   const [refId]                   = useState(() => 'GGM-' + Date.now().toString(36).toUpperCase().slice(-6));
 
   // Computed
@@ -240,11 +242,80 @@ export const RequestQuotePage = () => {
     addFiles(e.dataTransfer.files);
   }, []);
 
-  // Submit (mock)
-  const handleSubmit = (e: React.FormEvent) => {
+  // Submit — upload docs then call edge function
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSubmitted(true); }, 1400);
+
+    // Upload files to Supabase Storage
+    const docPaths: { path: string; name: string; size: number }[] = [];
+    for (const file of files) {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const path = `quote-requests/${refId}/${safeName}`;
+      const { error: uploadError } = await supabase.storage
+        .from('quote-documents')
+        .upload(path, file, { upsert: true });
+      if (uploadError) {
+        console.warn('[quote] Upload failed for', file.name, uploadError.message);
+      } else {
+        docPaths.push({ path, name: file.name, size: file.size });
+      }
+    }
+
+    const payload = {
+      referenceId: refId,
+      language: 'en',
+      transport_mode: mode,
+      origin_country: oCountry,
+      origin_city: oCity,
+      origin_terminal: oTerm,
+      destination_country: dCountry,
+      destination_city: dCity,
+      destination_terminal: dTerm,
+      commodity,
+      hs_code: hsCode,
+      cargo_class: cargoClass,
+      quick_count: quickCount ? parseInt(quickCount) : null,
+      quick_weight: quickWeight ? parseFloat(quickWeight) : null,
+      packages: expanded ? packages : [],
+      un_number: showDG ? unNum : null,
+      proper_shipping_name: showDG ? psn : null,
+      hazard_class: showDG ? hazClass : null,
+      packing_group: showDG ? pkgGroup : null,
+      packaging_type: showDG ? pkgType : null,
+      transport_index: showRadio ? tiIndex : null,
+      isotope: showRadio ? isotope : null,
+      package_category: showRadio ? pkgCat : null,
+      document_paths: docPaths,
+      comments: expanded ? comments : '',
+    };
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/freight-quote-request`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+      let data: Record<string, unknown> = {};
+      try { data = await res.json(); } catch { /* non-JSON body */ }
+      console.log('[freight-quote-request] status:', res.status, 'body:', data);
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        setError((data?.error as string) || `Server error (${res.status})`);
+      }
+    } catch {
+      setError('Network error — please check your connection and try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Accordion toggle — scroll into view when opening so content is visible
@@ -590,6 +661,18 @@ export const RequestQuotePage = () => {
                 use the detailed section below.
               </p>
             </SectionCard>
+
+            {/* ── Error message ───────────────────────────────────────── */}
+            {error && (
+              <div style={{
+                backgroundColor: '#fef2f2', border: '1px solid #fecaca',
+                borderRadius: '6px', padding: '12px 16px', marginBottom: '10px',
+                display: 'flex', alignItems: 'flex-start', gap: '10px',
+              }}>
+                <span style={{ color: '#dc2626', fontSize: '14px', lineHeight: 1, flexShrink: 0 }}>✕</span>
+                <p style={{ fontSize: '13px', color: '#991b1b', margin: 0, lineHeight: 1.5 }}>{error}</p>
+              </div>
+            )}
 
             {/* ── Submit — primary CTA, always visible ────────────────── */}
             <div style={{
