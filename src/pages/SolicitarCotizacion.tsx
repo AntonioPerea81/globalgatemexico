@@ -240,15 +240,18 @@ export const SolicitarCotizacionPage = () => {
     for (const file of files) {
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
       const path = `quote-requests/${refId}/${safeName}`;
-      const { error: uploadError } = await supabase.storage
+      console.log('[cotizacion] Subiendo', file.name, '→', path);
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from('quote-documents')
         .upload(path, file, { upsert: true });
       if (uploadError) {
-        console.warn('[cotizacion] Upload fallido para', file.name, uploadError.message);
+        console.error('[cotizacion] Upload FALLIDO para', file.name, '—', uploadError.message);
       } else {
+        console.log('[cotizacion] Upload OK:', uploadData?.path ?? path);
         docPaths.push({ path, name: file.name, size: file.size });
       }
     }
+    console.log('[cotizacion] docPaths a enviar:', JSON.stringify(docPaths));
 
     const payload = {
       referenceId: refId,

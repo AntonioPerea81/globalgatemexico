@@ -141,16 +141,24 @@ serve(async (req: Request) => {
   }
 
   // ── Generate signed URLs for documents ──────────────────────────────────────
+  console.log('[freight-quote-request] document_paths received:', JSON.stringify(document_paths));
+
   interface DocWithUrl { name: string; url: string | null; }
   const docsWithUrls: DocWithUrl[] = await Promise.all(
     document_paths.map(async (doc) => {
+      console.log('[freight-quote-request] Signing URL for path:', doc.path);
       const { data, error: signError } = await supabase.storage
         .from('quote-documents')
         .createSignedUrl(doc.path, 7 * 24 * 60 * 60);
-      if (signError) console.error('[freight-quote-request] Sign error:', signError.message);
+      if (signError) {
+        console.error('[freight-quote-request] Sign error for', doc.path, ':', signError.message);
+      } else {
+        console.log('[freight-quote-request] Signed URL OK:', doc.path);
+      }
       return { name: doc.name, url: data?.signedUrl ?? null };
     })
   );
+  console.log('[freight-quote-request] docsWithUrls:', JSON.stringify(docsWithUrls));
 
   // ── Build notification email ─────────────────────────────────────────────────
   const isES = language === 'es';
@@ -180,13 +188,21 @@ serve(async (req: Request) => {
   };
 
   const docRows = docsWithUrls.length > 0
-    ? docsWithUrls.map(d =>
-        `<tr>
-           <td style="padding:10px 16px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;gap:12px;">
-             <span style="font-size:12px;color:#374151;">${d.name}</span>
-             ${d.url
-               ? `<a href="${d.url}" style="background:#2563eb;color:#fff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:4px 12px;border-radius:3px;text-decoration:none;white-space:nowrap;">↓ Download</a>`
-               : `<span style="font-size:10px;color:#9ca3af;">unavailable</span>`}
+    ? docsWithUrls.map((d, i) =>
+        `<tr style="background:${i % 2 === 1 ? '#f7f8fa' : '#ffffff'};">
+           <td style="padding:0;border-bottom:1px solid #f0f0f0;">
+             <table width="100%" cellpadding="0" cellspacing="0">
+               <tr>
+                 <td style="padding:11px 16px;font-size:12px;color:#374151;word-break:break-all;">
+                   📎 ${d.name}
+                 </td>
+                 <td style="padding:11px 16px;text-align:right;white-space:nowrap;vertical-align:middle;">
+                   ${d.url
+                     ? `<a href="${d.url}" style="display:inline-block;background:#2563eb;color:#ffffff;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:5px 14px;border-radius:3px;text-decoration:none;">↓ Download</a>`
+                     : `<span style="font-size:10px;color:#9ca3af;font-style:italic;">Link unavailable</span>`}
+                 </td>
+               </tr>
+             </table>
            </td>
          </tr>`
       ).join('')
