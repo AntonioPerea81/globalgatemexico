@@ -237,21 +237,31 @@ export const SolicitarCotizacionPage = () => {
 
     // Upload files to Supabase Storage
     const docPaths: { path: string; name: string; size: number }[] = [];
+    console.log('[cotizacion] Archivos en estado:', files.length, files.map(f => f.name));
+    console.log('[cotizacion] Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
+    console.log('[cotizacion] Referencia:', refId);
+
     for (const file of files) {
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
       const path = `quote-requests/${refId}/${safeName}`;
-      console.log('[cotizacion] Subiendo', file.name, '→', path);
+      console.log('[cotizacion] Subiendo:', file.name, '→ bucket: quote-documents, path:', path, '| tamaño:', file.size);
+
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('quote-documents')
         .upload(path, file, { upsert: true });
+
       if (uploadError) {
-        console.error('[cotizacion] Upload FALLIDO para', file.name, '—', uploadError.message);
-      } else {
-        console.log('[cotizacion] Upload OK:', uploadData?.path ?? path);
-        docPaths.push({ path, name: file.name, size: file.size });
+        console.error('[cotizacion] Upload FALLIDO:', file.name, '| error:', uploadError.message, '| detalles:', JSON.stringify(uploadError));
+        setError(`No se pudo cargar "${file.name}": ${uploadError.message}. Por favor verifica tu conexión e inténtalo de nuevo.`);
+        setLoading(false);
+        return; // bloquear envío — no continuar con document_paths vacío
       }
+
+      console.log('[cotizacion] Upload OK:', uploadData?.path ?? path);
+      docPaths.push({ path, name: file.name, size: file.size });
     }
-    console.log('[cotizacion] docPaths a enviar:', JSON.stringify(docPaths));
+
+    console.log('[cotizacion] Todas las cargas completadas. document_paths a enviar:', JSON.stringify(docPaths));
 
     const payload = {
       referenceId: refId,
