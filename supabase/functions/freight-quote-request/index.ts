@@ -117,7 +117,7 @@ serve(async (req: Request) => {
       destination_terminal,
       commodity,
       hs_code,
-      cargo_class,
+      cargo_classification: cargo_class,
       quick_count,
       quick_weight,
       packages,

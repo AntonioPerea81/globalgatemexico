@@ -128,3 +128,82 @@ CREATE POLICY "service role can read contact_inquiries"
 -- If contact_inquiries was already created without the language column, run:
 -- ALTER TABLE public.contact_inquiries
 --   ADD COLUMN IF NOT EXISTS language TEXT NOT NULL DEFAULT 'en' CHECK (language IN ('en', 'es'));
+
+-- ============================================================
+-- Table: freight_quote_requests
+-- Inserted by the freight-quote-request Edge Function
+-- NOTE: Table already exists in Supabase dashboard.
+-- Column names reflect actual dashboard schema (cargo_classification,
+-- not cargo_class).
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS public.freight_quote_requests (
+  id                   UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at           TIMESTAMPTZ NOT NULL DEFAULT now(),
+  reference_id         TEXT        NOT NULL,
+  language             TEXT        NOT NULL DEFAULT 'en' CHECK (language IN ('en','es')),
+
+  -- Route
+  transport_mode       TEXT,
+  origin_country       TEXT,
+  origin_city          TEXT,
+  origin_terminal      TEXT,
+  destination_country  TEXT,
+  destination_city     TEXT,
+  destination_terminal TEXT,
+
+  -- Cargo
+  commodity            TEXT,
+  hs_code              TEXT,
+  cargo_classification TEXT,   -- 'general' | 'dg' | 'radioactive' | 'not_sure'
+
+  -- Package summary (quick)
+  quick_count          INTEGER,
+  quick_weight         NUMERIC,
+
+  -- Detailed package lines (jsonb array)
+  packages             JSONB,
+
+  -- DG / Radioactive fields
+  un_number            TEXT,
+  proper_shipping_name TEXT,
+  hazard_class         TEXT,
+  packing_group        TEXT,
+  packaging_type       TEXT,
+  transport_index      TEXT,
+  isotope              TEXT,
+  package_category     TEXT,
+
+  -- Documents (jsonb array of {path, name, size})
+  document_paths       JSONB,
+
+  comments             TEXT,
+  status               TEXT NOT NULL DEFAULT 'new'
+);
+
+ALTER TABLE public.freight_quote_requests ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "service role can insert freight_quote_requests"
+  ON public.freight_quote_requests FOR INSERT
+  TO service_role
+  WITH CHECK (true);
+
+CREATE POLICY "service role can read freight_quote_requests"
+  ON public.freight_quote_requests FOR SELECT
+  TO service_role
+  USING (true);
+
+-- Storage: quote-documents bucket
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('quote-documents', 'quote-documents', false)
+ON CONFLICT (id) DO NOTHING;
+
+CREATE POLICY "anon can upload to quote-documents"
+  ON storage.objects FOR INSERT
+  TO anon
+  WITH CHECK (bucket_id = 'quote-documents');
+
+CREATE POLICY "service role can read quote-documents"
+  ON storage.objects FOR SELECT
+  TO service_role
+  USING (bucket_id = 'quote-documents');
