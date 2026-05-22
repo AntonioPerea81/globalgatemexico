@@ -78,8 +78,19 @@ serve(async (req: Request) => {
   } = payload;
 
   // ── Required field validation ────────────────────────────────────────────────
-  if (!referenceId || !origin_country || !destination_country || !commodity || !cargo_class) {
-    return new Response(JSON.stringify({ error: 'Missing required fields' }), {
+  // For air freight, origin_country/destination_country are intentionally empty —
+  // the IATA airport code is stored in origin_terminal/destination_terminal instead.
+  // Require at least one origin identifier and one destination identifier.
+  const missing: string[] = [];
+  if (!referenceId)                                          missing.push('referenceId');
+  if (!origin_country && !origin_terminal)                   missing.push('origin (country or airport)');
+  if (!destination_country && !destination_terminal)         missing.push('destination (country or airport)');
+  if (!commodity)                                            missing.push('commodity');
+  if (!cargo_class)                                          missing.push('cargo_class');
+
+  if (missing.length > 0) {
+    console.error('[freight-quote-request] Validation failed. Missing:', missing.join(', '));
+    return new Response(JSON.stringify({ error: 'Missing required fields', missing }), {
       status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }

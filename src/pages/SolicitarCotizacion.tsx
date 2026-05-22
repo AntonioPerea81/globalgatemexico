@@ -309,7 +309,9 @@ export const SolicitarCotizacionPage = () => {
       if (res.ok) {
         setSubmitted(true);
       } else {
-        setError((data?.error as string) || `Error del servidor (${res.status})`);
+        const baseMsg = (data?.error as string) || `Error del servidor (${res.status})`;
+        const missing = data?.missing as string[] | undefined;
+        setError(missing?.length ? `${baseMsg}: ${missing.join(', ')}` : baseMsg);
       }
     } catch {
       setError('Error de red — por favor verifica tu conexión e inténtalo de nuevo.');

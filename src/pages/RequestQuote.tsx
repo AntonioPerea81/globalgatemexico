@@ -248,23 +248,33 @@ export const RequestQuotePage = () => {
     setError(null);
     setLoading(true);
 
-    // Upload files to Supabase Storage
+    // ── Upload files to Supabase Storage ──────────────────────────────────────
     const docPaths: { path: string; name: string; size: number }[] = [];
+    console.log('[quote] Files in state:', files.length, files.map(f => f.name));
+    console.log('[quote] Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
+    console.log('[quote] Reference ID:', refId);
+
     for (const file of files) {
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
       const path = `quote-requests/${refId}/${safeName}`;
-      console.log('[quote] Uploading', file.name, '→', path);
+      console.log('[quote] Uploading:', file.name, '→ bucket: quote-documents, path:', path, '| size:', file.size);
+
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('quote-documents')
         .upload(path, file, { upsert: true });
+
       if (uploadError) {
-        console.error('[quote] Upload FAILED for', file.name, '—', uploadError.message);
-      } else {
-        console.log('[quote] Upload OK:', uploadData?.path ?? path);
-        docPaths.push({ path, name: file.name, size: file.size });
+        console.error('[quote] Upload FAILED:', file.name, '| error:', uploadError.message, '| details:', JSON.stringify(uploadError));
+        setError(`Could not upload "${file.name}": ${uploadError.message}. Please check your connection and try again.`);
+        setLoading(false);
+        return; // block submission — do not proceed with empty document_paths
       }
+
+      console.log('[quote] Upload OK:', uploadData?.path ?? path);
+      docPaths.push({ path, name: file.name, size: file.size });
     }
-    console.log('[quote] docPaths to send:', JSON.stringify(docPaths));
+
+    console.log('[quote] All uploads done. document_paths to send:', JSON.stringify(docPaths));
 
     const payload = {
       referenceId: refId,
@@ -312,7 +322,9 @@ export const RequestQuotePage = () => {
       if (res.ok) {
         setSubmitted(true);
       } else {
-        setError((data?.error as string) || `Server error (${res.status})`);
+        const baseMsg = (data?.error as string) || `Server error (${res.status})`;
+        const missing = data?.missing as string[] | undefined;
+        setError(missing?.length ? `${baseMsg}: ${missing.join(', ')}` : baseMsg);
       }
     } catch {
       setError('Network error — please check your connection and try again.');
