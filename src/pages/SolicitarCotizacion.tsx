@@ -248,7 +248,7 @@ export const SolicitarCotizacionPage = () => {
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('quote-documents')
-        .upload(path, file, { upsert: true });
+        .upload(path, file);
 
       if (uploadError) {
         console.error('[cotizacion] Upload FALLIDO:', file.name, '| error:', uploadError.message, '| detalles:', JSON.stringify(uploadError));

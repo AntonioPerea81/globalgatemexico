@@ -261,7 +261,7 @@ export const RequestQuotePage = () => {
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('quote-documents')
-        .upload(path, file, { upsert: true });
+        .upload(path, file);
 
       if (uploadError) {
         console.error('[quote] Upload FAILED:', file.name, '| error:', uploadError.message, '| details:', JSON.stringify(uploadError));
