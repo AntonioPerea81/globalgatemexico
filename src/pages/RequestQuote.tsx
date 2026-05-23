@@ -256,7 +256,8 @@ export const RequestQuotePage = () => {
 
     for (const file of files) {
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const path = `quote-requests/${refId}/${safeName}`;
+      const uniqueName = `${Date.now()}-${safeName}`;
+      const path = `quote-requests/${refId}/${uniqueName}`;
       console.log('[quote] Uploading:', file.name, '→ bucket: quote-documents, path:', path, '| size:', file.size);
 
       const { data: uploadData, error: uploadError } = await supabase.storage

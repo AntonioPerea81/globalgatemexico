@@ -243,7 +243,8 @@ export const SolicitarCotizacionPage = () => {
 
     for (const file of files) {
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const path = `quote-requests/${refId}/${safeName}`;
+      const uniqueName = `${Date.now()}-${safeName}`;
+      const path = `quote-requests/${refId}/${uniqueName}`;
       console.log('[cotizacion] Subiendo:', file.name, '→ bucket: quote-documents, path:', path, '| tamaño:', file.size);
 
       const { data: uploadData, error: uploadError } = await supabase.storage
