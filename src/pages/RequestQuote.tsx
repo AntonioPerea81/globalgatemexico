@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import {
   Plane, Anchor, Truck, Layers, Plus, Trash2,
   Upload, FileText, X, Package, AlertTriangle,
-  Atom, HelpCircle, CheckCircle2, ArrowRight, ChevronDown,
+  Atom, HelpCircle, CheckCircle2, ArrowRight, ChevronDown, Box,
 } from 'lucide-react';
 import { Container } from '../components/UI';
 import { supabase } from '../lib/supabase';
@@ -188,6 +188,13 @@ export const RequestQuotePage = () => {
   // Detailed package lines (revealed after expansion)
   const [packages, setPackages]       = useState<PkgLine[]>([newPkg()]);
 
+  // Sea freight
+  const [seaType, setSeaType]           = useState<'lcl' | 'fcl' | ''>('');
+  const [containerType, setContainerType] = useState('');
+  const [containerQty, setContainerQty]   = useState('');
+  const [socCoc, setSocCoc]               = useState('');
+  const [dgContainer, setDgContainer]     = useState(false);
+
   // DG fields
   const [unNum, setUnNum]     = useState('');
   const [psn, setPsn]         = useState('');
@@ -292,7 +299,12 @@ export const RequestQuotePage = () => {
       cargo_class: cargoClass,
       quick_count: quickCount ? parseInt(quickCount) : null,
       quick_weight: quickWeight ? parseFloat(quickWeight) : null,
-      packages: expanded ? packages : [],
+      sea_shipment_type: mode === 'sea' ? seaType : null,
+      container_type: mode === 'sea' && seaType === 'fcl' ? containerType : null,
+      container_qty: mode === 'sea' && seaType === 'fcl' ? (containerQty ? parseInt(containerQty) : null) : null,
+      soc_coc: mode === 'sea' && seaType === 'fcl' ? socCoc : null,
+      dg_container: mode === 'sea' && seaType === 'fcl' ? dgContainer : null,
+      packages: expanded && !(mode === 'sea' && seaType === 'fcl') ? packages : [],
       un_number: showDG ? unNum : null,
       proper_shipping_name: showDG ? psn : null,
       hazard_class: showDG ? hazClass : null,
@@ -470,7 +482,7 @@ export const RequestQuotePage = () => {
                     <button
                       key={m.id}
                       type="button"
-                      onClick={() => setMode(m.id)}
+                      onClick={() => { setMode(m.id); if (m.id !== 'sea') setSeaType(''); }}
                       onMouseEnter={() => setHoverMode(m.id)}
                       onMouseLeave={() => setHoverMode(null)}
                       style={{
@@ -539,11 +551,13 @@ export const RequestQuotePage = () => {
                           placeholder="e.g. Mexico" style={inputSt}
                           onFocus={focusBorder} onBlur={blurBorder} />
                       </Field>
-                      <Field label="City">
-                        <input value={oCity} onChange={e => setOCity(e.target.value)}
-                          placeholder="e.g. Monterrey" style={inputSt}
-                          onFocus={focusBorder} onBlur={blurBorder} />
-                      </Field>
+                      {mode !== 'sea' && (
+                        <Field label="City">
+                          <input value={oCity} onChange={e => setOCity(e.target.value)}
+                            placeholder="e.g. Monterrey" style={inputSt}
+                            onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      )}
                       {mode === 'ground' ? (
                         <Field label="State / Province">
                           <input value={oTerm} onChange={e => setOTerm(e.target.value)}
@@ -553,7 +567,7 @@ export const RequestQuotePage = () => {
                       ) : (
                         <Field label={mode === 'sea' ? 'Port / Terminal' : 'Airport / Port / Terminal'}>
                           <input value={oTerm} onChange={e => setOTerm(e.target.value)}
-                            placeholder={mode === 'sea' ? 'e.g. Port of Veracruz' : 'e.g. Port, airport, or terminal'}
+                            placeholder={mode === 'sea' ? 'e.g. Veracruz, Altamira, Manzanillo' : 'e.g. Port, airport, or terminal'}
                             style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                         </Field>
                       )}
@@ -593,11 +607,13 @@ export const RequestQuotePage = () => {
                           placeholder="e.g. United States" style={inputSt}
                           onFocus={focusBorder} onBlur={blurBorder} />
                       </Field>
-                      <Field label="City">
-                        <input value={dCity} onChange={e => setDCity(e.target.value)}
-                          placeholder="e.g. Houston, TX" style={inputSt}
-                          onFocus={focusBorder} onBlur={blurBorder} />
-                      </Field>
+                      {mode !== 'sea' && (
+                        <Field label="City">
+                          <input value={dCity} onChange={e => setDCity(e.target.value)}
+                            placeholder="e.g. Houston, TX" style={inputSt}
+                            onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      )}
                       {mode === 'ground' ? (
                         <Field label="State / Province">
                           <input value={dTerm} onChange={e => setDTerm(e.target.value)}
@@ -607,7 +623,7 @@ export const RequestQuotePage = () => {
                       ) : (
                         <Field label={mode === 'sea' ? 'Port / Terminal' : 'Airport / Port / Terminal'}>
                           <input value={dTerm} onChange={e => setDTerm(e.target.value)}
-                            placeholder={mode === 'sea' ? 'e.g. Port of Houston' : 'e.g. Port, airport, or terminal'}
+                            placeholder={mode === 'sea' ? 'e.g. Houston, Rotterdam, Nhava Sheva' : 'e.g. Port, airport, or terminal'}
                             style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                         </Field>
                       )}
@@ -700,30 +716,172 @@ export const RequestQuotePage = () => {
               </div>
             </SectionCard>
 
-            {/* ── 04 Package Summary (quick) ───────────────────────────── */}
-            <SectionCard number="04" title="Package Summary">
-              <div className="grid md:grid-cols-2 gap-4" style={{ marginBottom: '12px' }}>
-                <Field label="Number of Packages">
-                  <input
-                    type="number" min="1" value={quickCount}
-                    onChange={e => setQuickCount(e.target.value)}
-                    placeholder="e.g. 4"
-                    style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
-                  />
-                </Field>
-                <Field label="Approx. Total Weight (kg)">
-                  <input
-                    type="number" min="0" step="0.01" value={quickWeight}
-                    onChange={e => setQuickWeight(e.target.value)}
-                    placeholder="e.g. 250"
-                    style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
-                  />
-                </Field>
-              </div>
-              <p style={{ fontSize: '12px', color: MUTED, lineHeight: 1.55 }}>
-                For exact per-package dimensions, individual weights, and DG details,
-                use the detailed section below.
-              </p>
+            {/* ── 04 Package Summary / Container Requirements ──────────── */}
+            <SectionCard
+              number="04"
+              title={mode === 'sea' && seaType === 'fcl' ? 'Container Requirements' : 'Package Summary'}
+            >
+
+              {/* ── Sea Freight: LCL / FCL selector ───────────────────── */}
+              {mode === 'sea' && (
+                <div style={{ marginBottom: '20px' }}>
+                  <p style={labelSt}>
+                    Shipment Type <span style={{ color: ACCENT }}>*</span>
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {([
+                      {
+                        id: 'lcl' as const,
+                        icon: <Package size={20} />,
+                        label: 'LCL',
+                        sub: 'Less than Container Load',
+                        desc: 'Consolidated / shared container',
+                      },
+                      {
+                        id: 'fcl' as const,
+                        icon: <Box size={20} />,
+                        label: 'FCL',
+                        sub: 'Full Container Load',
+                        desc: 'Dedicated container(s)',
+                      },
+                    ]).map(t => {
+                      const active = seaType === t.id;
+                      return (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => setSeaType(t.id)}
+                          style={{
+                            padding: '16px 18px', textAlign: 'left' as const,
+                            cursor: 'pointer', outline: 'none', transition: 'all 0.15s',
+                            border: `2px solid ${active ? ACCENT : BORDER}`,
+                            borderRadius: '6px',
+                            backgroundColor: active ? ACCENT_PALE : '#fff',
+                            boxShadow: active
+                              ? `0 0 0 3px ${ACCENT_RING}, 0 2px 8px rgba(37,99,235,0.1)`
+                              : '0 1px 3px rgba(0,0,0,0.04)',
+                          }}
+                        >
+                          <span style={{
+                            color: active ? ACCENT : MUTED,
+                            display: 'block', marginBottom: '8px', lineHeight: 1,
+                          }}>
+                            {t.icon}
+                          </span>
+                          <span style={{
+                            fontSize: '13px', fontWeight: 800, letterSpacing: '-0.01em',
+                            display: 'block', marginBottom: '2px',
+                            color: active ? ACCENT : TEXT,
+                          }}>
+                            {t.label}
+                          </span>
+                          <span style={{ fontSize: '11px', fontWeight: 600, color: active ? ACCENT : TEXT2, display: 'block', marginBottom: '2px' }}>
+                            {t.sub}
+                          </span>
+                          <span style={{ fontSize: '10px', color: MUTED }}>{t.desc}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* ── FCL: Container Requirements ────────────────────────── */}
+              {mode === 'sea' && seaType === 'fcl' && (
+                <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '16px' }}>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Field label="Container Type" required>
+                      <select
+                        value={containerType}
+                        onChange={e => setContainerType(e.target.value)}
+                        style={{ ...inputSt, cursor: 'pointer' }}
+                        onFocus={focusBorder} onBlur={blurBorder}
+                      >
+                        <option value="">Select type…</option>
+                        <option value="20GP">20GP — 20' General Purpose</option>
+                        <option value="40GP">40GP — 40' General Purpose</option>
+                        <option value="40HC">40HC — 40' High Cube</option>
+                        <option value="20OT">20OT — 20' Open Top</option>
+                        <option value="40OT">40OT — 40' Open Top</option>
+                        <option value="Reefer">Reefer — Refrigerated</option>
+                        <option value="ISO Tank">ISO Tank</option>
+                      </select>
+                    </Field>
+                    <Field label="Number of Containers" required>
+                      <input
+                        type="number" min="1" value={containerQty}
+                        onChange={e => setContainerQty(e.target.value)}
+                        placeholder="e.g. 2"
+                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
+                      />
+                    </Field>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Field label="Equipment Ownership (optional)">
+                      <select
+                        value={socCoc}
+                        onChange={e => setSocCoc(e.target.value)}
+                        style={{ ...inputSt, cursor: 'pointer' }}
+                        onFocus={focusBorder} onBlur={blurBorder}
+                      >
+                        <option value="">Not specified</option>
+                        <option value="COC">COC — Carrier Owned Container</option>
+                        <option value="SOC">SOC — Shipper Owned Container</option>
+                      </select>
+                    </Field>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2px' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                        <input
+                          type="checkbox"
+                          checked={dgContainer}
+                          onChange={e => setDgContainer(e.target.checked)}
+                          style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: ACCENT }}
+                        />
+                        <span style={{ fontSize: '13px', color: TEXT, lineHeight: 1.4 }}>
+                          Dangerous Goods Container
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ── LCL or non-sea: standard package count ─────────────── */}
+              {(mode !== 'sea' || seaType === 'lcl') && (
+                <>
+                  <div className="grid md:grid-cols-2 gap-4" style={{ marginBottom: '12px' }}>
+                    <Field label="Number of Packages">
+                      <input
+                        type="number" min="1" value={quickCount}
+                        onChange={e => setQuickCount(e.target.value)}
+                        placeholder="e.g. 4"
+                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
+                      />
+                    </Field>
+                    <Field label="Approx. Total Weight (kg)">
+                      <input
+                        type="number" min="0" step="0.01" value={quickWeight}
+                        onChange={e => setQuickWeight(e.target.value)}
+                        placeholder="e.g. 250"
+                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
+                      />
+                    </Field>
+                  </div>
+                  <p style={{ fontSize: '12px', color: MUTED, lineHeight: 1.55 }}>
+                    {mode === 'sea'
+                      ? 'For exact per-package dimensions and individual weights, use the detailed section below.'
+                      : 'For exact per-package dimensions, individual weights, and DG details, use the detailed section below.'}
+                  </p>
+                </>
+              )}
+
+              {/* ── Sea: prompt when no type selected ──────────────────── */}
+              {mode === 'sea' && !seaType && (
+                <p style={{ fontSize: '12px', color: MUTED, lineHeight: 1.55 }}>
+                  Select a shipment type above to continue.
+                </p>
+              )}
+
             </SectionCard>
 
             {/* ── Error message ───────────────────────────────────────── */}
@@ -859,8 +1017,8 @@ export const RequestQuotePage = () => {
                 }}
               >
 
-                {/* ── 05 Package Details ──────────────────────────────── */}
-                <SectionCard number="05" title="Package Details">
+                {/* ── 05 Package Details (hidden for FCL sea — container already defined) */}
+                {!(mode === 'sea' && seaType === 'fcl') && <SectionCard number="05" title="Package Details">
                   <div style={{ overflowX: 'auto', marginBottom: '14px' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' as const, minWidth: '680px' }}>
                       <thead>
@@ -974,7 +1132,7 @@ export const RequestQuotePage = () => {
                       ))}
                     </div>
                   )}
-                </SectionCard>
+                </SectionCard>}
 
                 {/* ── 06 DG Details (conditional) ─────────────────────── */}
                 {showDG && (

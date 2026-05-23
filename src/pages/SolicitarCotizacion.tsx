@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import {
   Plane, Anchor, Truck, Layers, Plus, Trash2,
   Upload, FileText, X, Package, AlertTriangle,
-  Atom, HelpCircle, CheckCircle2, ArrowRight, ChevronDown,
+  Atom, HelpCircle, CheckCircle2, ArrowRight, ChevronDown, Box,
 } from 'lucide-react';
 import { Container } from '../components/UI';
 import { supabase } from '../lib/supabase';
@@ -181,6 +181,13 @@ export const SolicitarCotizacionPage = () => {
 
   const [packages, setPackages] = useState<PkgLine[]>([newPkg()]);
 
+  // Transporte marítimo
+  const [seaType, setSeaType]             = useState<'lcl' | 'fcl' | ''>('');
+  const [containerType, setContainerType] = useState('');
+  const [containerQty, setContainerQty]   = useState('');
+  const [socCoc, setSocCoc]               = useState('');
+  const [dgContainer, setDgContainer]     = useState(false);
+
   const [unNum, setUnNum]       = useState('');
   const [psn, setPsn]           = useState('');
   const [hazClass, setHazClass] = useState('');
@@ -279,7 +286,12 @@ export const SolicitarCotizacionPage = () => {
       cargo_class: cargoClass,
       quick_count: quickCount ? parseInt(quickCount) : null,
       quick_weight: quickWeight ? parseFloat(quickWeight) : null,
-      packages: expanded ? packages : [],
+      sea_shipment_type: mode === 'sea' ? seaType : null,
+      container_type: mode === 'sea' && seaType === 'fcl' ? containerType : null,
+      container_qty: mode === 'sea' && seaType === 'fcl' ? (containerQty ? parseInt(containerQty) : null) : null,
+      soc_coc: mode === 'sea' && seaType === 'fcl' ? socCoc : null,
+      dg_container: mode === 'sea' && seaType === 'fcl' ? dgContainer : null,
+      packages: expanded && !(mode === 'sea' && seaType === 'fcl') ? packages : [],
       un_number: showDG ? unNum : null,
       proper_shipping_name: showDG ? psn : null,
       hazard_class: showDG ? hazClass : null,
@@ -452,7 +464,7 @@ export const SolicitarCotizacionPage = () => {
                     <button
                       key={m.id}
                       type="button"
-                      onClick={() => setMode(m.id)}
+                      onClick={() => { setMode(m.id); if (m.id !== 'sea') setSeaType(''); }}
                       onMouseEnter={() => setHoverMode(m.id)}
                       onMouseLeave={() => setHoverMode(null)}
                       style={{
@@ -521,11 +533,13 @@ export const SolicitarCotizacionPage = () => {
                           placeholder="Ej. México" style={inputSt}
                           onFocus={focusBorder} onBlur={blurBorder} />
                       </Field>
-                      <Field label="Ciudad">
-                        <input value={oCity} onChange={e => setOCity(e.target.value)}
-                          placeholder="Ej. Monterrey" style={inputSt}
-                          onFocus={focusBorder} onBlur={blurBorder} />
-                      </Field>
+                      {mode !== 'sea' && (
+                        <Field label="Ciudad">
+                          <input value={oCity} onChange={e => setOCity(e.target.value)}
+                            placeholder="Ej. Monterrey" style={inputSt}
+                            onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      )}
                       {mode === 'ground' ? (
                         <Field label="Estado / Provincia">
                           <input value={oTerm} onChange={e => setOTerm(e.target.value)}
@@ -535,7 +549,7 @@ export const SolicitarCotizacionPage = () => {
                       ) : (
                         <Field label={mode === 'sea' ? 'Puerto / Terminal' : 'Aeropuerto / Puerto / Terminal'}>
                           <input value={oTerm} onChange={e => setOTerm(e.target.value)}
-                            placeholder={mode === 'sea' ? 'Ej. Puerto de Veracruz' : 'Ej. Puerto, aeropuerto o terminal'}
+                            placeholder={mode === 'sea' ? 'Ej. Veracruz, Altamira, Manzanillo' : 'Ej. Puerto, aeropuerto o terminal'}
                             style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                         </Field>
                       )}
@@ -575,11 +589,13 @@ export const SolicitarCotizacionPage = () => {
                           placeholder="Ej. Estados Unidos" style={inputSt}
                           onFocus={focusBorder} onBlur={blurBorder} />
                       </Field>
-                      <Field label="Ciudad">
-                        <input value={dCity} onChange={e => setDCity(e.target.value)}
-                          placeholder="Ej. Houston, TX" style={inputSt}
-                          onFocus={focusBorder} onBlur={blurBorder} />
-                      </Field>
+                      {mode !== 'sea' && (
+                        <Field label="Ciudad">
+                          <input value={dCity} onChange={e => setDCity(e.target.value)}
+                            placeholder="Ej. Houston, TX" style={inputSt}
+                            onFocus={focusBorder} onBlur={blurBorder} />
+                        </Field>
+                      )}
                       {mode === 'ground' ? (
                         <Field label="Estado / Provincia">
                           <input value={dTerm} onChange={e => setDTerm(e.target.value)}
@@ -589,7 +605,7 @@ export const SolicitarCotizacionPage = () => {
                       ) : (
                         <Field label={mode === 'sea' ? 'Puerto / Terminal' : 'Aeropuerto / Puerto / Terminal'}>
                           <input value={dTerm} onChange={e => setDTerm(e.target.value)}
-                            placeholder={mode === 'sea' ? 'Ej. Puerto de Houston' : 'Ej. Puerto, aeropuerto o terminal'}
+                            placeholder={mode === 'sea' ? 'Ej. Houston, Rotterdam, Nhava Sheva' : 'Ej. Puerto, aeropuerto o terminal'}
                             style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                         </Field>
                       )}
@@ -682,30 +698,172 @@ export const SolicitarCotizacionPage = () => {
               </div>
             </SectionCard>
 
-            {/* ── 04 Resumen del Embarque ────────────────────────────────── */}
-            <SectionCard number="04" title="Resumen del Embarque">
-              <div className="grid md:grid-cols-2 gap-4" style={{ marginBottom: '12px' }}>
-                <Field label="Número de Bultos">
-                  <input
-                    type="number" min="1" value={quickCount}
-                    onChange={e => setQuickCount(e.target.value)}
-                    placeholder="Ej. 4"
-                    style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
-                  />
-                </Field>
-                <Field label="Peso Total Aprox. (kg)">
-                  <input
-                    type="number" min="0" step="0.01" value={quickWeight}
-                    onChange={e => setQuickWeight(e.target.value)}
-                    placeholder="Ej. 250"
-                    style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
-                  />
-                </Field>
-              </div>
-              <p style={{ fontSize: '12px', color: MUTED, lineHeight: 1.55 }}>
-                Para especificar dimensiones exactas por bulto, pesos individuales y detalles
-                de mercancías peligrosas, utilice la sección detallada.
-              </p>
+            {/* ── 04 Resumen del Embarque / Requerimientos del Contenedor ── */}
+            <SectionCard
+              number="04"
+              title={mode === 'sea' && seaType === 'fcl' ? 'Requerimientos del Contenedor' : 'Resumen del Embarque'}
+            >
+
+              {/* ── Marítimo: selector LCL / FCL ───────────────────────── */}
+              {mode === 'sea' && (
+                <div style={{ marginBottom: '20px' }}>
+                  <p style={labelSt}>
+                    Tipo de Embarque <span style={{ color: ACCENT }}>*</span>
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {([
+                      {
+                        id: 'lcl' as const,
+                        icon: <Package size={20} />,
+                        label: 'LCL',
+                        sub: 'Carga Consolidada',
+                        desc: 'Contenedor compartido',
+                      },
+                      {
+                        id: 'fcl' as const,
+                        icon: <Box size={20} />,
+                        label: 'FCL',
+                        sub: 'Contenedor Completo',
+                        desc: 'Contenedor(es) dedicado(s)',
+                      },
+                    ]).map(t => {
+                      const active = seaType === t.id;
+                      return (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => setSeaType(t.id)}
+                          style={{
+                            padding: '16px 18px', textAlign: 'left' as const,
+                            cursor: 'pointer', outline: 'none', transition: 'all 0.15s',
+                            border: `2px solid ${active ? ACCENT : BORDER}`,
+                            borderRadius: '6px',
+                            backgroundColor: active ? ACCENT_PALE : '#fff',
+                            boxShadow: active
+                              ? `0 0 0 3px ${ACCENT_RING}, 0 2px 8px rgba(37,99,235,0.1)`
+                              : '0 1px 3px rgba(0,0,0,0.04)',
+                          }}
+                        >
+                          <span style={{
+                            color: active ? ACCENT : MUTED,
+                            display: 'block', marginBottom: '8px', lineHeight: 1,
+                          }}>
+                            {t.icon}
+                          </span>
+                          <span style={{
+                            fontSize: '13px', fontWeight: 800, letterSpacing: '-0.01em',
+                            display: 'block', marginBottom: '2px',
+                            color: active ? ACCENT : TEXT,
+                          }}>
+                            {t.label}
+                          </span>
+                          <span style={{ fontSize: '11px', fontWeight: 600, color: active ? ACCENT : TEXT2, display: 'block', marginBottom: '2px' }}>
+                            {t.sub}
+                          </span>
+                          <span style={{ fontSize: '10px', color: MUTED }}>{t.desc}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* ── FCL: Requerimientos del Contenedor ─────────────────── */}
+              {mode === 'sea' && seaType === 'fcl' && (
+                <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '16px' }}>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Field label="Tipo de Contenedor" required>
+                      <select
+                        value={containerType}
+                        onChange={e => setContainerType(e.target.value)}
+                        style={{ ...inputSt, cursor: 'pointer' }}
+                        onFocus={focusBorder} onBlur={blurBorder}
+                      >
+                        <option value="">Seleccionar tipo…</option>
+                        <option value="20GP">20GP — 20' Propósito General</option>
+                        <option value="40GP">40GP — 40' Propósito General</option>
+                        <option value="40HC">40HC — 40' High Cube (Alto)</option>
+                        <option value="20OT">20OT — 20' Open Top (Techo Abierto)</option>
+                        <option value="40OT">40OT — 40' Open Top (Techo Abierto)</option>
+                        <option value="Reefer">Reefer — Refrigerado</option>
+                        <option value="ISO Tank">Tanque ISO</option>
+                      </select>
+                    </Field>
+                    <Field label="Número de Contenedores" required>
+                      <input
+                        type="number" min="1" value={containerQty}
+                        onChange={e => setContainerQty(e.target.value)}
+                        placeholder="Ej. 2"
+                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
+                      />
+                    </Field>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Field label="Propiedad del Equipo (opcional)">
+                      <select
+                        value={socCoc}
+                        onChange={e => setSocCoc(e.target.value)}
+                        style={{ ...inputSt, cursor: 'pointer' }}
+                        onFocus={focusBorder} onBlur={blurBorder}
+                      >
+                        <option value="">No especificado</option>
+                        <option value="COC">COC — Contenedor del Armador</option>
+                        <option value="SOC">SOC — Contenedor del Fletador</option>
+                      </select>
+                    </Field>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2px' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                        <input
+                          type="checkbox"
+                          checked={dgContainer}
+                          onChange={e => setDgContainer(e.target.checked)}
+                          style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: ACCENT }}
+                        />
+                        <span style={{ fontSize: '13px', color: TEXT, lineHeight: 1.4 }}>
+                          Contenedor con Mercancías Peligrosas
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ── LCL o no marítimo: campos estándar ─────────────────── */}
+              {(mode !== 'sea' || seaType === 'lcl') && (
+                <>
+                  <div className="grid md:grid-cols-2 gap-4" style={{ marginBottom: '12px' }}>
+                    <Field label="Número de Bultos">
+                      <input
+                        type="number" min="1" value={quickCount}
+                        onChange={e => setQuickCount(e.target.value)}
+                        placeholder="Ej. 4"
+                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
+                      />
+                    </Field>
+                    <Field label="Peso Total Aprox. (kg)">
+                      <input
+                        type="number" min="0" step="0.01" value={quickWeight}
+                        onChange={e => setQuickWeight(e.target.value)}
+                        placeholder="Ej. 250"
+                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
+                      />
+                    </Field>
+                  </div>
+                  <p style={{ fontSize: '12px', color: MUTED, lineHeight: 1.55 }}>
+                    {mode === 'sea'
+                      ? 'Para especificar dimensiones exactas por bulto y pesos individuales, utilice la sección detallada.'
+                      : 'Para especificar dimensiones exactas por bulto, pesos individuales y detalles de mercancías peligrosas, utilice la sección detallada.'}
+                  </p>
+                </>
+              )}
+
+              {/* ── Marítimo: sin tipo seleccionado ────────────────────── */}
+              {mode === 'sea' && !seaType && (
+                <p style={{ fontSize: '12px', color: MUTED, lineHeight: 1.55 }}>
+                  Seleccione el tipo de embarque para continuar.
+                </p>
+              )}
+
             </SectionCard>
 
             {/* ── Error ─────────────────────────────────────────────────── */}
@@ -841,8 +999,8 @@ export const SolicitarCotizacionPage = () => {
                 }}
               >
 
-                {/* ── 05 Detalle de Bultos ───────────────────────────────── */}
-                <SectionCard number="05" title="Detalle de Bultos">
+                {/* ── 05 Detalle de Bultos (oculto para FCL marítimo) ─────── */}
+                {!(mode === 'sea' && seaType === 'fcl') && <SectionCard number="05" title="Detalle de Bultos">
                   <div style={{ overflowX: 'auto', marginBottom: '14px' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' as const, minWidth: '680px' }}>
                       <thead>
@@ -956,7 +1114,7 @@ export const SolicitarCotizacionPage = () => {
                       ))}
                     </div>
                   )}
-                </SectionCard>
+                </SectionCard>}
 
                 {/* ── 06 Detalle MP / Radiactivo (condicional) ──────────── */}
                 {showDG && (

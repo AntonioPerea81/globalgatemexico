@@ -41,6 +41,11 @@ interface Payload {
   package_category:     string | null;
   document_paths:       DocPath[];
   comments:             string;
+  sea_shipment_type?:   string | null;
+  container_type?:      string | null;
+  container_qty?:       number | null;
+  soc_coc?:             string | null;
+  dg_container?:        boolean | null;
   turnstile_token?:     string;
 }
 
@@ -74,6 +79,7 @@ serve(async (req: Request) => {
     un_number, proper_shipping_name, hazard_class, packing_group, packaging_type,
     transport_index, isotope, package_category,
     document_paths = [], comments,
+    sea_shipment_type, container_type, container_qty, soc_coc, dg_container,
     turnstile_token,
   } = payload;
 
@@ -142,6 +148,7 @@ serve(async (req: Request) => {
       package_category,
       document_paths,
       comments,
+      sea_shipment_type: sea_shipment_type || null,
     });
 
   if (insertError) {
@@ -269,6 +276,23 @@ serve(async (req: Request) => {
           row('Origin',          [origin_country, origin_city, origin_terminal].filter(Boolean).join(' · '), true) +
           row('Destination',     [destination_country, destination_city, destination_terminal].filter(Boolean).join(' · '), false)
         )}
+
+        ${sea_shipment_type ? section(isES ? 'Detalles Marítimos' : 'Maritime Details', (() => {
+          const shipTypeLabel = sea_shipment_type === 'lcl'
+            ? (isES ? 'LCL — Carga Consolidada' : 'LCL — Less than Container Load')
+            : sea_shipment_type === 'fcl'
+              ? (isES ? 'FCL — Contenedor Completo' : 'FCL — Full Container Load')
+              : sea_shipment_type;
+          const containerLabel = container_type
+            ? `${container_qty ?? 1}× ${container_type}` +
+              (soc_coc ? ` (${soc_coc})` : '') +
+              (dg_container ? (isES ? ' ⚠ MP' : ' ⚠ DG') : '')
+            : null;
+          return (
+            row(isES ? 'Tipo de Embarque' : 'Shipment Type', shipTypeLabel, false) +
+            row(isES ? 'Contenedor' : 'Container', containerLabel, true)
+          );
+        })()) : ''}
 
         ${section('Cargo',
           row('Commodity',         commodity, false) +
