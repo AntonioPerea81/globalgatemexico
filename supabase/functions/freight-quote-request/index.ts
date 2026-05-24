@@ -27,13 +27,15 @@ interface Payload {
   contact_department?:  string | null;
   contact_position?:    string | null;
   // Shipment
-  transport_mode:       string;
-  origin_country:       string;
-  origin_city:          string;
-  origin_terminal:      string;
-  destination_country:  string;
-  destination_city:     string;
-  destination_terminal: string;
+  transport_mode:           string;
+  origin_country:           string;
+  origin_city:              string;
+  origin_terminal:          string;
+  origin_postal_code?:      string | null;
+  destination_country:      string;
+  destination_city:         string;
+  destination_terminal:     string;
+  destination_postal_code?: string | null;
   commodity:            string;
   hs_code:              string;
   cargo_class:          string;
@@ -84,8 +86,8 @@ serve(async (req: Request) => {
     contact_department, contact_position,
     transport_mode, origin_country, destination_country,
     commodity, cargo_class,
-    origin_city, origin_terminal,
-    destination_city, destination_terminal,
+    origin_city, origin_terminal, origin_postal_code,
+    destination_city, destination_terminal, destination_postal_code,
     hs_code, quick_count, quick_weight, packages = [],
     un_number, proper_shipping_name, hazard_class, packing_group, packaging_type,
     transport_index, isotope, package_category,
@@ -106,6 +108,9 @@ serve(async (req: Request) => {
   // Shipment fields — air uses terminal (IATA) instead of country
   if (!origin_country && !origin_terminal)                   missing.push('origin (country or airport)');
   if (!destination_country && !destination_terminal)         missing.push('destination (country or airport)');
+  // Ground transport requires postal codes for carrier rating
+  if (transport_mode === 'ground' && !origin_postal_code)      missing.push('origin_postal_code');
+  if (transport_mode === 'ground' && !destination_postal_code) missing.push('destination_postal_code');
   if (!commodity)                                            missing.push('commodity');
   if (!cargo_class)                                          missing.push('cargo_class');
 
@@ -151,9 +156,11 @@ serve(async (req: Request) => {
       origin_country,
       origin_city,
       origin_terminal,
+      origin_postal_code:      origin_postal_code || null,
       destination_country,
       destination_city,
       destination_terminal,
+      destination_postal_code: destination_postal_code || null,
       commodity,
       hs_code,
       cargo_classification: cargo_class,
@@ -306,8 +313,12 @@ serve(async (req: Request) => {
 
         ${section(isES ? 'Ruta del Embarque' : 'Shipment Route',
           row(isES ? 'Modo de Transporte' : 'Transport Mode', modeLabel[transport_mode] ?? transport_mode, false) +
-          row(isES ? 'Origen' : 'Origin',        [origin_country, origin_city, origin_terminal].filter(Boolean).join(' · '), true) +
-          row(isES ? 'Destino' : 'Destination',  [destination_country, destination_city, destination_terminal].filter(Boolean).join(' · '), false)
+          row(isES ? 'Origen' : 'Origin',
+            [origin_country, origin_city, origin_terminal].filter(Boolean).join(' · ') +
+            (origin_postal_code ? ` — CP ${origin_postal_code}` : ''), true) +
+          row(isES ? 'Destino' : 'Destination',
+            [destination_country, destination_city, destination_terminal].filter(Boolean).join(' · ') +
+            (destination_postal_code ? ` — CP ${destination_postal_code}` : ''), false)
         )}
 
         ${sea_shipment_type ? section(isES ? 'Detalles Marítimos' : 'Maritime Details', (() => {

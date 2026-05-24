@@ -172,9 +172,11 @@ export const RequestQuotePage = () => {
   const [oCountry, setOCountry]   = useState('');
   const [oCity, setOCity]         = useState('');
   const [oTerm, setOTerm]         = useState('');
+  const [oZip, setOZip]           = useState('');
   const [dCountry, setDCountry]   = useState('');
   const [dCity, setDCity]         = useState('');
   const [dTerm, setDTerm]         = useState('');
+  const [dZip, setDZip]           = useState('');
 
   // Cargo
   const [commodity, setCommodity]     = useState('');
@@ -264,6 +266,18 @@ export const RequestQuotePage = () => {
     setError(null);
     setLoading(true);
 
+    // ── Ground transport: require postal codes ────────────────────────────────
+    if (mode === 'ground') {
+      const zipMissing: string[] = [];
+      if (!oZip.trim()) zipMissing.push('Origin ZIP / Postal Code');
+      if (!dZip.trim()) zipMissing.push('Destination ZIP / Postal Code');
+      if (zipMissing.length > 0) {
+        setError(`Please fill in required fields: ${zipMissing.join(', ')}`);
+        setLoading(false);
+        return;
+      }
+    }
+
     // ── Upload files to Supabase Storage ──────────────────────────────────────
     const docPaths: { path: string; name: string; size: number }[] = [];
     console.log('[quote] Files in state:', files.length, files.map(f => f.name));
@@ -307,9 +321,11 @@ export const RequestQuotePage = () => {
       origin_country: oCountry,
       origin_city: oCity,
       origin_terminal: oTerm,
+      origin_postal_code: mode === 'ground' ? oZip : null,
       destination_country: dCountry,
       destination_city: dCity,
       destination_terminal: dTerm,
+      destination_postal_code: mode === 'ground' ? dZip : null,
       commodity,
       hs_code: hsCode,
       cargo_class: cargoClass,
@@ -626,11 +642,18 @@ export const RequestQuotePage = () => {
                         </Field>
                       )}
                       {mode === 'ground' ? (
-                        <Field label="State / Province">
-                          <input value={oTerm} onChange={e => setOTerm(e.target.value)}
-                            placeholder="e.g. Nuevo León"
-                            style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
-                        </Field>
+                        <>
+                          <Field label="State / Province">
+                            <input value={oTerm} onChange={e => setOTerm(e.target.value)}
+                              placeholder="e.g. Nuevo León"
+                              style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                          </Field>
+                          <Field label="ZIP / Postal Code" required>
+                            <input value={oZip} onChange={e => setOZip(e.target.value)}
+                              placeholder="e.g. 64000"
+                              style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                          </Field>
+                        </>
                       ) : (
                         <Field label={mode === 'sea' ? 'Port / Terminal' : 'Airport / Port / Terminal'}>
                           <input value={oTerm} onChange={e => setOTerm(e.target.value)}
@@ -682,11 +705,18 @@ export const RequestQuotePage = () => {
                         </Field>
                       )}
                       {mode === 'ground' ? (
-                        <Field label="State / Province">
-                          <input value={dTerm} onChange={e => setDTerm(e.target.value)}
-                            placeholder="e.g. Texas"
-                            style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
-                        </Field>
+                        <>
+                          <Field label="State / Province">
+                            <input value={dTerm} onChange={e => setDTerm(e.target.value)}
+                              placeholder="e.g. Texas"
+                              style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                          </Field>
+                          <Field label="ZIP / Postal Code" required>
+                            <input value={dZip} onChange={e => setDZip(e.target.value)}
+                              placeholder="e.g. 77001"
+                              style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                          </Field>
+                        </>
                       ) : (
                         <Field label={mode === 'sea' ? 'Port / Terminal' : 'Airport / Port / Terminal'}>
                           <input value={dTerm} onChange={e => setDTerm(e.target.value)}
