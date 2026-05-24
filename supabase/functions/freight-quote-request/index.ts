@@ -231,7 +231,7 @@ serve(async (req: Request) => {
   };
 
   const modeLabel: Record<string, string> = {
-    air: 'Air Freight', sea: 'Sea Freight', ground: 'Ground Transport', multimodal: 'Multimodal',
+    air: 'Air Freight', sea: 'Sea Freight', ground: 'Ground Transport',
   };
 
   const docRows = docsWithUrls.length > 0

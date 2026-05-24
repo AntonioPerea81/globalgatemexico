@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import {
-  Plane, Anchor, Truck, Layers, Plus, Trash2,
+  Plane, Anchor, Truck, Plus, Trash2,
   Upload, FileText, X, Package, AlertTriangle,
   Atom, HelpCircle, CheckCircle2, ArrowRight, ChevronDown, Box,
 } from 'lucide-react';
@@ -31,7 +31,7 @@ const GREEN_BG    = '#f0fdf4';
 const GREEN_B     = '#bbf7d0';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-type TransportMode = '' | 'air' | 'sea' | 'ground' | 'multimodal';
+type TransportMode = '' | 'air' | 'sea' | 'ground';
 type CargoClass    = '' | 'general' | 'dg' | 'radioactive' | 'not_sure';
 
 interface PkgLine {
@@ -552,12 +552,11 @@ export const RequestQuotePage = () => {
 
             {/* ── 02 Transport Mode ───────────────────────────────────── */}
             <SectionCard number="02" title="Transport Mode">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-3 gap-5">
                 {([
-                  { id: 'air',        label: 'Air Freight',      icon: <Plane size={22} /> },
-                  { id: 'sea',        label: 'Sea Freight',       icon: <Anchor size={22} /> },
-                  { id: 'ground',     label: 'Ground Transport',  icon: <Truck size={22} /> },
-                  { id: 'multimodal', label: 'Multimodal',        icon: <Layers size={22} /> },
+                  { id: 'air',    label: 'Air Freight',     icon: <Plane size={22} /> },
+                  { id: 'sea',    label: 'Sea Freight',     icon: <Anchor size={22} /> },
+                  { id: 'ground', label: 'Ground Transport', icon: <Truck size={22} /> },
                 ] as { id: TransportMode; label: string; icon: React.ReactNode }[]).map(m => {
                   const isActive = mode === m.id;
                   const isHover  = hoverMode === m.id && !isActive;
@@ -569,9 +568,9 @@ export const RequestQuotePage = () => {
                       onMouseEnter={() => setHoverMode(m.id)}
                       onMouseLeave={() => setHoverMode(null)}
                       style={{
-                        padding: '20px 12px',
+                        padding: '28px 20px',
                         border: `2px solid ${isActive ? ACCENT : isHover ? ACCENT_RING : BORDER}`,
-                        borderRadius: '7px', cursor: 'pointer', textAlign: 'center' as const,
+                        borderRadius: '8px', cursor: 'pointer', textAlign: 'center' as const,
                         backgroundColor: isActive ? ACCENT_PALE : isHover ? ACCENT_DIM : '#fff',
                         boxShadow: isActive
                           ? `0 0 0 3px ${ACCENT_RING}, 0 3px 10px rgba(37,99,235,0.12)`
@@ -579,7 +578,7 @@ export const RequestQuotePage = () => {
                         transform: isHover ? 'translateY(-2px)' : 'none',
                         transition: 'all 0.16s ease', outline: 'none',
                         display: 'flex', flexDirection: 'column' as const,
-                        alignItems: 'center', gap: '10px',
+                        alignItems: 'center', gap: '12px',
                       }}
                     >
                       <span style={{ color: isActive ? ACCENT : isHover ? ACCENT : MUTED, lineHeight: 1 }}>
