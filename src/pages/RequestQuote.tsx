@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Plane, Anchor, Truck, Plus, Trash2,
   Upload, FileText, X, Package, AlertTriangle,
@@ -800,8 +801,8 @@ export const RequestQuotePage = () => {
                   <p style={{ fontSize: '12px', color: TEXT2, margin: 0, lineHeight: 1.5 }}>
                     Need support with <strong>Class 7 / Radioactive Material Transport?</strong>
                   </p>
-                  <a
-                    href="/radioactive-material-logistics"
+                  <Link
+                    to="/radioactive-material-logistics"
                     style={{
                       fontSize: '11px', fontWeight: 700, color: ACCENT,
                       textDecoration: 'none', flexShrink: 0, letterSpacing: '0.03em',
@@ -809,7 +810,7 @@ export const RequestQuotePage = () => {
                     }}
                   >
                     Visit Class 7 Logistics →
-                  </a>
+                  </Link>
                 </div>
 
                 {/* DG guidance alert */}

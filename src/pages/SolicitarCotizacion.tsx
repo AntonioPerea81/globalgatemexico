@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Plane, Anchor, Truck, Plus, Trash2,
   Upload, FileText, X, Package, AlertTriangle,
@@ -782,8 +783,8 @@ export const SolicitarCotizacionPage = () => {
                   <p style={{ fontSize: '12px', color: TEXT2, margin: 0, lineHeight: 1.5 }}>
                     ¿Necesita apoyo para transporte de <strong>Material Radiactivo / Clase 7?</strong>
                   </p>
-                  <a
-                    href="/logistica-material-radiactivo"
+                  <Link
+                    to="/logistica-material-radiactivo"
                     style={{
                       fontSize: '11px', fontWeight: 700, color: ACCENT,
                       textDecoration: 'none', flexShrink: 0, letterSpacing: '0.03em',
@@ -791,7 +792,7 @@ export const SolicitarCotizacionPage = () => {
                     }}
                   >
                     Visitar Logística Clase 7 →
-                  </a>
+                  </Link>
                 </div>
 
                 {/* Alerta de orientación para Mercancías Peligrosas */}
