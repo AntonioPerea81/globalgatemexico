@@ -47,9 +47,6 @@ interface Payload {
   hazard_class:         string | null;
   packing_group:        string | null;
   packaging_type:       string | null;
-  transport_index:      string | null;
-  isotope:              string | null;
-  package_category:     string | null;
   document_paths:       DocPath[];
   comments:             string;
   sea_shipment_type?:   string | null;
@@ -90,7 +87,6 @@ serve(async (req: Request) => {
     destination_city, destination_terminal, destination_postal_code,
     hs_code, quick_count, quick_weight, packages = [],
     un_number, proper_shipping_name, hazard_class, packing_group, packaging_type,
-    transport_index, isotope, package_category,
     document_paths = [], comments,
     sea_shipment_type, container_type, container_qty, soc_coc, dg_container,
     turnstile_token,
@@ -172,9 +168,6 @@ serve(async (req: Request) => {
       hazard_class,
       packing_group,
       packaging_type,
-      transport_index,
-      isotope,
-      package_category,
       document_paths,
       comments,
       sea_shipment_type: sea_shipment_type || null,
@@ -227,7 +220,7 @@ serve(async (req: Request) => {
      </div>`;
 
   const cargoClassLabel: Record<string, string> = {
-    general: 'General Cargo', dg: 'Dangerous Goods', radioactive: 'Radioactive Material', not_sure: 'Not Sure / To Be Classified',
+    general: 'General Cargo', dg: 'Dangerous Goods', not_sure: 'Not Sure / To Be Classified',
   };
 
   const modeLabel: Record<string, string> = {
@@ -348,15 +341,12 @@ serve(async (req: Request) => {
 
         ${pkgRows ? section(isES ? 'Detalle de Bultos' : 'Package Details', pkgRows) : ''}
 
-        ${(un_number || proper_shipping_name) ? section(isES ? 'Mercancías Peligrosas / Radiactivo' : 'Dangerous Goods / Radioactive',
+        ${(un_number || proper_shipping_name) ? section(isES ? 'Mercancías Peligrosas' : 'Dangerous Goods',
           row('UN Number',                                  un_number, false) +
           row(isES ? 'Nombre Apropiado de Expedición' : 'Proper Shipping Name', proper_shipping_name, true) +
           row(isES ? 'Clase de Peligro' : 'Hazard Class',  hazard_class, false) +
           row(isES ? 'Grupo de Embalaje' : 'Packing Group', packing_group, true) +
-          row(isES ? 'Tipo de Embalaje' : 'Packaging Type', packaging_type, false) +
-          row(isES ? 'Índice de Transporte' : 'Transport Index', transport_index, true) +
-          row(isES ? 'Isótopo' : 'Isotope',                isotope, false) +
-          row(isES ? 'Categoría del Bulto' : 'Package Category', package_category, true)
+          row(isES ? 'Tipo de Embalaje' : 'Packaging Type', packaging_type, false)
         ) : ''}
 
         ${docRows ? section(isES ? 'Documentos Adjuntos' : 'Attached Documents', docRows) : ''}

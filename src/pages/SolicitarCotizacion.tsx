@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import {
   Plane, Anchor, Truck, Plus, Trash2,
   Upload, FileText, X, Package, AlertTriangle,
-  Atom, HelpCircle, CheckCircle2, ArrowRight, ChevronDown, Box,
+  HelpCircle, CheckCircle2, ArrowRight, ChevronDown, Box,
 } from 'lucide-react';
 import { Container } from '../components/UI';
 import { supabase } from '../lib/supabase';
@@ -32,7 +32,7 @@ const GREEN_B     = '#bbf7d0';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type TransportMode = '' | 'air' | 'sea' | 'ground';
-type CargoClass    = '' | 'general' | 'dg' | 'radioactive' | 'not_sure';
+type CargoClass    = '' | 'general' | 'dg' | 'not_sure';
 
 interface PkgLine {
   id:          string;
@@ -204,9 +204,6 @@ export const SolicitarCotizacionPage = () => {
   const [hazClass, setHazClass] = useState('');
   const [pkgGroup, setPkgGroup] = useState('');
   const [pkgType, setPkgType]   = useState('');
-  const [tiIndex, setTiIndex]   = useState('');
-  const [isotope, setIsotope]   = useState('');
-  const [pkgCat, setPkgCat]     = useState('');
 
   const [files, setFiles]       = useState<File[]>([]);
   const [dragging, setDragging] = useState(false);
@@ -219,8 +216,7 @@ export const SolicitarCotizacionPage = () => {
   const [error, setError]         = useState<string | null>(null);
   const [refId]                   = useState(() => 'GGM-' + Date.now().toString(36).toUpperCase().slice(-6));
 
-  const showDG    = cargoClass === 'dg' || cargoClass === 'radioactive';
-  const showRadio = cargoClass === 'radioactive';
+  const showDG = cargoClass === 'dg';
 
   const totalWeight = packages.reduce((s, p) =>
     s + (parseFloat(p.weight) || 0) * (parseInt(p.pieces) || 0), 0);
@@ -329,9 +325,6 @@ export const SolicitarCotizacionPage = () => {
       hazard_class: showDG ? hazClass : null,
       packing_group: showDG ? pkgGroup : null,
       packaging_type: showDG ? pkgType : null,
-      transport_index: showRadio ? tiIndex : null,
-      isotope: showRadio ? isotope : null,
-      package_category: showRadio ? pkgCat : null,
       document_paths: docPaths,
       comments: expanded ? comments : '',
     };
@@ -732,12 +725,11 @@ export const SolicitarCotizacionPage = () => {
                 {/* Clasificación */}
                 <div>
                   <p style={labelSt}>Clasificación de la Carga <span style={{ color: ACCENT }}>*</span></p>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-3 gap-3">
                     {([
-                      { id: 'general',     label: 'Carga General',         icon: <Package size={16} />,       desc: 'Flete estándar' },
-                      { id: 'dg',          label: 'Mercancías Peligrosas', icon: <AlertTriangle size={16} />, desc: 'Regulado ONU' },
-                      { id: 'radioactive', label: 'Material Radiactivo',   icon: <Atom size={16} />,          desc: 'OIEA / Clase 7' },
-                      { id: 'not_sure',    label: 'No Estoy Seguro',       icon: <HelpCircle size={16} />,    desc: 'Necesito orientación' },
+                      { id: 'general',  label: 'Carga General',         icon: <Package size={16} />,       desc: 'Flete estándar' },
+                      { id: 'dg',       label: 'Mercancías Peligrosas', icon: <AlertTriangle size={16} />, desc: 'Regulado ONU' },
+                      { id: 'not_sure', label: 'No Estoy Seguro',       icon: <HelpCircle size={16} />,    desc: 'Necesito orientación' },
                     ] as { id: CargoClass; label: string; icon: React.ReactNode; desc: string }[]).map(c => {
                       const active   = cargoClass === c.id;
                       const isDanger = c.id === 'dg' || c.id === 'radioactive';
@@ -773,6 +765,28 @@ export const SolicitarCotizacionPage = () => {
                       );
                     })}
                   </div>
+                </div>
+
+                {/* CTA Clase 7 */}
+                <div style={{
+                  marginTop: '4px', padding: '11px 16px',
+                  backgroundColor: TH_BG, border: `1px solid ${BORDER}`,
+                  borderRadius: '5px', display: 'flex', alignItems: 'center',
+                  justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' as const,
+                }}>
+                  <p style={{ fontSize: '12px', color: TEXT2, margin: 0, lineHeight: 1.5 }}>
+                    ¿Necesita apoyo para transporte de <strong>Material Radiactivo / Clase 7?</strong>
+                  </p>
+                  <a
+                    href="/logistica-material-radiactivo"
+                    style={{
+                      fontSize: '11px', fontWeight: 700, color: ACCENT,
+                      textDecoration: 'none', flexShrink: 0, letterSpacing: '0.03em',
+                      whiteSpace: 'nowrap' as const,
+                    }}
+                  >
+                    Visitar Logística Clase 7 →
+                  </a>
                 </div>
 
                 {cargoClass === 'not_sure' && (
@@ -1212,11 +1226,11 @@ export const SolicitarCotizacionPage = () => {
                   )}
                 </SectionCard>}
 
-                {/* ── 07 Detalle MP / Radiactivo (condicional) ──────────── */}
+                {/* ── 07 Detalle MP (condicional) ───────────────────────── */}
                 {showDG && (
                   <SectionCard
                     number="07"
-                    title={showRadio ? 'Detalle de Material Radiactivo' : 'Detalle de Mercancías Peligrosas'}
+                    title="Detalle de Mercancías Peligrosas"
                     badge="Carga Regulada"
                   >
                     <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '16px' }}>
@@ -1269,39 +1283,6 @@ export const SolicitarCotizacionPage = () => {
                         </Field>
                       </div>
 
-                      {showRadio && (
-                        <>
-                          <div style={{ height: '1px', backgroundColor: BORDER, margin: '4px 0' }} />
-                          <p style={{ fontSize: '10px', fontWeight: 800,
-                            textTransform: 'uppercase' as const, letterSpacing: '0.12em',
-                            color: TEXT2, marginBottom: '4px' }}>
-                            Material Radiactivo — Datos Adicionales (opcional)
-                          </p>
-                          <div className="grid md:grid-cols-3 gap-4">
-                            <Field label="Índice de Transporte (IT)">
-                              <input value={tiIndex} onChange={e => setTiIndex(e.target.value)}
-                                placeholder="Ej. 0.5" style={inputSt}
-                                onFocus={focusBorder} onBlur={blurBorder} />
-                            </Field>
-                            <Field label="Isótopo / Radionúclido">
-                              <input value={isotope} onChange={e => setIsotope(e.target.value)}
-                                placeholder="Ej. Co-57" style={inputSt}
-                                onFocus={focusBorder} onBlur={blurBorder} />
-                            </Field>
-                            <Field label="Categoría del Bulto">
-                              <select value={pkgCat} onChange={e => setPkgCat(e.target.value)}
-                                style={{ ...inputSt, cursor: 'pointer' }}
-                                onFocus={focusBorder} onBlur={blurBorder}>
-                                <option value="">Seleccionar…</option>
-                                <option>Category I-WHITE</option>
-                                <option>Category II-YELLOW</option>
-                                <option>Category III-YELLOW</option>
-                                <option>EXCEPTED</option>
-                              </select>
-                            </Field>
-                          </div>
-                        </>
-                      )}
 
                     </div>
                   </SectionCard>

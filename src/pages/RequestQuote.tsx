@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import {
   Plane, Anchor, Truck, Plus, Trash2,
   Upload, FileText, X, Package, AlertTriangle,
-  Atom, HelpCircle, CheckCircle2, ArrowRight, ChevronDown, Box,
+  HelpCircle, CheckCircle2, ArrowRight, ChevronDown, Box,
 } from 'lucide-react';
 import { Container } from '../components/UI';
 import { supabase } from '../lib/supabase';
@@ -32,7 +32,7 @@ const GREEN_B     = '#bbf7d0';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type TransportMode = '' | 'air' | 'sea' | 'ground';
-type CargoClass    = '' | 'general' | 'dg' | 'radioactive' | 'not_sure';
+type CargoClass    = '' | 'general' | 'dg' | 'not_sure';
 
 interface PkgLine {
   id:          string;
@@ -207,14 +207,11 @@ export const RequestQuotePage = () => {
   const [dgContainer, setDgContainer]     = useState(false);
 
   // DG fields
-  const [unNum, setUnNum]     = useState('');
-  const [psn, setPsn]         = useState('');
+  const [unNum, setUnNum]       = useState('');
+  const [psn, setPsn]           = useState('');
   const [hazClass, setHazClass] = useState('');
   const [pkgGroup, setPkgGroup] = useState('');
   const [pkgType, setPkgType]   = useState('');
-  const [tiIndex, setTiIndex]   = useState('');
-  const [isotope, setIsotope]   = useState('');
-  const [pkgCat, setPkgCat]     = useState('');
 
   // Files
   const [files, setFiles]     = useState<File[]>([]);
@@ -231,8 +228,7 @@ export const RequestQuotePage = () => {
   const [refId]                   = useState(() => 'GGM-' + Date.now().toString(36).toUpperCase().slice(-6));
 
   // Computed
-  const showDG    = cargoClass === 'dg' || cargoClass === 'radioactive';
-  const showRadio = cargoClass === 'radioactive';
+  const showDG = cargoClass === 'dg';
   const totalWeight = packages.reduce((s, p) =>
     s + (parseFloat(p.weight) || 0) * (parseInt(p.pieces) || 0), 0);
   const totalVol = packages.reduce((s, p) => {
@@ -342,9 +338,6 @@ export const RequestQuotePage = () => {
       hazard_class: showDG ? hazClass : null,
       packing_group: showDG ? pkgGroup : null,
       packaging_type: showDG ? pkgType : null,
-      transport_index: showRadio ? tiIndex : null,
-      isotope: showRadio ? isotope : null,
-      package_category: showRadio ? pkgCat : null,
       document_paths: docPaths,
       comments: expanded ? comments : '',
     };
@@ -750,12 +743,11 @@ export const RequestQuotePage = () => {
                 {/* Cargo classification */}
                 <div>
                   <p style={labelSt}>Cargo Classification <span style={{ color: ACCENT }}>*</span></p>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-3 gap-3">
                     {([
-                      { id: 'general',     label: 'General Cargo',       icon: <Package size={16} />,       desc: 'Standard freight' },
-                      { id: 'dg',          label: 'Dangerous Goods',     icon: <AlertTriangle size={16} />, desc: 'UN regulated' },
-                      { id: 'radioactive', label: 'Radioactive Material', icon: <Atom size={16} />,          desc: 'IAEA / Class 7' },
-                      { id: 'not_sure',    label: 'Not Sure',             icon: <HelpCircle size={16} />,    desc: 'Need guidance' },
+                      { id: 'general',  label: 'General Cargo',   icon: <Package size={16} />,       desc: 'Standard freight' },
+                      { id: 'dg',       label: 'Dangerous Goods', icon: <AlertTriangle size={16} />, desc: 'UN regulated' },
+                      { id: 'not_sure', label: 'Not Sure',        icon: <HelpCircle size={16} />,    desc: 'Need guidance' },
                     ] as { id: CargoClass; label: string; icon: React.ReactNode; desc: string }[]).map(c => {
                       const active    = cargoClass === c.id;
                       const isDanger  = c.id === 'dg' || c.id === 'radioactive';
@@ -791,6 +783,28 @@ export const RequestQuotePage = () => {
                       );
                     })}
                   </div>
+                </div>
+
+                {/* Class 7 redirect CTA */}
+                <div style={{
+                  marginTop: '4px', padding: '11px 16px',
+                  backgroundColor: TH_BG, border: `1px solid ${BORDER}`,
+                  borderRadius: '5px', display: 'flex', alignItems: 'center',
+                  justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' as const,
+                }}>
+                  <p style={{ fontSize: '12px', color: TEXT2, margin: 0, lineHeight: 1.5 }}>
+                    Need support with <strong>Class 7 / Radioactive Material Transport?</strong>
+                  </p>
+                  <a
+                    href="/radioactive-material-logistics"
+                    style={{
+                      fontSize: '11px', fontWeight: 700, color: ACCENT,
+                      textDecoration: 'none', flexShrink: 0, letterSpacing: '0.03em',
+                      whiteSpace: 'nowrap' as const,
+                    }}
+                  >
+                    Visit Class 7 Logistics →
+                  </a>
                 </div>
 
                 {/* Not sure notice */}
@@ -1234,7 +1248,7 @@ export const RequestQuotePage = () => {
                 {showDG && (
                   <SectionCard
                     number="07"
-                    title={showRadio ? 'Radioactive Material Details' : 'Dangerous Goods Details'}
+                    title="Dangerous Goods Details"
                     badge="Regulated Cargo"
                   >
                     <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '16px' }}>
@@ -1287,39 +1301,6 @@ export const RequestQuotePage = () => {
                         </Field>
                       </div>
 
-                      {showRadio && (
-                        <>
-                          <div style={{ height: '1px', backgroundColor: BORDER, margin: '4px 0' }} />
-                          <p style={{ fontSize: '10px', fontWeight: 800,
-                            textTransform: 'uppercase' as const, letterSpacing: '0.12em',
-                            color: TEXT2, marginBottom: '4px' }}>
-                            Radioactive — Additional Details (optional)
-                          </p>
-                          <div className="grid md:grid-cols-3 gap-4">
-                            <Field label="Transport Index (TI)">
-                              <input value={tiIndex} onChange={e => setTiIndex(e.target.value)}
-                                placeholder="e.g. 0.5" style={inputSt}
-                                onFocus={focusBorder} onBlur={blurBorder} />
-                            </Field>
-                            <Field label="Isotope / Radionuclide">
-                              <input value={isotope} onChange={e => setIsotope(e.target.value)}
-                                placeholder="e.g. Co-57" style={inputSt}
-                                onFocus={focusBorder} onBlur={blurBorder} />
-                            </Field>
-                            <Field label="Package Category">
-                              <select value={pkgCat} onChange={e => setPkgCat(e.target.value)}
-                                style={{ ...inputSt, cursor: 'pointer' }}
-                                onFocus={focusBorder} onBlur={blurBorder}>
-                                <option value="">Select…</option>
-                                <option>Category I-WHITE</option>
-                                <option>Category II-YELLOW</option>
-                                <option>Category III-YELLOW</option>
-                                <option>EXCEPTED</option>
-                              </select>
-                            </Field>
-                          </div>
-                        </>
-                      )}
 
                     </div>
                   </SectionCard>
