@@ -366,6 +366,11 @@ export const SolicitarCotizacionPage = () => {
       setTimeout(() => expandRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
     }
   };
+  // Abrir (nunca cerrar) la sección detallada — usado por el CTA de alerta DG
+  const openDetailedSection = () => {
+    if (!expanded) setExpanded(true);
+    setTimeout(() => expandRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  };
 
   // ── Success state ──────────────────────────────────────────────────────────
   if (submitted) {
@@ -788,6 +793,53 @@ export const SolicitarCotizacionPage = () => {
                     Visitar Logística Clase 7 →
                   </a>
                 </div>
+
+                {/* Alerta de orientación para Mercancías Peligrosas */}
+                {cargoClass === 'dg' && (
+                  <div style={{
+                    backgroundColor: AMBER_BG, border: `1px solid ${AMBER_B}`,
+                    borderRadius: '6px', padding: '16px 18px',
+                  }}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '10px' }}>
+                      <AlertTriangle size={14} color="#d97706" style={{ flexShrink: 0 }} />
+                      <p style={{
+                        fontSize: '10px', fontWeight: 800, textTransform: 'uppercase' as const,
+                        letterSpacing: '0.1em', color: AMBER_TXT, margin: 0,
+                      }}>
+                        Información Requerida para Mercancías Peligrosas
+                      </p>
+                    </div>
+                    <div style={{ paddingLeft: '24px' }}>
+                      <p style={{ fontSize: '12px', color: AMBER_TXT, lineHeight: 1.65, margin: '0 0 8px' }}>
+                        Para cotizar mercancías peligrosas correctamente, favor de completar la{' '}
+                        <strong>sección de Detalles DG</strong> y cargar la <strong>SDS</strong> en la
+                        sección de Documentos de Soporte.
+                      </p>
+                      <p style={{ fontSize: '12px', color: AMBER_TXT, lineHeight: 1.65, margin: '0 0 8px' }}>
+                        También describa la configuración actual del envase y embalaje, por ejemplo:{' '}
+                        <em>"5 botellas de vidrio de 1 L cada una dentro de una caja de cartón."</em>
+                      </p>
+                      <p style={{ fontSize: '12px', color: AMBER_TXT, lineHeight: 1.65, margin: '0 0 14px' }}>
+                        Si cuenta con fotografías del producto y del embalaje, favor de adjuntarlas.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={openDetailedSection}
+                        style={{
+                          fontSize: '11px', fontWeight: 700,
+                          textTransform: 'uppercase' as const, letterSpacing: '0.08em',
+                          color: AMBER_TXT, backgroundColor: '#fde68a',
+                          border: `1px solid #f59e0b`, borderRadius: '4px',
+                          padding: '7px 16px', cursor: 'pointer', transition: 'all 0.15s',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#fcd34d'; }}
+                        onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#fde68a'; }}
+                      >
+                        Completar Detalles DG →
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {cargoClass === 'not_sure' && (
                   <div style={{

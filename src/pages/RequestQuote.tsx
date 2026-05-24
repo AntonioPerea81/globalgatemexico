@@ -380,6 +380,11 @@ export const RequestQuotePage = () => {
       setTimeout(() => expandRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
     }
   };
+  // Open (never close) the detailed section and scroll to it — used by DG alert CTA
+  const openDetailedSection = () => {
+    if (!expanded) setExpanded(true);
+    setTimeout(() => expandRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  };
 
   // ── Success state ────────────────────────────────────────────────────────
   if (submitted) {
@@ -806,6 +811,53 @@ export const RequestQuotePage = () => {
                     Visit Class 7 Logistics →
                   </a>
                 </div>
+
+                {/* DG guidance alert */}
+                {cargoClass === 'dg' && (
+                  <div style={{
+                    backgroundColor: AMBER_BG, border: `1px solid ${AMBER_B}`,
+                    borderRadius: '6px', padding: '16px 18px',
+                  }}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '10px' }}>
+                      <AlertTriangle size={14} color="#d97706" style={{ flexShrink: 0 }} />
+                      <p style={{
+                        fontSize: '10px', fontWeight: 800, textTransform: 'uppercase' as const,
+                        letterSpacing: '0.1em', color: AMBER_TXT, margin: 0,
+                      }}>
+                        Dangerous Goods Information Required
+                      </p>
+                    </div>
+                    <div style={{ paddingLeft: '24px' }}>
+                      <p style={{ fontSize: '12px', color: AMBER_TXT, lineHeight: 1.65, margin: '0 0 8px' }}>
+                        To quote dangerous goods accurately, please complete the <strong>DG Details
+                        section</strong> and upload the <strong>SDS</strong> in the Supporting Documents
+                        section.
+                      </p>
+                      <p style={{ fontSize: '12px', color: AMBER_TXT, lineHeight: 1.65, margin: '0 0 8px' }}>
+                        Please also describe the current packaging configuration, for example:{' '}
+                        <em>"5 glass bottles of 1 L each inside one fiberboard box."</em>
+                      </p>
+                      <p style={{ fontSize: '12px', color: AMBER_TXT, lineHeight: 1.65, margin: '0 0 14px' }}>
+                        If available, upload photos of the product and packaging.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={openDetailedSection}
+                        style={{
+                          fontSize: '11px', fontWeight: 700,
+                          textTransform: 'uppercase' as const, letterSpacing: '0.08em',
+                          color: AMBER_TXT, backgroundColor: '#fde68a',
+                          border: `1px solid #f59e0b`, borderRadius: '4px',
+                          padding: '7px 16px', cursor: 'pointer', transition: 'all 0.15s',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#fcd34d'; }}
+                        onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#fde68a'; }}
+                      >
+                        Complete DG Details →
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* Not sure notice */}
                 {cargoClass === 'not_sure' && (
