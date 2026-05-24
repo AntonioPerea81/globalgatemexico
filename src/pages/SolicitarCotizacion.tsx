@@ -181,6 +181,15 @@ export const SolicitarCotizacionPage = () => {
 
   const [packages, setPackages] = useState<PkgLine[]>([newPkg()]);
 
+  // Datos de empresa y contacto
+  const [companyName, setCompanyName]         = useState('');
+  const [contactName, setContactName]         = useState('');
+  const [contactEmail, setContactEmail]       = useState('');
+  const [contactPhone, setContactPhone]       = useState('');
+  const [contactCountry, setContactCountry]   = useState('');
+  const [contactDept, setContactDept]         = useState('');
+  const [contactPosition, setContactPosition] = useState('');
+
   // Transporte marítimo
   const [seaType, setSeaType]             = useState<'lcl' | 'fcl' | ''>('');
   const [containerType, setContainerType] = useState('');
@@ -274,6 +283,13 @@ export const SolicitarCotizacionPage = () => {
     const payload = {
       referenceId: refId,
       language: 'es',
+      company_name: companyName,
+      contact_name: contactName,
+      contact_email: contactEmail,
+      contact_phone: contactPhone,
+      contact_country: contactCountry,
+      contact_department: contactDept || null,
+      contact_position: contactPosition || null,
       transport_mode: mode,
       origin_country: oCountry,
       origin_city: oCity,
@@ -449,8 +465,59 @@ export const SolicitarCotizacionPage = () => {
         <Container>
           <form onSubmit={handleSubmit} style={{ maxWidth: '860px', margin: '0 auto' }}>
 
-            {/* ── 01 Modo de Transporte ──────────────────────────────────── */}
-            <SectionCard number="01" title="Modo de Transporte">
+            {/* ── 01 Empresa y Datos de Contacto ──────────────────────── */}
+            <SectionCard number="01" title="Empresa y Datos de Contacto">
+              <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '18px' }}>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Field label="Empresa" required>
+                    <input value={companyName} onChange={e => setCompanyName(e.target.value)}
+                      placeholder="Ej. Industrias Acme S.A. de C.V."
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                  <Field label="Nombre del Contacto" required>
+                    <input value={contactName} onChange={e => setContactName(e.target.value)}
+                      placeholder="Ej. María García"
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Field label="Correo Electrónico" required>
+                    <input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)}
+                      placeholder="Ej. maria@industriasacme.com"
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                  <Field label="Teléfono / WhatsApp" required>
+                    <input type="tel" value={contactPhone} onChange={e => setContactPhone(e.target.value)}
+                      placeholder="Ej. +52 81 1234 5678"
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-4">
+                  <Field label="País" required>
+                    <input value={contactCountry} onChange={e => setContactCountry(e.target.value)}
+                      placeholder="Ej. México"
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                  <Field label="Departamento">
+                    <input value={contactDept} onChange={e => setContactDept(e.target.value)}
+                      placeholder="Ej. Supply Chain"
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                  <Field label="Cargo / Puesto">
+                    <input value={contactPosition} onChange={e => setContactPosition(e.target.value)}
+                      placeholder="Ej. Gerente de Logística"
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                </div>
+
+              </div>
+            </SectionCard>
+
+            {/* ── 02 Modo de Transporte ──────────────────────────────────── */}
+            <SectionCard number="02" title="Modo de Transporte">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {([
                   { id: 'air',        label: 'Transporte Aéreo',      icon: <Plane size={22} /> },
@@ -497,8 +564,8 @@ export const SolicitarCotizacionPage = () => {
               </div>
             </SectionCard>
 
-            {/* ── 02 Origen y Destino ────────────────────────────────────── */}
-            <SectionCard number="02" title="Origen y Destino">
+            {/* ── 03 Origen y Destino ────────────────────────────────────── */}
+            <SectionCard number="03" title="Origen y Destino">
               <div className="grid md:grid-cols-2 gap-6">
 
                 {/* ── Origen ─────────────────────────────────────────────── */}
@@ -616,8 +683,8 @@ export const SolicitarCotizacionPage = () => {
               </div>
             </SectionCard>
 
-            {/* ── 03 Información de la Carga ─────────────────────────────── */}
-            <SectionCard number="03" title="Información de la Carga">
+            {/* ── 04 Información de la Carga ─────────────────────────────── */}
+            <SectionCard number="04" title="Información de la Carga">
               <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '18px' }}>
 
                 <div className="grid md:grid-cols-2 gap-4">
@@ -698,9 +765,9 @@ export const SolicitarCotizacionPage = () => {
               </div>
             </SectionCard>
 
-            {/* ── 04 Resumen del Embarque / Requerimientos del Contenedor ── */}
+            {/* ── 05 Resumen del Embarque / Requerimientos del Contenedor ── */}
             <SectionCard
-              number="04"
+              number="05"
               title={mode === 'sea' && seaType === 'fcl' ? 'Requerimientos del Contenedor' : 'Resumen del Embarque'}
             >
 
@@ -999,8 +1066,8 @@ export const SolicitarCotizacionPage = () => {
                 }}
               >
 
-                {/* ── 05 Detalle de Bultos (oculto para FCL marítimo) ─────── */}
-                {!(mode === 'sea' && seaType === 'fcl') && <SectionCard number="05" title="Detalle de Bultos">
+                {/* ── 06 Detalle de Bultos (oculto para FCL marítimo) ─────── */}
+                {!(mode === 'sea' && seaType === 'fcl') && <SectionCard number="06" title="Detalle de Bultos">
                   <div style={{ overflowX: 'auto', marginBottom: '14px' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' as const, minWidth: '680px' }}>
                       <thead>
@@ -1116,10 +1183,10 @@ export const SolicitarCotizacionPage = () => {
                   )}
                 </SectionCard>}
 
-                {/* ── 06 Detalle MP / Radiactivo (condicional) ──────────── */}
+                {/* ── 07 Detalle MP / Radiactivo (condicional) ──────────── */}
                 {showDG && (
                   <SectionCard
-                    number="06"
+                    number="07"
                     title={showRadio ? 'Detalle de Material Radiactivo' : 'Detalle de Mercancías Peligrosas'}
                     badge="Carga Regulada"
                   >
@@ -1211,8 +1278,8 @@ export const SolicitarCotizacionPage = () => {
                   </SectionCard>
                 )}
 
-                {/* ── 07 Documentos de Soporte ───────────────────────────── */}
-                <SectionCard number={showDG ? '07' : '06'} title="Documentos de Soporte">
+                {/* ── 08 Documentos de Soporte ───────────────────────────── */}
+                <SectionCard number={showDG ? '08' : '07'} title="Documentos de Soporte">
                   <p style={{ fontSize: '12px', color: TEXT2, marginBottom: '14px', lineHeight: 1.55 }}>
                     Adjunte SDS, lista de empaque, fotografías o documentación técnica.
                   </p>
@@ -1282,8 +1349,8 @@ export const SolicitarCotizacionPage = () => {
                   )}
                 </SectionCard>
 
-                {/* ── 08 Comentarios Adicionales ────────────────────────── */}
-                <SectionCard number={showDG ? '08' : '07'} title="Comentarios Adicionales">
+                {/* ── 09 Comentarios Adicionales ────────────────────────── */}
+                <SectionCard number={showDG ? '09' : '08'} title="Comentarios Adicionales">
                   <textarea
                     value={comments} onChange={e => setComments(e.target.value)}
                     rows={4}

@@ -18,6 +18,15 @@ interface DocPath { path: string; name: string; size: number; }
 interface Payload {
   referenceId:          string;
   language:             'en' | 'es';
+  // Contact / company
+  company_name:         string;
+  contact_name:         string;
+  contact_email:        string;
+  contact_phone:        string;
+  contact_country:      string;
+  contact_department?:  string | null;
+  contact_position?:    string | null;
+  // Shipment
   transport_mode:       string;
   origin_country:       string;
   origin_city:          string;
@@ -71,6 +80,8 @@ serve(async (req: Request) => {
 
   const {
     referenceId, language = 'en',
+    company_name, contact_name, contact_email, contact_phone, contact_country,
+    contact_department, contact_position,
     transport_mode, origin_country, destination_country,
     commodity, cargo_class,
     origin_city, origin_terminal,
@@ -84,11 +95,15 @@ serve(async (req: Request) => {
   } = payload;
 
   // ── Required field validation ────────────────────────────────────────────────
-  // For air freight, origin_country/destination_country are intentionally empty —
-  // the IATA airport code is stored in origin_terminal/destination_terminal instead.
-  // Require at least one origin identifier and one destination identifier.
   const missing: string[] = [];
   if (!referenceId)                                          missing.push('referenceId');
+  // Contact fields
+  if (!company_name)                                         missing.push('company_name');
+  if (!contact_name)                                         missing.push('contact_name');
+  if (!contact_email)                                        missing.push('contact_email');
+  if (!contact_phone)                                        missing.push('contact_phone');
+  if (!contact_country)                                      missing.push('contact_country');
+  // Shipment fields — air uses terminal (IATA) instead of country
   if (!origin_country && !origin_terminal)                   missing.push('origin (country or airport)');
   if (!destination_country && !destination_terminal)         missing.push('destination (country or airport)');
   if (!commodity)                                            missing.push('commodity');
@@ -125,6 +140,13 @@ serve(async (req: Request) => {
     .insert({
       reference_id:          referenceId,
       language,
+      company_name:          company_name || null,
+      contact_name:          contact_name || null,
+      contact_email:         contact_email || null,
+      contact_phone:         contact_phone || null,
+      contact_country:       contact_country || null,
+      contact_department:    contact_department || null,
+      contact_position:      contact_position || null,
       transport_mode,
       origin_country,
       origin_city,
@@ -178,7 +200,7 @@ serve(async (req: Request) => {
   );
   console.log('[freight-quote-request] docsWithUrls:', JSON.stringify(docsWithUrls));
 
-  // ── Build notification email ─────────────────────────────────────────────────
+  // ── Email helpers ────────────────────────────────────────────────────────────
   const isES = language === 'es';
 
   const row = (label: string, value: string | null | undefined, shade = false) =>
@@ -240,7 +262,8 @@ serve(async (req: Request) => {
       ).join('')
     : '';
 
-  const htmlBody = `<!DOCTYPE html>
+  // ── Build NOTIFICATION email (to GGM team) ───────────────────────────────────
+  const notificationHtml = `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"/><title>New Freight Quote Request — Global Gate México</title></head>
 <body style="margin:0;padding:0;background:#f3f4f6;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
@@ -271,10 +294,20 @@ serve(async (req: Request) => {
     <tr>
       <td style="background:#ffffff;padding:32px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;">
 
-        ${section('Shipment Route',
-          row('Transport Mode',  modeLabel[transport_mode] ?? transport_mode, false) +
-          row('Origin',          [origin_country, origin_city, origin_terminal].filter(Boolean).join(' · '), true) +
-          row('Destination',     [destination_country, destination_city, destination_terminal].filter(Boolean).join(' · '), false)
+        ${section(isES ? 'Información del Cliente' : 'Client Information',
+          row(isES ? 'Empresa' : 'Company',      company_name, false) +
+          row(isES ? 'Contacto' : 'Contact',     contact_name, true) +
+          row(isES ? 'Correo' : 'Email',         contact_email, false) +
+          row(isES ? 'Teléfono' : 'Phone',       contact_phone, true) +
+          row(isES ? 'País' : 'Country',         contact_country, false) +
+          row(isES ? 'Departamento' : 'Department', contact_department || null, true) +
+          row(isES ? 'Cargo' : 'Position',       contact_position || null, false)
+        )}
+
+        ${section(isES ? 'Ruta del Embarque' : 'Shipment Route',
+          row(isES ? 'Modo de Transporte' : 'Transport Mode', modeLabel[transport_mode] ?? transport_mode, false) +
+          row(isES ? 'Origen' : 'Origin',        [origin_country, origin_city, origin_terminal].filter(Boolean).join(' · '), true) +
+          row(isES ? 'Destino' : 'Destination',  [destination_country, destination_city, destination_terminal].filter(Boolean).join(' · '), false)
         )}
 
         ${sea_shipment_type ? section(isES ? 'Detalles Marítimos' : 'Maritime Details', (() => {
@@ -294,33 +327,33 @@ serve(async (req: Request) => {
           );
         })()) : ''}
 
-        ${section('Cargo',
-          row('Commodity',         commodity, false) +
-          row('HS Code',           hs_code || null, true) +
-          row('Cargo Class',       cargoClassLabel[cargo_class] ?? cargo_class, false) +
-          row('Packages (quick)',  quick_count ? `${quick_count} pkg` : null, true) +
-          row('Weight (quick)',    quick_weight ? `${quick_weight} kg` : null, false)
+        ${section(isES ? 'Carga' : 'Cargo',
+          row(isES ? 'Mercancía' : 'Commodity',           commodity, false) +
+          row('HS Code',                                   hs_code || null, true) +
+          row(isES ? 'Clase de Carga' : 'Cargo Class',    cargoClassLabel[cargo_class] ?? cargo_class, false) +
+          row(isES ? 'Bultos (rápido)' : 'Packages (quick)', quick_count ? `${quick_count} pkg` : null, true) +
+          row(isES ? 'Peso (rápido)' : 'Weight (quick)',  quick_weight ? `${quick_weight} kg` : null, false)
         )}
 
-        ${pkgRows ? section('Package Details', pkgRows) : ''}
+        ${pkgRows ? section(isES ? 'Detalle de Bultos' : 'Package Details', pkgRows) : ''}
 
-        ${(un_number || proper_shipping_name) ? section('Dangerous Goods / Radioactive',
-          row('UN Number',           un_number, false) +
-          row('Proper Shipping Name', proper_shipping_name, true) +
-          row('Hazard Class',        hazard_class, false) +
-          row('Packing Group',       packing_group, true) +
-          row('Packaging Type',      packaging_type, false) +
-          row('Transport Index',     transport_index, true) +
-          row('Isotope',             isotope, false) +
-          row('Package Category',    package_category, true)
+        ${(un_number || proper_shipping_name) ? section(isES ? 'Mercancías Peligrosas / Radiactivo' : 'Dangerous Goods / Radioactive',
+          row('UN Number',                                  un_number, false) +
+          row(isES ? 'Nombre Apropiado de Expedición' : 'Proper Shipping Name', proper_shipping_name, true) +
+          row(isES ? 'Clase de Peligro' : 'Hazard Class',  hazard_class, false) +
+          row(isES ? 'Grupo de Embalaje' : 'Packing Group', packing_group, true) +
+          row(isES ? 'Tipo de Embalaje' : 'Packaging Type', packaging_type, false) +
+          row(isES ? 'Índice de Transporte' : 'Transport Index', transport_index, true) +
+          row(isES ? 'Isótopo' : 'Isotope',                isotope, false) +
+          row(isES ? 'Categoría del Bulto' : 'Package Category', package_category, true)
         ) : ''}
 
-        ${docRows ? section('Attached Documents', docRows) : ''}
+        ${docRows ? section(isES ? 'Documentos Adjuntos' : 'Attached Documents', docRows) : ''}
 
-        ${comments ? section('Comments', row('Notes', comments, false)) : ''}
+        ${comments ? section(isES ? 'Comentarios' : 'Comments', row(isES ? 'Notas' : 'Notes', comments, false)) : ''}
 
         <div style="background:#f7f8fa;border:1px solid #e5e7eb;border-radius:6px;padding:14px 20px;margin-top:8px;">
-          <p style="margin:0 0 3px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#9ca3af;">Reference ID</p>
+          <p style="margin:0 0 3px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#9ca3af;">${isES ? 'Referencia' : 'Reference ID'}</p>
           <p style="margin:0;font-size:13px;font-family:'Courier New',monospace;color:#111827;">${referenceId}</p>
         </div>
 
@@ -346,7 +379,182 @@ serve(async (req: Request) => {
 </body>
 </html>`;
 
-  // ── Send email ───────────────────────────────────────────────────────────────
+  // ── Build CLIENT AUTO-RESPONSE email ─────────────────────────────────────────
+  const clientSubject = isES
+    ? `Solicitud de Cotización Recibida — ${referenceId}`
+    : `Quote Request Received — ${referenceId}`;
+
+  const clientHtml = isES ? `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"/><title>Solicitud Recibida — Global Gate México</title></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:32px 16px;">
+  <tr><td align="center">
+  <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+    <tr>
+      <td style="background:#0d1729;padding:28px 32px 0;border-radius:8px 8px 0 0;">
+        <p style="margin:0 0 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#60a5fa;">Global Gate México</p>
+        <h1 style="margin:0 0 20px;font-size:20px;font-weight:800;color:#ffffff;letter-spacing:-0.02em;">Solicitud de Cotización Recibida</h1>
+        <div style="background:#2563eb;height:3px;"></div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="background:#ffffff;padding:36px 32px 28px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;">
+        <p style="margin:0 0 20px;font-size:14px;color:#374151;line-height:1.7;">
+          Estimado/a <strong>${contact_name}</strong>,
+        </p>
+        <p style="margin:0 0 20px;font-size:14px;color:#374151;line-height:1.7;">
+          Gracias por contactar a Global Gate México. Hemos recibido exitosamente su solicitud de cotización de flete y está siendo revisada por nuestro equipo logístico.
+        </p>
+
+        <div style="background:#f7f8fa;border:1px solid #e5e7eb;border-radius:6px;padding:20px;margin:24px 0;text-align:center;">
+          <p style="margin:0 0 6px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#9ca3af;">Número de Referencia</p>
+          <p style="margin:0 0 8px;font-size:20px;font-weight:800;color:#111827;font-family:'Courier New',monospace;letter-spacing:0.05em;">${referenceId}</p>
+          <p style="margin:0;font-size:11px;color:#6b7280;">Conserve esta referencia para cualquier consulta futura.</p>
+        </div>
+
+        <p style="margin:0 0 14px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#374151;">¿Qué sigue?</p>
+        <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:24px;">
+          <tr>
+            <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;vertical-align:top;">
+              <span style="display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;width:24px;height:24px;text-align:center;line-height:24px;font-size:11px;font-weight:800;color:#2563eb;margin-right:12px;flex-shrink:0;">1</span>
+              <span style="font-size:13px;color:#374151;line-height:1.6;">Nuestros especialistas revisan los requerimientos operativos y la documentación de su embarque.</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;vertical-align:top;">
+              <span style="display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;width:24px;height:24px;text-align:center;line-height:24px;font-size:11px;font-weight:800;color:#2563eb;margin-right:12px;flex-shrink:0;">2</span>
+              <span style="font-size:13px;color:#374151;line-height:1.6;">Preparamos una cotización personalizada para su carga y ruta específicas.</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:10px 0;vertical-align:top;">
+              <span style="display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;width:24px;height:24px;text-align:center;line-height:24px;font-size:11px;font-weight:800;color:#2563eb;margin-right:12px;flex-shrink:0;">3</span>
+              <span style="font-size:13px;color:#374151;line-height:1.6;">Recibe su cotización en <strong>un día hábil</strong>.</span>
+            </td>
+          </tr>
+        </table>
+
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:14px 18px;">
+          <p style="margin:0;font-size:13px;color:#15803d;line-height:1.6;">
+            Si tiene preguntas urgentes o documentos adicionales, responda a este correo o contáctenos directamente.
+          </p>
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="background:#f7f8fa;padding:18px 32px;border:1px solid #e5e7eb;border-top:none;">
+        <p style="margin:0 0 4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#9ca3af;">Contáctenos</p>
+        <p style="margin:0;font-size:12px;color:#374151;">
+          <a href="mailto:ggm@globalgatemexico.com" style="color:#2563eb;text-decoration:none;">ggm@globalgatemexico.com</a>
+          &nbsp;·&nbsp;
+          <a href="tel:+528121654040" style="color:#2563eb;text-decoration:none;">+52 812 165 4040</a>
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="background:#1e293b;padding:20px 32px;border-radius:0 0 8px 8px;text-align:center;">
+        <p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#e2e8f0;">Global Gate México</p>
+        <p style="margin:0;font-size:10px;color:#475569;">Agente de Carga Internacional · Despacho Aduanal · Mercancías Peligrosas</p>
+        <p style="margin:8px 0 0;font-size:10px;color:#475569;">Este es un correo automático de confirmación. Nuestro equipo se comunicará desde ggm@globalgatemexico.com</p>
+      </td>
+    </tr>
+
+  </table>
+  </td></tr>
+</table>
+</body>
+</html>` : `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"/><title>Quote Request Received — Global Gate México</title></head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:32px 16px;">
+  <tr><td align="center">
+  <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+    <tr>
+      <td style="background:#0d1729;padding:28px 32px 0;border-radius:8px 8px 0 0;">
+        <p style="margin:0 0 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#60a5fa;">Global Gate México</p>
+        <h1 style="margin:0 0 20px;font-size:20px;font-weight:800;color:#ffffff;letter-spacing:-0.02em;">Quote Request Received</h1>
+        <div style="background:#2563eb;height:3px;"></div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="background:#ffffff;padding:36px 32px 28px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;">
+        <p style="margin:0 0 20px;font-size:14px;color:#374151;line-height:1.7;">
+          Dear <strong>${contact_name}</strong>,
+        </p>
+        <p style="margin:0 0 20px;font-size:14px;color:#374151;line-height:1.7;">
+          Thank you for contacting Global Gate México. We have successfully received your freight quote request and it is now under review by our logistics team.
+        </p>
+
+        <div style="background:#f7f8fa;border:1px solid #e5e7eb;border-radius:6px;padding:20px;margin:24px 0;text-align:center;">
+          <p style="margin:0 0 6px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#9ca3af;">Your Reference Number</p>
+          <p style="margin:0 0 8px;font-size:20px;font-weight:800;color:#111827;font-family:'Courier New',monospace;letter-spacing:0.05em;">${referenceId}</p>
+          <p style="margin:0;font-size:11px;color:#6b7280;">Please keep this reference for any future correspondence.</p>
+        </div>
+
+        <p style="margin:0 0 14px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#374151;">What happens next</p>
+        <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:24px;">
+          <tr>
+            <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;vertical-align:top;">
+              <span style="display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;width:24px;height:24px;text-align:center;line-height:24px;font-size:11px;font-weight:800;color:#2563eb;margin-right:12px;flex-shrink:0;">1</span>
+              <span style="font-size:13px;color:#374151;line-height:1.6;">Our specialists review your shipment requirements and any documentation submitted.</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:10px 0;border-bottom:1px solid #f0f0f0;vertical-align:top;">
+              <span style="display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;width:24px;height:24px;text-align:center;line-height:24px;font-size:11px;font-weight:800;color:#2563eb;margin-right:12px;flex-shrink:0;">2</span>
+              <span style="font-size:13px;color:#374151;line-height:1.6;">We prepare a tailored freight quotation for your specific cargo and route.</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:10px 0;vertical-align:top;">
+              <span style="display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;width:24px;height:24px;text-align:center;line-height:24px;font-size:11px;font-weight:800;color:#2563eb;margin-right:12px;flex-shrink:0;">3</span>
+              <span style="font-size:13px;color:#374151;line-height:1.6;">You receive your quotation within <strong>one business day</strong>.</span>
+            </td>
+          </tr>
+        </table>
+
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:14px 18px;">
+          <p style="margin:0;font-size:13px;color:#15803d;line-height:1.6;">
+            If you have any urgent questions or additional documents to share, please reply to this email or contact us directly.
+          </p>
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="background:#f7f8fa;padding:18px 32px;border:1px solid #e5e7eb;border-top:none;">
+        <p style="margin:0 0 4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#9ca3af;">Contact Us</p>
+        <p style="margin:0;font-size:12px;color:#374151;">
+          <a href="mailto:ggm@globalgatemexico.com" style="color:#2563eb;text-decoration:none;">ggm@globalgatemexico.com</a>
+          &nbsp;·&nbsp;
+          <a href="tel:+528121654040" style="color:#2563eb;text-decoration:none;">+52 812 165 4040</a>
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="background:#1e293b;padding:20px 32px;border-radius:0 0 8px 8px;text-align:center;">
+        <p style="margin:0 0 4px;font-size:12px;font-weight:700;color:#e2e8f0;">Global Gate México</p>
+        <p style="margin:0;font-size:10px;color:#475569;">International Freight Forwarding · Customs Clearance · Dangerous Goods</p>
+        <p style="margin:8px 0 0;font-size:10px;color:#475569;">This is an automated confirmation. Our team will reach out from ggm@globalgatemexico.com</p>
+      </td>
+    </tr>
+
+  </table>
+  </td></tr>
+</table>
+</body>
+</html>`;
+
+  // ── Send emails ──────────────────────────────────────────────────────────────
   if (!RESEND_API_KEY) {
     console.warn('[freight-quote-request] RESEND_API_KEY not set — skipping email');
     return new Response(JSON.stringify({ ok: true, referenceId, warning: 'email skipped' }), {
@@ -354,24 +562,45 @@ serve(async (req: Request) => {
     });
   }
 
+  // 1. Notification to GGM team
+  const notifSubject = `[${company_name}] Quote Request ${referenceId} — ${commodity}`;
   const emailRes = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: 'Global Gate México <noreply@globalgatemexico.com>',
       to: [NOTIFICATION_EMAIL],
-      subject: `Quote Request ${referenceId} — ${commodity} · ${origin_country} → ${destination_country}`,
-      html: htmlBody,
+      subject: notifSubject,
+      html: notificationHtml,
     }),
   });
 
   if (!emailRes.ok) {
     const errText = await emailRes.text();
-    console.error('[freight-quote-request] Resend error:', errText);
-    // Still return ok — the record is saved; email failure is non-fatal
-    return new Response(JSON.stringify({ ok: true, referenceId, warning: 'email failed: ' + errText }), {
+    console.error('[freight-quote-request] Resend notification error:', errText);
+    return new Response(JSON.stringify({ ok: true, referenceId, warning: 'notification email failed: ' + errText }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
+  }
+
+  // 2. Auto-response to client (non-fatal if it fails)
+  if (contact_email) {
+    const autoResRes = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Global Gate México <noreply@globalgatemexico.com>',
+        to: [contact_email],
+        subject: clientSubject,
+        html: clientHtml,
+      }),
+    });
+    if (!autoResRes.ok) {
+      const errText = await autoResRes.text();
+      console.warn('[freight-quote-request] Auto-response email failed:', errText);
+    } else {
+      console.log('[freight-quote-request] Auto-response sent to:', contact_email);
+    }
   }
 
   return new Response(JSON.stringify({ ok: true, referenceId }), {

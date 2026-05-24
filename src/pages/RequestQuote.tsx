@@ -188,6 +188,15 @@ export const RequestQuotePage = () => {
   // Detailed package lines (revealed after expansion)
   const [packages, setPackages]       = useState<PkgLine[]>([newPkg()]);
 
+  // Contact / company info
+  const [companyName, setCompanyName]         = useState('');
+  const [contactName, setContactName]         = useState('');
+  const [contactEmail, setContactEmail]       = useState('');
+  const [contactPhone, setContactPhone]       = useState('');
+  const [contactCountry, setContactCountry]   = useState('');
+  const [contactDept, setContactDept]         = useState('');
+  const [contactPosition, setContactPosition] = useState('');
+
   // Sea freight
   const [seaType, setSeaType]           = useState<'lcl' | 'fcl' | ''>('');
   const [containerType, setContainerType] = useState('');
@@ -287,6 +296,13 @@ export const RequestQuotePage = () => {
     const payload = {
       referenceId: refId,
       language: 'en',
+      company_name: companyName,
+      contact_name: contactName,
+      contact_email: contactEmail,
+      contact_phone: contactPhone,
+      contact_country: contactCountry,
+      contact_department: contactDept || null,
+      contact_position: contactPosition || null,
       transport_mode: mode,
       origin_country: oCountry,
       origin_city: oCity,
@@ -467,8 +483,59 @@ export const RequestQuotePage = () => {
                 QUICK QUOTE — always visible
             ══════════════════════════════════════════════════════════ */}
 
-            {/* ── 01 Transport Mode ───────────────────────────────────── */}
-            <SectionCard number="01" title="Transport Mode">
+            {/* ── 01 Company & Contact Information ────────────────────── */}
+            <SectionCard number="01" title="Company & Contact Information">
+              <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '18px' }}>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Field label="Company Name" required>
+                    <input value={companyName} onChange={e => setCompanyName(e.target.value)}
+                      placeholder="e.g. Acme Industries S.A. de C.V."
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                  <Field label="Contact Name" required>
+                    <input value={contactName} onChange={e => setContactName(e.target.value)}
+                      placeholder="e.g. María García"
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Field label="Email Address" required>
+                    <input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)}
+                      placeholder="e.g. maria@acmeindustries.com"
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                  <Field label="Phone / WhatsApp" required>
+                    <input type="tel" value={contactPhone} onChange={e => setContactPhone(e.target.value)}
+                      placeholder="e.g. +52 81 1234 5678"
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-4">
+                  <Field label="Country" required>
+                    <input value={contactCountry} onChange={e => setContactCountry(e.target.value)}
+                      placeholder="e.g. Mexico"
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                  <Field label="Department">
+                    <input value={contactDept} onChange={e => setContactDept(e.target.value)}
+                      placeholder="e.g. Supply Chain"
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                  <Field label="Position / Job Title">
+                    <input value={contactPosition} onChange={e => setContactPosition(e.target.value)}
+                      placeholder="e.g. Logistics Manager"
+                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
+                  </Field>
+                </div>
+
+              </div>
+            </SectionCard>
+
+            {/* ── 02 Transport Mode ───────────────────────────────────── */}
+            <SectionCard number="02" title="Transport Mode">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {([
                   { id: 'air',        label: 'Air Freight',      icon: <Plane size={22} /> },
@@ -515,8 +582,8 @@ export const RequestQuotePage = () => {
               </div>
             </SectionCard>
 
-            {/* ── 02 Origin & Destination ─────────────────────────────── */}
-            <SectionCard number="02" title="Origin & Destination">
+            {/* ── 03 Origin & Destination ─────────────────────────────── */}
+            <SectionCard number="03" title="Origin & Destination">
               <div className="grid md:grid-cols-2 gap-6">
 
                 {/* ── Origin ─────────────────────────────────────────────── */}
@@ -634,8 +701,8 @@ export const RequestQuotePage = () => {
               </div>
             </SectionCard>
 
-            {/* ── 03 Cargo Information ─────────────────────────────────── */}
-            <SectionCard number="03" title="Cargo Information">
+            {/* ── 04 Cargo Information ─────────────────────────────────── */}
+            <SectionCard number="04" title="Cargo Information">
               <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '18px' }}>
 
                 <div className="grid md:grid-cols-2 gap-4">
@@ -716,9 +783,9 @@ export const RequestQuotePage = () => {
               </div>
             </SectionCard>
 
-            {/* ── 04 Package Summary / Container Requirements ──────────── */}
+            {/* ── 05 Package Summary / Container Requirements ──────────── */}
             <SectionCard
-              number="04"
+              number="05"
               title={mode === 'sea' && seaType === 'fcl' ? 'Container Requirements' : 'Package Summary'}
             >
 
@@ -1017,8 +1084,8 @@ export const RequestQuotePage = () => {
                 }}
               >
 
-                {/* ── 05 Package Details (hidden for FCL sea — container already defined) */}
-                {!(mode === 'sea' && seaType === 'fcl') && <SectionCard number="05" title="Package Details">
+                {/* ── 06 Package Details (hidden for FCL sea — container already defined) */}
+                {!(mode === 'sea' && seaType === 'fcl') && <SectionCard number="06" title="Package Details">
                   <div style={{ overflowX: 'auto', marginBottom: '14px' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' as const, minWidth: '680px' }}>
                       <thead>
@@ -1134,10 +1201,10 @@ export const RequestQuotePage = () => {
                   )}
                 </SectionCard>}
 
-                {/* ── 06 DG Details (conditional) ─────────────────────── */}
+                {/* ── 07 DG Details (conditional) ─────────────────────── */}
                 {showDG && (
                   <SectionCard
-                    number="06"
+                    number="07"
                     title={showRadio ? 'Radioactive Material Details' : 'Dangerous Goods Details'}
                     badge="Regulated Cargo"
                   >
@@ -1229,8 +1296,8 @@ export const RequestQuotePage = () => {
                   </SectionCard>
                 )}
 
-                {/* ── 07 Supporting Documents ─────────────────────────── */}
-                <SectionCard number={showDG ? '07' : '06'} title="Supporting Documents">
+                {/* ── 08 Supporting Documents ─────────────────────────── */}
+                <SectionCard number={showDG ? '08' : '07'} title="Supporting Documents">
                   <p style={{ fontSize: '12px', color: TEXT2, marginBottom: '14px', lineHeight: 1.55 }}>
                     Upload SDS, packing list, photos or technical documents.
                   </p>
@@ -1300,8 +1367,8 @@ export const RequestQuotePage = () => {
                   )}
                 </SectionCard>
 
-                {/* ── 08 Additional Comments ───────────────────────────── */}
-                <SectionCard number={showDG ? '08' : '07'} title="Additional Comments">
+                {/* ── 09 Additional Comments ───────────────────────────── */}
+                <SectionCard number={showDG ? '09' : '08'} title="Additional Comments">
                   <textarea
                     value={comments} onChange={e => setComments(e.target.value)}
                     rows={4}
