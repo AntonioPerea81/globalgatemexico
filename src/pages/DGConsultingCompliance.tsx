@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 import {
   ShieldCheck, BookOpen, ClipboardList, FileText, Globe,
   AlertTriangle, Tag, Package, Award, GraduationCap,
@@ -128,10 +129,6 @@ const INDUSTRIES = [
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export const DGConsultingCompliancePage = () => {
-  function scrollToContact() {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  }
-
   return (
     <div className="bg-white">
 
@@ -193,19 +190,13 @@ export const DGConsultingCompliancePage = () => {
                 Shipment rejections, regulatory fines, and carrier incidents almost always trace back to classification errors, documentation gaps, or packaging failures. We work alongside your operation to close those gaps before they create consequences.
               </p>
 
-              <div className="flex flex-wrap gap-3 mb-10">
-                <button
-                  onClick={scrollToContact}
-                  className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.5)] transition-all duration-200"
+              <div className="mb-10">
+                <Link
+                  to="/contact"
+                  className="inline-block px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.5)] transition-all duration-200"
                 >
                   Request a Consultation
-                </button>
-                <button
-                  onClick={scrollToContact}
-                  className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-transparent border border-white/25 text-white hover:border-white/60 hover:bg-white/5 transition-all duration-200"
-                >
-                  Talk to a DG Specialist
-                </button>
+                </Link>
               </div>
 
               {/* Trust strip */}
@@ -350,12 +341,12 @@ export const DGConsultingCompliancePage = () => {
 
           {/* Centralized CTA */}
           <FadeIn delay={0.4} className="mt-12 flex justify-center">
-            <button
-              onClick={scrollToContact}
+            <Link
+              to="/contact"
               className="inline-flex items-center gap-3 px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.4)] transition-all duration-200"
             >
               Discuss Your DG Operation <ArrowRight size={14} />
-            </button>
+            </Link>
           </FadeIn>
         </Container>
       </section>
@@ -447,20 +438,12 @@ export const DGConsultingCompliancePage = () => {
               <p className="text-white/65 text-[15px] max-w-2xl mx-auto mb-10 leading-relaxed">
                 Whether you need a compliance audit, a regulatory review, SDS assessment, or ongoing DG support, our team is ready to work with you. Contact us to discuss your operation and what it takes to move your goods correctly.
               </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <button
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-white text-primary hover:bg-white/90 hover:shadow-lg transition-all duration-200"
-                >
-                  Contact Our DG Team
-                </button>
-                <button
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-transparent border-2 border-white/40 text-white hover:border-white hover:bg-white/10 transition-all duration-200"
-                >
-                  Request a Consultation
-                </button>
-              </div>
+              <Link
+                to="/contact"
+                className="inline-block px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-white text-primary hover:bg-white/90 hover:shadow-lg transition-all duration-200"
+              >
+                Request a Consultation
+              </Link>
             </FadeIn>
           </Container>
         </div>
