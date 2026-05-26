@@ -61,8 +61,6 @@ interface Certification {
   imgScale?: number;
   tier: 'primary' | 'secondary';
   verifyUrl?: string;
-  /** When true, renders as a full-width horizontal accreditation block instead of a card */
-  featured?: boolean;
 }
 
 const CERTIFICATIONS: Certification[] = [
@@ -82,9 +80,8 @@ const CERTIFICATIONS: Certification[] = [
   {
     title: 'IATA CBTA Provider',
     issuer: 'International Air Transport Association',
-    image: '/IATA-CBTA_Provider_RGB.png',
+    image: '/certifications/cbta-provider.png',
     tier: 'primary',
-    featured: true,
     verifyUrl: 'https://www.iata.org/en/services/certification/training-development/cbta-center/cbta-certified-companies/global-gate-mexico-s-de-rl-de-cv/440489/',
   },
   {
@@ -510,75 +507,14 @@ export function TrainingPage() {
               <span className="text-[8px] text-primary/50 uppercase tracking-[0.22em] font-black">Primary Credentials</span>
               <div className="flex-1 h-px bg-white/[0.06]" />
             </div>
-
-            {/* ── IATA CBTA Featured Accreditation Block ──────────────────────── */}
-            {(() => {
-              const cbta = CERTIFICATIONS.find(c => c.featured);
-              if (!cbta) return null;
-              return (
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="mb-5"
-                >
-                  <div
-                    className="flex items-center gap-0 bg-[#0b1221] ring-1 ring-white/[0.06] shadow-[0_2px_12px_rgba(0,0,0,0.28)] overflow-hidden"
-                    style={{ borderLeft: '2px solid rgba(37,99,235,0.38)' }}
-                  >
-                    {/* Official badge plaque */}
-                    <div className="bg-white flex items-center justify-center shrink-0 px-7 py-5 self-stretch">
-                      <img
-                        src={cbta.image}
-                        alt="IATA CBTA Authorized Provider"
-                        style={{ height: '52px', width: 'auto', objectFit: 'contain', display: 'block' }}
-                      />
-                    </div>
-
-                    {/* Thin divider */}
-                    <div className="w-px self-stretch bg-white/[0.06] shrink-0" />
-
-                    {/* Text content */}
-                    <div className="flex-1 min-w-0 px-6 py-5">
-                      <p
-                        className="text-[7px] font-semibold uppercase tracking-[0.2em] mb-2 leading-none"
-                        style={{ color: '#C8A96B', opacity: 0.5 }}
-                      >
-                        {cbta.issuer}
-                      </p>
-                      <h3 className="text-[13px] font-extrabold uppercase tracking-wide text-white leading-snug mb-2">
-                        IATA CBTA Authorized Provider
-                      </h3>
-                      <p className="text-[11px] text-white/32 leading-relaxed mb-3 max-w-lg">
-                        Official competency-based training provider aligned with IATA CBTA methodology.
-                      </p>
-                      <a
-                        href={cbta.verifyUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-[8px] font-bold uppercase tracking-[0.14em] text-white/20 hover:text-primary/70 transition-colors duration-200"
-                      >
-                        Verified in IATA Registry
-                        <svg width="8" height="8" viewBox="0 0 9 9" fill="none" aria-hidden="true">
-                          <path d="M1.5 7.5L7.5 1.5M7.5 1.5H3M7.5 1.5V6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </a>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })()}
-
-            {/* Remaining primary credential cards — 3 col */}
-            <div className="grid sm:grid-cols-3 gap-5 mb-14">
-              {CERTIFICATIONS.filter(c => c.tier === 'primary' && !c.featured).map((cert, i) => (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-14">
+              {CERTIFICATIONS.filter(c => c.tier === 'primary').map((cert, i) => (
                 <motion.div
                   key={cert.title}
                   initial={{ opacity: 0, y: 18 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.55, delay: i * 0.08 + 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  transition={{ duration: 0.55, delay: i * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
                 >
                   <CertCard cert={cert} primary />
                 </motion.div>
