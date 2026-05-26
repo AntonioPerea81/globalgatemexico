@@ -296,11 +296,13 @@ function DatePicker({ value, onChange, disabled }: DatePickerProps) {
 const TRAINEES_OPTIONS = ['3–5', '6–10', '11–15'];
 
 const MODALITY_OPTIONS = [
-  { id: 'in-person',  label: 'In-Person' },
-  { id: 'virtual',    label: 'Virtual Live' },
-  { id: 'hybrid',     label: 'Hybrid' },
-  { id: 'on-demand',  label: 'On-Demand / E-Learning' },
+  { id: 'in-person', label: 'In-Person' },
+  { id: 'virtual',   label: 'Virtual Live' },
 ];
+
+// ── Online Academy CTA ─────────────────────────────────────────────────────
+// Temporary placeholder — swap to the live Thinkific URL when ready.
+const ACADEMY_HREF = 'https://globalgatemexico.thinkific.com';
 
 const REGULATORY_OPTIONS = [
   'IATA DGR',
@@ -590,11 +592,72 @@ export function TrainingProposalPage() {
                   <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: TEXT2, marginBottom: '10px' }}>
                     Training Modality <span style={{ color: ACCENT }}>*</span>
                   </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                     {MODALITY_OPTIONS.map(({ id, label }) =>
-                      cardBtn(label, modality.includes(id), () => toggle(modality, setModality, id))
+                      cardBtn(label, modality.includes(id), () => toggle(modality, setModality, id), true)
                     )}
                   </div>
+                </div>
+
+                {/* Online academy CTA */}
+                <div style={{
+                  marginBottom: '28px',
+                  background: '#060e1c',
+                  border: `1px solid rgba(255,255,255,0.07)`,
+                  borderTop: `2px solid ${ACCENT}`,
+                  borderRadius: '4px',
+                  padding: '20px 24px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '16px',
+                }}>
+                  <div style={{ flex: '1 1 320px' }}>
+                    <p style={{ margin: '0 0 2px', fontSize: '9px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.2em', color: 'rgba(96,165,250,0.8)' }}>
+                      Online Academy
+                    </p>
+                    <p style={{ margin: '0 0 6px', fontSize: '13px', fontWeight: 700, color: '#fff', lineHeight: 1.35, letterSpacing: '-0.01em' }}>
+                      Looking for self-paced online training?
+                    </p>
+                    <p style={{ margin: 0, fontSize: '12px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.55 }}>
+                      Explore our on-demand dangerous goods training programs through our online academy platform.
+                    </p>
+                  </div>
+                  <a
+                    href={ACADEMY_HREF}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '7px',
+                      padding: '9px 18px',
+                      background: 'transparent',
+                      border: `1px solid rgba(255,255,255,0.18)`,
+                      borderRadius: '4px',
+                      color: 'rgba(255,255,255,0.75)',
+                      fontSize: '11px', fontWeight: 700,
+                      textDecoration: 'none',
+                      letterSpacing: '0.06em',
+                      whiteSpace: 'nowrap',
+                      transition: 'border-color 0.15s, color 0.15s, background 0.15s',
+                      flexShrink: 0,
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.borderColor = ACCENT;
+                      e.currentTarget.style.color = '#fff';
+                      e.currentTarget.style.background = 'rgba(37,99,235,0.15)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)';
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.75)';
+                      e.currentTarget.style.background = 'transparent';
+                    }}
+                  >
+                    Visit Online Academy
+                    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style={{ opacity: 0.6 }}>
+                      <path d="M2.5 9.5L9.5 2.5M9.5 2.5H4.5M9.5 2.5V7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </a>
                 </div>
 
                 {/* Regulatory scope */}
