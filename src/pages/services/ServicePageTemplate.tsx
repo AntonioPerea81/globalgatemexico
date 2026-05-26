@@ -102,6 +102,7 @@ export interface ServicePageData {
 export function ServicePageTemplate({ data, lang = 'EN' }: { data: ServicePageData; lang?: 'EN' | 'ES' }) {
   const { hero, overview, compliance, process: proc, whyGGM, cta } = data;
   const s = lang === 'ES' ? ES_STRINGS : EN_STRINGS;
+  const overviewImageIsLogo = overview.image?.toLowerCase().endsWith('.png') ?? false;
 
   function scrollToContact() {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
@@ -209,13 +210,23 @@ export function ServicePageTemplate({ data, lang = 'EN' }: { data: ServicePageDa
                 </ul>
               </div>
               {overview.image && (
-                <div className="mt-6 h-52 overflow-hidden">
-                  <img
-                    src={overview.image}
-                    alt="Operations"
-                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                  />
-                </div>
+                overviewImageIsLogo ? (
+                  <div className="mt-6 h-52 bg-[#060e1c] border border-white/[0.06] flex items-center justify-center px-10">
+                    <img
+                      src={overview.image}
+                      alt="Certification"
+                      className="max-h-32 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity duration-300"
+                    />
+                  </div>
+                ) : (
+                  <div className="mt-6 h-52 overflow-hidden">
+                    <img
+                      src={overview.image}
+                      alt="Operations"
+                      className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                    />
+                  </div>
+                )
               )}
             </FadeIn>
 

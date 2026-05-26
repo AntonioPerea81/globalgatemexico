@@ -36,7 +36,7 @@ const airData: ServicePageData = {
       'Express air freight and scheduled cargo coordination',
       'Airline acceptance and NOTOC coordination',
     ],
-    image: '/images/dg-transport/dg-warehouse-01.webp',
+    image: '/IATA_CARGO_AGENT__1_.png',
   },
   compliance: {
     headline: 'Applicable Air Transport Regulations',
