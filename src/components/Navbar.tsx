@@ -44,13 +44,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     id: 'training',
     label: { EN: 'Training', ES: 'Capacitación' },
-    dropdown: [
-      { label: { EN: 'IATA Training',          ES: 'Capacitación IATA' },        href: { EN: '/training', ES: '/es/capacitacion' } },
-      { label: { EN: 'IMDG Training',          ES: 'Capacitación IMDG' },        href: { EN: '/training', ES: '/es/capacitacion' } },
-      { label: { EN: 'Ground Transportation',  ES: 'Transporte Terrestre' },     href: { EN: '/training', ES: '/es/capacitacion' } },
-      { label: { EN: 'WHMIS / HazCom',         ES: 'WHMIS / HazCom' },          href: { EN: '/training', ES: '/es/capacitacion' } },
-      { label: { EN: 'Corporate Training',     ES: 'Capacitación Corporativa' }, href: { EN: '/training', ES: '/es/capacitacion' } },
-    ],
+    href: { EN: '/training', ES: '/es/capacitacion' },
   },
   {
     id: 'radioactive',
