@@ -1,9 +1,14 @@
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { CheckCircle, Radiation } from 'lucide-react';
 import { Container, FadeIn, Eyebrow } from '../components/UI';
 import { useLanguage } from '../context/LanguageContext';
 import { usePageMeta } from '../hooks/usePageMeta';
+
+// Destino del CTA de consulta — actualizar este constante para conectar a
+// Calendly / Microsoft Bookings cuando el flujo de reserva esté listo.
+const CLASS7_CONSULTATION_HREF = '/contacto';
 
 // ── Datos ─────────────────────────────────────────────────────────────────────
 
@@ -115,10 +120,6 @@ export const LogisticaMaterialRadiacticoPage = () => {
     ],
   });
 
-  function scrollToContact() {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  }
-
   return (
     <div className="bg-[#060e1c]">
 
@@ -176,19 +177,12 @@ export const LogisticaMaterialRadiacticoPage = () => {
               </p>
 
               <div className="flex flex-wrap gap-4 mb-12">
-                <button
-                  onClick={scrollToContact}
-                  className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_28px_rgba(7,56,223,0.45)] transition-all duration-200"
+                <Link
+                  to={CLASS7_CONSULTATION_HREF}
+                  className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_28px_rgba(7,56,223,0.45)] transition-all duration-200 inline-block"
                 >
                   Solicitar Consulta
-                </button>
-                <button
-                  onClick={scrollToContact}
-                  className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] border text-white/72 hover:text-white hover:bg-white/5 transition-all duration-200"
-                  style={{ borderColor: 'rgba(255,255,255,0.16)' }}
-                >
-                  Hablar con un Especialista
-                </button>
+                </Link>
               </div>
 
               <div className="flex flex-wrap gap-x-8 gap-y-3 pt-7 border-t border-white/[0.07]">
@@ -762,19 +756,12 @@ export const LogisticaMaterialRadiacticoPage = () => {
             </p>
 
             <div className="flex flex-wrap gap-4 justify-center">
-              <button
-                onClick={scrollToContact}
-                className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.18em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_36px_rgba(7,56,223,0.45)] transition-all duration-200"
+              <Link
+                to={CLASS7_CONSULTATION_HREF}
+                className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.18em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_36px_rgba(7,56,223,0.45)] transition-all duration-200 inline-block"
               >
                 Solicitar Consulta
-              </button>
-              <button
-                onClick={scrollToContact}
-                className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.18em] bg-transparent text-white/60 hover:text-white/90 transition-colors duration-200"
-                style={{ border: `1px solid ${RAD_YELLOW}30` }}
-              >
-                Contactar al Equipo
-              </button>
+              </Link>
             </div>
           </FadeIn>
         </Container>
