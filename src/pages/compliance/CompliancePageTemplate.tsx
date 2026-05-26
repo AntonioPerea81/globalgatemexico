@@ -1,23 +1,21 @@
 import { ComponentType } from 'react';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { Container, FadeIn, Eyebrow } from '../../components/UI';
 
 interface TemplateStrings {
   riskEyebrow: string;
   cta1: string;
-  cta2: string;
   ctaEyebrow: string;
 }
 const EN_STRINGS: TemplateStrings = {
   riskEyebrow: 'Common Compliance Risks',
   cta1: 'Request a Consultation',
-  cta2: 'Speak with a Specialist',
   ctaEyebrow: 'DG Compliance Specialists',
 };
 const ES_STRINGS: TemplateStrings = {
   riskEyebrow: 'Riesgos Frecuentes de Cumplimiento',
   cta1: 'Solicitar Consulta',
-  cta2: 'Hablar con un Especialista',
   ctaEyebrow: 'Especialistas en Cumplimiento DG',
 };
 
@@ -74,10 +72,7 @@ export interface CompliancePageData {
 export function CompliancePageTemplate({ data, lang = 'EN' }: { data: CompliancePageData; lang?: 'EN' | 'ES' }) {
   const { hero, risk, scope, why, cta } = data;
   const s = lang === 'ES' ? ES_STRINGS : EN_STRINGS;
-
-  function scrollToContact() {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  }
+  const contactRoute = lang === 'ES' ? '/contacto' : '/contact';
 
   return (
     <div className="bg-white">
@@ -120,20 +115,12 @@ export function CompliancePageTemplate({ data, lang = 'EN' }: { data: Compliance
             <p className="text-base md:text-lg text-white/65 font-normal leading-relaxed mb-10 max-w-2xl">
               {hero.sub}
             </p>
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={scrollToContact}
-                className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.5)] transition-all duration-200"
-              >
-                {s.cta1}
-              </button>
-              <button
-                onClick={scrollToContact}
-                className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-transparent border border-white/25 text-white hover:border-white/60 hover:bg-white/5 transition-all duration-200"
-              >
-                {s.cta2}
-              </button>
-            </div>
+            <Link
+              to={contactRoute}
+              className="inline-block px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.5)] transition-all duration-200"
+            >
+              {s.cta1}
+            </Link>
           </motion.div>
         </Container>
       </section>
@@ -251,20 +238,12 @@ export function CompliancePageTemplate({ data, lang = 'EN' }: { data: Compliance
               <p className="text-white/65 text-[15px] max-w-xl mx-auto mb-10 leading-relaxed">
                 {cta.sub}
               </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <button
-                  onClick={scrollToContact}
-                  className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-white text-primary hover:bg-white/90 hover:shadow-lg transition-all duration-200"
-                >
-                  {s.cta1}
-                </button>
-                <button
-                  onClick={scrollToContact}
-                  className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-transparent border-2 border-white/40 text-white hover:border-white hover:bg-white/10 transition-all duration-200"
-                >
-                  {s.cta2}
-                </button>
-              </div>
+              <Link
+                to={contactRoute}
+                className="inline-block px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-white text-primary hover:bg-white/90 hover:shadow-lg transition-all duration-200"
+              >
+                {s.cta1}
+              </Link>
             </FadeIn>
           </Container>
         </div>
