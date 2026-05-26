@@ -324,7 +324,7 @@ const transporteMaritimoData: ServicePageData = {
       'Operaciones portuarias en Veracruz, Manzanillo, Lázaro Cárdenas, Altamira',
       'Documentación y coordinación para aduanas mexicanas',
     ],
-    image: '/images/dg-transport/dg-operations-team.webp',
+    image: '/ocean-freight-terminal.jpg',
   },
   compliance: {
     headline: 'Normativa Aplicable al Flete Marítimo',

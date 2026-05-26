@@ -324,7 +324,7 @@ const oceanData: ServicePageData = {
       'Port operations at Veracruz, Manzanillo, Lázaro Cárdenas, Altamira',
       'Mexican customs documentation and coordination',
     ],
-    image: '/images/dg-transport/dg-operations-team.webp',
+    image: '/ocean-freight-terminal.jpg',
   },
   compliance: {
     headline: 'Applicable Ocean Freight Regulations',
