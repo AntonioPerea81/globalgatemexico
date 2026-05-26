@@ -346,12 +346,12 @@ export function ServicePageTemplate({ data, lang = 'EN' }: { data: ServicePageDa
                 {cta.sub}
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <button
-                  onClick={scrollToContact}
-                  className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-white text-primary hover:bg-white/90 hover:shadow-lg transition-all duration-200"
+                <Link
+                  to={lang === 'ES' ? '/contacto' : '/contact'}
+                  className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-white text-primary hover:bg-white/90 hover:shadow-lg transition-all duration-200 inline-block"
                 >
                   {s.ctaBtn1}
-                </button>
+                </Link>
                 <Link
                   to={lang === 'ES' ? '/solicitar-cotizacion' : '/request-quote'}
                   className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-transparent border-2 border-white/40 text-white hover:border-white hover:bg-white/10 transition-all duration-200 inline-block"
