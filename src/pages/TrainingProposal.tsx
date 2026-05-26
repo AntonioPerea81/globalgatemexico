@@ -293,7 +293,7 @@ function DatePicker({ value, onChange, disabled }: DatePickerProps) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Form data
 // ─────────────────────────────────────────────────────────────────────────────
-const TRAINEES_OPTIONS = ['3–5', '6–15', '16–30', '31–50', '50+'];
+const TRAINEES_OPTIONS = ['3–5', '6–10', '11–15'];
 
 const MODALITY_OPTIONS = [
   { id: 'in-person',  label: 'In-Person' },
@@ -579,6 +579,9 @@ export function TrainingProposalPage() {
                       </select>
                       <ChevronDown size={14} color={TEXT2} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                     </div>
+                    <p style={{ margin: '7px 0 0', fontSize: '11px', color: '#94a3b8', lineHeight: 1.5 }}>
+                      For groups larger than 15 participants, multiple training sessions may be required.
+                    </p>
                   </Field>
                 </div>
 
