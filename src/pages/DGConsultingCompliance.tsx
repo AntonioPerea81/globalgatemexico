@@ -126,6 +126,13 @@ const INDUSTRIES = [
   { Icon: Radiation,    label: 'Radioactive Material Operations' },
 ];
 
+// ── Consultation destination ──────────────────────────────────────────────────
+// Temporary: points to the general contact form.
+// When the paid booking page is ready (Calendly / Microsoft Bookings / TidyCal),
+// update this single constant and every "Request a Consultation" CTA on this
+// page will switch automatically.
+const CONSULTATION_HREF = '/contact';
+
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export const DGConsultingCompliancePage = () => {
@@ -192,7 +199,7 @@ export const DGConsultingCompliancePage = () => {
 
               <div className="mb-10">
                 <Link
-                  to="/contact"
+                  to={CONSULTATION_HREF}
                   className="inline-block px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.5)] transition-all duration-200"
                 >
                   Request a Consultation
@@ -342,7 +349,7 @@ export const DGConsultingCompliancePage = () => {
           {/* Centralized CTA */}
           <FadeIn delay={0.4} className="mt-12 flex justify-center">
             <Link
-              to="/contact"
+              to={CONSULTATION_HREF}
               className="inline-flex items-center gap-3 px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.4)] transition-all duration-200"
             >
               Discuss Your DG Operation <ArrowRight size={14} />
@@ -439,7 +446,7 @@ export const DGConsultingCompliancePage = () => {
                 Whether you need a compliance audit, a regulatory review, SDS assessment, or ongoing DG support, our team is ready to work with you. Contact us to discuss your operation and what it takes to move your goods correctly.
               </p>
               <Link
-                to="/contact"
+                to={CONSULTATION_HREF}
                 className="inline-block px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-white text-primary hover:bg-white/90 hover:shadow-lg transition-all duration-200"
               >
                 Request a Consultation
