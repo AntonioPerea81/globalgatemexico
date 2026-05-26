@@ -283,7 +283,7 @@ export const Home = () => {
   const logoSrc = (file: string) => `${logoBasePath}${encodeURIComponent(file)}`;
 
   const logos = [
-    "IATA_CARGO_AGENT__1_.png",
+    "iata-cargo-agent.png",
     "ANIQ__1_.png",
     "Logo_AMACARGA_firma.png",
     "Distintivo.png",

@@ -36,7 +36,7 @@ const airData: ServicePageData = {
       'Express air freight and scheduled cargo coordination',
       'Airline acceptance and NOTOC coordination',
     ],
-    image: '/IATA_CARGO_AGENT__1_.png',
+    image: '/iata-cargo-agent.png',
   },
   compliance: {
     headline: 'Applicable Air Transport Regulations',

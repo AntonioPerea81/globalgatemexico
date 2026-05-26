@@ -211,11 +211,11 @@ export function ServicePageTemplate({ data, lang = 'EN' }: { data: ServicePageDa
               </div>
               {overview.image && (
                 overviewImageIsLogo ? (
-                  <div className="mt-6 h-52 bg-[#060e1c] border border-white/[0.06] flex items-center justify-center px-10">
+                  <div className="mt-6 bg-[#060e1c] border border-white/[0.06] flex items-center justify-center py-10 px-8">
                     <img
                       src={overview.image}
                       alt="Certification"
-                      className="max-h-32 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity duration-300"
+                      className="w-full max-w-[68%] object-contain opacity-95 hover:opacity-100 transition-opacity duration-300"
                     />
                   </div>
                 ) : (

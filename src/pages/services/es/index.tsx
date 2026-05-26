@@ -36,7 +36,7 @@ const transporteAereoData: ServicePageData = {
       'Coordinación de flete aéreo express y regular',
       'Coordinación de aceptación con aerolíneas y NOTOC',
     ],
-    image: '/IATA_CARGO_AGENT__1_.png',
+    image: '/iata-cargo-agent.png',
   },
   compliance: {
     headline: 'Normativa Aplicable al Transporte Aéreo',
