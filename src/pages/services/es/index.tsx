@@ -325,6 +325,7 @@ const transporteMaritimoData: ServicePageData = {
       'Documentación y coordinación para aduanas mexicanas',
     ],
     image: '/ocean-freight-terminal.jpg',
+    wideImage: true,
   },
   compliance: {
     headline: 'Normativa Aplicable al Flete Marítimo',

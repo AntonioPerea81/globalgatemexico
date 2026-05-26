@@ -325,6 +325,7 @@ const oceanData: ServicePageData = {
       'Mexican customs documentation and coordination',
     ],
     image: '/ocean-freight-terminal.jpg',
+    wideImage: true,
   },
   compliance: {
     headline: 'Applicable Ocean Freight Regulations',

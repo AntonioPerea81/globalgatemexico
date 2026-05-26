@@ -77,6 +77,8 @@ export interface ServicePageData {
     paragraphs: string[];
     capabilities: string[];
     image?: string;
+    /** When true the image renders as a full-width panoramic below the two-column layout */
+    wideImage?: boolean;
   };
   compliance: {
     headline: string;
@@ -209,7 +211,8 @@ export function ServicePageTemplate({ data, lang = 'EN' }: { data: ServicePageDa
                   ))}
                 </ul>
               </div>
-              {overview.image && (
+              {/* Small side image — only when NOT using wide panoramic layout */}
+              {overview.image && !overview.wideImage && (
                 overviewImageIsLogo ? (
                   <div className="mt-6 bg-[#f4f6f9] border border-black/8 rounded-lg flex items-center justify-center py-8 px-10 shadow-sm">
                     <img
@@ -231,6 +234,23 @@ export function ServicePageTemplate({ data, lang = 'EN' }: { data: ServicePageDa
             </FadeIn>
 
           </div>
+
+          {/* Wide panoramic image — spans full container width below the two-column content */}
+          {overview.image && overview.wideImage && (
+            <FadeIn delay={0.18}>
+              <div className="mt-14 rounded-2xl overflow-hidden shadow-xl">
+                <div className="relative h-64 sm:h-80 md:h-[380px] lg:h-[460px]">
+                  <img
+                    src={overview.image}
+                    alt="Ocean freight terminal operations"
+                    className="w-full h-full object-cover object-center"
+                  />
+                  {/* Very subtle bottom-edge fade to blend into next section */}
+                  <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white/20 to-transparent pointer-events-none" />
+                </div>
+              </div>
+            </FadeIn>
+          )}
         </Container>
       </section>
 
