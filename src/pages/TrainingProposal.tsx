@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, ChevronDown } from 'lucide-react';
+import { CheckCircle2, ChevronDown, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Container } from '../components/UI';
 import { useLanguage } from '../context/LanguageContext';
 import { usePageMeta } from '../hooks/usePageMeta';
@@ -69,6 +69,228 @@ function SectionHeader({ num, title }: { num: string; title: string }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Enterprise Date Picker
+// ─────────────────────────────────────────────────────────────────────────────
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+const DAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+function toIso(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function formatDisplay(iso: string) {
+  // Parse date components directly to avoid timezone shifting
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric',
+  });
+}
+
+interface DatePickerProps {
+  value: string;          // ISO date string "YYYY-MM-DD", or ""
+  onChange: (v: string) => void;
+  disabled?: boolean;
+}
+
+function DatePicker({ value, onChange, disabled }: DatePickerProps) {
+  const [open, setOpen] = useState(false);
+  const [viewYear, setViewYear] = useState(() => {
+    const d = value ? new Date(value + 'T12:00:00') : new Date();
+    return d.getFullYear();
+  });
+  const [viewMonth, setViewMonth] = useState(() => {
+    const d = value ? new Date(value + 'T12:00:00') : new Date();
+    return d.getMonth();
+  });
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const prevMonth = useCallback(() => {
+    setViewMonth(m => {
+      if (m === 0) { setViewYear(y => y - 1); return 11; }
+      return m - 1;
+    });
+  }, []);
+
+  const nextMonth = useCallback(() => {
+    setViewMonth(m => {
+      if (m === 11) { setViewYear(y => y + 1); return 0; }
+      return m + 1;
+    });
+  }, []);
+
+  // Build the calendar grid
+  const firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay();
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const daysInPrevMonth = new Date(viewYear, viewMonth, 0).getDate();
+
+  type Cell = { day: number; iso: string; curr: boolean };
+  const cells: Cell[] = [];
+
+  for (let i = firstDayOfMonth - 1; i >= 0; i--) {
+    const d = new Date(viewYear, viewMonth - 1, daysInPrevMonth - i);
+    cells.push({ day: daysInPrevMonth - i, iso: toIso(d), curr: false });
+  }
+  for (let i = 1; i <= daysInMonth; i++) {
+    cells.push({ day: i, iso: toIso(new Date(viewYear, viewMonth, i)), curr: true });
+  }
+  const trailing = (7 - (cells.length % 7)) % 7;
+  for (let i = 1; i <= trailing; i++) {
+    const d = new Date(viewYear, viewMonth + 1, i);
+    cells.push({ day: i, iso: toIso(d), curr: false });
+  }
+
+  const todayIso = toIso(new Date());
+
+  const navBtnSt: React.CSSProperties = {
+    width: '26px', height: '26px', border: `1px solid ${BORDER}`,
+    borderRadius: '3px', background: '#fff', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    color: TEXT2, transition: 'border-color 0.12s, background 0.12s', flexShrink: 0,
+  };
+
+  return (
+    <div ref={rootRef} style={{ position: 'relative' }}>
+      {/* ── Trigger ─────────────────────────────────────────────────────────── */}
+      <div
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        onClick={() => { if (!disabled) setOpen(o => !o); }}
+        onKeyDown={e => { if (!disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); setOpen(o => !o); } }}
+        style={{
+          ...inputSt,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          cursor: disabled ? 'default' : 'pointer',
+          borderColor: open ? ACCENT : BORDER,
+          opacity: disabled ? 0.45 : 1,
+          userSelect: 'none',
+        }}
+      >
+        <span style={{ color: value ? '#1e293b' : '#94a3b8', fontSize: '13px', lineHeight: 1 }}>
+          {value ? formatDisplay(value) : 'Select preferred training date'}
+        </span>
+        <Calendar size={13} color={TEXT2} style={{ flexShrink: 0, marginLeft: '8px' }} />
+      </div>
+
+      {/* ── Dropdown calendar ───────────────────────────────────────────────── */}
+      {open && (
+        <div style={{
+          position: 'absolute', top: 'calc(100% + 5px)', left: 0, zIndex: 100,
+          background: '#fff',
+          border: `1px solid ${BORDER}`,
+          borderRadius: '5px',
+          boxShadow: '0 10px 32px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.06)',
+          padding: '14px 14px 12px',
+          width: '270px',
+        }}>
+          {/* Month / year navigation */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <button
+              type="button" onClick={prevMonth}
+              style={navBtnSt}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.background = '#eff6ff'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = BORDER; e.currentTarget.style.background = '#fff'; }}
+            >
+              <ChevronLeft size={12} />
+            </button>
+
+            <span style={{ fontSize: '12px', fontWeight: 700, color: '#0f172a', letterSpacing: '0.03em' }}>
+              {MONTH_NAMES[viewMonth]} {viewYear}
+            </span>
+
+            <button
+              type="button" onClick={nextMonth}
+              style={navBtnSt}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.background = '#eff6ff'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = BORDER; e.currentTarget.style.background = '#fff'; }}
+            >
+              <ChevronRight size={12} />
+            </button>
+          </div>
+
+          {/* Day-of-week headers */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', marginBottom: '4px' }}>
+            {DAY_LABELS.map(d => (
+              <div key={d} style={{
+                textAlign: 'center', fontSize: '10px', fontWeight: 700,
+                color: TEXT2, padding: '2px 0', letterSpacing: '0.05em',
+              }}>
+                {d}
+              </div>
+            ))}
+          </div>
+
+          {/* Day cells */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '1px' }}>
+            {cells.map((cell, i) => {
+              const isSelected = cell.iso === value;
+              const isToday    = cell.iso === todayIso;
+
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => { onChange(cell.iso); setOpen(false); }}
+                  style={{
+                    height: '32px',
+                    borderRadius: '3px',
+                    border: isToday && !isSelected ? `1px solid ${BORDER}` : '1px solid transparent',
+                    background: isSelected ? ACCENT : 'transparent',
+                    color: isSelected
+                      ? '#fff'
+                      : !cell.curr
+                        ? '#c1ccd6'
+                        : isToday
+                          ? ACCENT
+                          : '#0f172a',
+                    fontSize: '12px',
+                    fontWeight: isSelected ? 700 : isToday ? 600 : 400,
+                    cursor: 'pointer',
+                    transition: 'background 0.08s, color 0.08s',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                  onMouseEnter={e => {
+                    if (!isSelected) {
+                      e.currentTarget.style.background = '#eff6ff';
+                      if (!isToday && cell.curr) e.currentTarget.style.color = ACCENT;
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!isSelected) {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.color = isSelected ? '#fff' : !cell.curr ? '#c1ccd6' : isToday ? ACCENT : '#0f172a';
+                    }
+                  }}
+                >
+                  {cell.day}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Form data
 // ─────────────────────────────────────────────────────────────────────────────
 const TRAINEES_OPTIONS = ['3–5', '6–15', '16–30', '31–50', '50+'];
@@ -118,7 +340,8 @@ export function TrainingProposalPage() {
   const [modality,       setModality]       = useState<string[]>([]);
   const [regScope,       setRegScope]       = useState<string[]>([]);
   const [transport,      setTransport]      = useState<string[]>([]);
-  const [prefDates,      setPrefDates]      = useState('');
+  const [prefDate,       setPrefDate]       = useState('');   // ISO "YYYY-MM-DD"
+  const [dateFlexible,   setDateFlexible]   = useState(false);
   const [location,       setLocation]       = useState('');
   const [lang,           setLang]           = useState('');
   const [opReqs,         setOpReqs]         = useState('');
@@ -160,19 +383,20 @@ export function TrainingProposalPage() {
             'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           },
           body: JSON.stringify({
-            company_name:             companyName.trim(),
-            contact_name:             contactName.trim(),
-            job_title:                jobTitle.trim()  || null,
-            email:                    email.trim(),
-            phone:                    phone.trim()     || null,
-            trainees_range:           traineesRange,
+            company_name:              companyName.trim(),
+            contact_name:              contactName.trim(),
+            job_title:                 jobTitle.trim()  || null,
+            email:                     email.trim(),
+            phone:                     phone.trim()     || null,
+            trainees_range:            traineesRange,
             modality,
-            regulatory_scope:         regScope,
-            transportation_modes:     transport,
-            preferred_dates:          prefDates.trim() || null,
-            training_location:        location.trim()  || null,
-            language:                 lang,
-            operational_requirements: opReqs.trim()    || null,
+            regulatory_scope:          regScope,
+            transportation_modes:      transport,
+            preferred_training_date:   prefDate || null,
+            date_flexible:             dateFlexible,
+            training_location:         location.trim()  || null,
+            language:                  lang,
+            operational_requirements:  opReqs.trim()    || null,
           }),
         }
       );
@@ -414,16 +638,42 @@ export function TrainingProposalPage() {
               <div style={{ marginBottom: '48px' }}>
                 <SectionHeader num="03" title="Project Details" />
                 <div className="grid sm:grid-cols-2 gap-5" style={{ marginBottom: '20px' }}>
-                  <Field label="Preferred Training Dates">
-                    <input value={prefDates} onChange={e => setPrefDates(e.target.value)}
-                      placeholder="e.g. Q1 2026 or March 10–12"
-                      style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
-                  </Field>
+
+                  {/* ── Date picker ────────────────────────────────────────────── */}
+                  <div>
+                    <Field label="Preferred Training Date">
+                      <DatePicker
+                        value={prefDate}
+                        onChange={setPrefDate}
+                        disabled={dateFlexible}
+                      />
+                    </Field>
+                    {/* Flexible checkbox */}
+                    <label style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '8px',
+                      marginTop: '9px', cursor: 'pointer',
+                    }}>
+                      <input
+                        type="checkbox"
+                        checked={dateFlexible}
+                        onChange={e => {
+                          setDateFlexible(e.target.checked);
+                          if (e.target.checked) setPrefDate('');
+                        }}
+                        style={{ width: '14px', height: '14px', accentColor: ACCENT, cursor: 'pointer', flexShrink: 0 }}
+                      />
+                      <span style={{ fontSize: '12px', color: dateFlexible ? '#1e293b' : TEXT2, fontWeight: dateFlexible ? 600 : 400 }}>
+                        Date is flexible
+                      </span>
+                    </label>
+                  </div>
+
                   <Field label="Training Location">
                     <input value={location} onChange={e => setLocation(e.target.value)}
                       placeholder="e.g. Monterrey, NL — or Remote"
                       style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
                   </Field>
+
                   <Field label="Preferred Language" required>
                     <div style={{ position: 'relative' }}>
                       <select
@@ -441,6 +691,7 @@ export function TrainingProposalPage() {
                     </div>
                   </Field>
                 </div>
+
                 <Field label="Additional Operational Requirements">
                   <textarea
                     value={opReqs}

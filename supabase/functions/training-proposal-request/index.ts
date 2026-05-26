@@ -22,7 +22,8 @@ interface Payload {
   modality:                  string[];
   regulatory_scope?:         string[];
   transportation_modes?:     string[];
-  preferred_dates?:          string | null;
+  preferred_training_date?:  string | null;   // ISO date "YYYY-MM-DD"
+  date_flexible?:            boolean;
   training_location?:        string | null;
   language:                  string;
   operational_requirements?: string | null;
@@ -50,8 +51,8 @@ serve(async (req: Request) => {
   const {
     company_name, contact_name, job_title, email, phone,
     trainees_range, modality = [], regulatory_scope = [],
-    transportation_modes = [], preferred_dates, training_location,
-    language, operational_requirements,
+    transportation_modes = [], preferred_training_date, date_flexible = false,
+    training_location, language, operational_requirements,
   } = payload;
 
   // ── Required field validation ────────────────────────────────────────────────
@@ -78,15 +79,16 @@ serve(async (req: Request) => {
     .insert({
       company_name,
       contact_name,
-      job_title:               job_title  || null,
+      job_title:                job_title  || null,
       email,
-      phone:                   phone      || null,
+      phone:                    phone      || null,
       trainees_range,
       modality,
       regulatory_scope,
       transportation_modes,
-      preferred_dates:         preferred_dates        || null,
-      training_location:       training_location      || null,
+      preferred_training_date:  preferred_training_date || null,
+      date_flexible,
+      training_location:        training_location      || null,
       language,
       operational_requirements: operational_requirements || null,
     });
@@ -98,7 +100,7 @@ serve(async (req: Request) => {
     });
   }
 
-  // ── Email helpers (same pattern as freight-quote-request) ────────────────────
+  // ── Email helpers ────────────────────────────────────────────────────────────
   const row = (label: string, value: string | null | undefined, shade = false) =>
     value
       ? `<tr style="background:${shade ? '#f7f8fa' : '#ffffff'};">
@@ -114,6 +116,19 @@ serve(async (req: Request) => {
        </div>
        <table style="width:100%;border-collapse:collapse;">${rows}</table>
      </div>`;
+
+  // Format preferred date for email
+  const dateLabel = (() => {
+    if (date_flexible && !preferred_training_date) return 'Flexible';
+    if (preferred_training_date) {
+      const [y, m, d] = preferred_training_date.split('-').map(Number);
+      const formatted = new Date(y, m - 1, d).toLocaleDateString('en-US', {
+        month: 'long', day: 'numeric', year: 'numeric',
+      });
+      return date_flexible ? `${formatted} (flexible)` : formatted;
+    }
+    return null;
+  })();
 
   // ── Build notification email ─────────────────────────────────────────────────
   const notificationHtml = `<!DOCTYPE html>
@@ -163,7 +178,7 @@ serve(async (req: Request) => {
         )}
 
         ${section('Project Details',
-          row('Preferred Dates',   preferred_dates,           false) +
+          row('Preferred Date',    dateLabel,                 false) +
           row('Location',          training_location,         true)  +
           row('Language',          language,                  false) +
           row('Additional Notes',  operational_requirements,  true)
