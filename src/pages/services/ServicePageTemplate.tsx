@@ -239,11 +239,12 @@ export function ServicePageTemplate({ data, lang = 'EN' }: { data: ServicePageDa
           {overview.image && overview.wideImage && (
             <FadeIn delay={0.18}>
               <div className="mt-14 rounded-2xl overflow-hidden shadow-xl">
-                <div className="relative h-64 sm:h-80 md:h-[380px] lg:h-[460px]">
+                <div className="relative h-72 sm:h-96 md:h-[480px] lg:h-[560px]">
                   <img
                     src={overview.image}
                     alt="Ocean freight terminal operations"
-                    className="w-full h-full object-cover object-center"
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: 'center 62%' }}
                   />
                   {/* Very subtle bottom-edge fade to blend into next section */}
                   <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white/20 to-transparent pointer-events-none" />
