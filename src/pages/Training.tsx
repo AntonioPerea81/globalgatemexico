@@ -285,7 +285,7 @@ function CertCard({ cert, primary = false }: { cert: Certification; primary?: bo
 // ── CTA destinations ─────────────────────────────────────────────────────────
 // Formal corporate training proposals.
 // Swap to a Calendly / booking page URL when the paid intake flow is ready.
-const TRAINING_PROPOSAL_HREF = '/contact';
+const TRAINING_PROPOSAL_HREF = '/training-proposal';
 
 // Quick commercial / pre-sales communication — WhatsApp direct.
 // Training-specific pre-filled message.
