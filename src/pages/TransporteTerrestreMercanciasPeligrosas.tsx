@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   Flame, Wind, Droplet, Zap, AlertTriangle, AlertCircle, Package,
-  CheckCircle, Truck, Plane, Car, Factory, Cog, ShieldCheck,
+  CheckCircle, Truck, Plane, Car, Factory, Cog, ShieldCheck, Atom,
 } from 'lucide-react';
 import { Container, FadeIn, Eyebrow } from '../components/UI';
 import { useLanguage } from '../context/LanguageContext';
@@ -42,10 +42,10 @@ const CARGO_CATEGORIES = [
     desc: 'Baterías nuevas, dañadas o destinadas a disposición final. Autorización SEMARNAT para baterías de litio metálico.',
   },
   {
-    Icon: AlertTriangle,
-    un: 'Clase 9 · CRETIB',
-    title: 'Residuos Peligrosos',
-    desc: 'Residuos CRETIB bajo normativa SEMARNAT con trazabilidad completa, manifiestos de movimiento y procedimientos auditables.',
+    Icon: Atom,
+    un: 'Clases 5.1 · 5.2',
+    title: 'Oxidantes y Peróxidos Orgánicos',
+    desc: 'Transporte especializado para sustancias oxidantes y peróxidos orgánicos que requieren manejo controlado, segregación adecuada, embalaje homologado y procedimientos de seguridad operacional.',
   },
   {
     Icon: AlertCircle,

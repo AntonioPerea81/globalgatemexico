@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   Flame, Wind, Droplet, Zap, AlertTriangle, AlertCircle, Package,
-  CheckCircle, Truck, Plane, Car, Factory, Cog, ShieldCheck,
+  CheckCircle, Truck, Plane, Car, Factory, Cog, ShieldCheck, Atom,
 } from 'lucide-react';
 import { Container, FadeIn, Eyebrow } from '../components/UI';
 import { useLanguage } from '../context/LanguageContext';
@@ -42,10 +42,10 @@ const CARGO_CATEGORIES = [
     desc: 'New, damaged, or end-of-life batteries. SEMARNAT authorization for lithium metal batteries destined for disposal.',
   },
   {
-    Icon: AlertTriangle,
-    un: 'Class 9 · CRETIB',
-    title: 'Hazardous Waste',
-    desc: 'CRETIB hazardous waste under SEMARNAT regulations with full traceability, movement manifests, and auditable procedures.',
+    Icon: Atom,
+    un: 'Classes 5.1 · 5.2',
+    title: 'Oxidizers & Organic Peroxides',
+    desc: 'Specialized transportation for oxidizing substances and organic peroxides requiring controlled handling, segregation, compliant packaging, and operational safety procedures.',
   },
   {
     Icon: AlertCircle,
