@@ -54,8 +54,8 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     id: 'tracking',
-    label: { EN: 'Track Shipment', ES: 'Rastrear Envío' },
-    href: '/shipment-tracking',
+    label: { EN: 'Track Shipment', ES: 'Rastrear Embarque' },
+    href: { EN: '/shipment-tracking', ES: '/rastreo-de-embarques' },
   },
   {
     id: 'about',
@@ -113,7 +113,8 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/condiciones-estandar-de-comercio':            { EN: '/standard-trade-conditions',                  ES: '/condiciones-estandar-de-comercio' },
   '/dangerous-goods-ground-transportation':       { EN: '/dangerous-goods-ground-transportation',      ES: '/transporte-terrestre-mercancias-peligrosas' },
   '/transporte-terrestre-mercancias-peligrosas':  { EN: '/dangerous-goods-ground-transportation',      ES: '/transporte-terrestre-mercancias-peligrosas' },
-  '/shipment-tracking':                           { EN: '/shipment-tracking',                          ES: '/shipment-tracking' },
+  '/shipment-tracking':                           { EN: '/shipment-tracking',    ES: '/rastreo-de-embarques' },
+  '/rastreo-de-embarques':                        { EN: '/shipment-tracking',    ES: '/rastreo-de-embarques' },
 };
 
 export const Navbar = () => {

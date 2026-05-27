@@ -35,8 +35,11 @@ export const Footer = () => {
               </h4>
               <ul className="space-y-3 text-[13px] text-white/60">
                 <li>
-                  <Link to="/shipment-tracking" className="hover:text-white transition-colors">
-                    {isES ? 'Rastrear Envío' : 'Track Shipment'}
+                  <Link
+                    to={isES ? '/rastreo-de-embarques' : '/shipment-tracking'}
+                    className="hover:text-white transition-colors"
+                  >
+                    {isES ? 'Rastrear Embarque' : 'Track Shipment'}
                   </Link>
                 </li>
               </ul>

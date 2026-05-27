@@ -52,6 +52,7 @@ import { CondicionesEstandarDeComercioPage } from './pages/CondicionesEstandarDe
 import { DangerousGoodsGroundTransportationPage } from './pages/DangerousGoodsGroundTransportation';
 import { TransporteTerrestreMercanciasPeligrosasPage } from './pages/TransporteTerrestreMercanciasPeligrosas';
 import { ShipmentTrackingPage } from './pages/ShipmentTracking';
+import { RastreoDeEmbarquesPage } from './pages/RastreoDeEmbarques';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -113,7 +114,8 @@ export default function App() {
             <Route path="/condiciones-estandar-de-comercio" element={<CondicionesEstandarDeComercioPage />} />
             <Route path="/dangerous-goods-ground-transportation" element={<DangerousGoodsGroundTransportationPage />} />
             <Route path="/transporte-terrestre-mercancias-peligrosas" element={<TransporteTerrestreMercanciasPeligrosasPage />} />
-            <Route path="/shipment-tracking" element={<ShipmentTrackingPage />} />
+            <Route path="/shipment-tracking"     element={<ShipmentTrackingPage />} />
+            <Route path="/rastreo-de-embarques" element={<RastreoDeEmbarquesPage />} />
             <Route path="*"         element={<Home />} />
           </Routes>
         </Layout>
