@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Container } from '../components/UI';
 import { useLanguage } from '../context/LanguageContext';
 import { usePageMeta } from '../hooks/usePageMeta';
@@ -85,6 +86,21 @@ export function TermsOfServicePage() {
       <div style={{ padding: '64px 0 96px' }}>
         <Container>
           <div style={{ maxWidth: '720px' }}>
+
+            {/* Governing version note */}
+            <div style={{
+              background: '#f4f6f9', border: '1px solid #e5e7eb',
+              borderLeft: '3px solid #2563eb', borderRadius: '4px',
+              padding: '14px 18px', marginBottom: '44px',
+            }}>
+              <p style={{ fontSize: '12px', color: '#475569', lineHeight: 1.6, margin: 0 }}>
+                This English version is provided for informational purposes only. In the event of any discrepancy, the{' '}
+                <Link to="/terminos-de-servicio" style={{ color: '#2563eb', textDecoration: 'none' }}>
+                  Spanish version
+                </Link>{' '}
+                shall prevail, as it constitutes the primary legally binding document under Mexican law.
+              </p>
+            </div>
 
             <Section title="1. Acceptance of Terms">
               <P>

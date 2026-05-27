@@ -95,8 +95,14 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/acerca':                                                               { EN: '/about',                                                                  ES: '/acerca' },
   '/contact':                                                              { EN: '/contact',                                                                 ES: '/contacto' },
   '/contacto':                                                             { EN: '/contact',                                                                 ES: '/contacto' },
-  '/request-quote':         { EN: '/request-quote',        ES: '/solicitar-cotizacion' },
-  '/solicitar-cotizacion':  { EN: '/request-quote',        ES: '/solicitar-cotizacion' },
+  '/request-quote':              { EN: '/request-quote',             ES: '/solicitar-cotizacion' },
+  '/solicitar-cotizacion':       { EN: '/request-quote',             ES: '/solicitar-cotizacion' },
+  '/privacy-policy':             { EN: '/privacy-policy',            ES: '/politica-de-privacidad' },
+  '/politica-de-privacidad':     { EN: '/privacy-policy',            ES: '/politica-de-privacidad' },
+  '/legal-notice':               { EN: '/legal-notice',              ES: '/aviso-legal' },
+  '/aviso-legal':                { EN: '/legal-notice',              ES: '/aviso-legal' },
+  '/terms-of-service':           { EN: '/terms-of-service',          ES: '/terminos-de-servicio' },
+  '/terminos-de-servicio':       { EN: '/terms-of-service',          ES: '/terminos-de-servicio' },
 };
 
 export const Navbar = () => {
