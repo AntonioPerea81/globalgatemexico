@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plane, Ship, Search, ExternalLink } from 'lucide-react';
+import { Plane, Ship, Search } from 'lucide-react';
 import { Container, FadeIn, Eyebrow } from '../components/UI';
 import { useLanguage } from '../context/LanguageContext';
 import { usePageMeta } from '../hooks/usePageMeta';
@@ -29,8 +29,6 @@ import { usePageMeta } from '../hooks/usePageMeta';
 const EMBED_BASE   = 'https://embed.shipsgo.com/';
 const EMBED_SCRIPT = 'https://embed.shipsgo.com/embed-integration.js';
 
-const AIR_PORTAL_URL   = 'https://www.shipsgo.com/air-tracking';
-const OCEAN_PORTAL_URL = 'https://www.shipsgo.com/container-tracking';
 
 type Tab = 'air' | 'ocean';
 
@@ -82,8 +80,6 @@ export function RastreoDeEmbarquesPage() {
   const embedUrl = (submittedQuery && trackingMode && token)
     ? `${EMBED_BASE}?token=${token}&transport=${trackingMode}&query=${encodeURIComponent(submittedQuery)}`
     : null;
-
-  const portalUrl = trackingMode === 'air' ? AIR_PORTAL_URL : OCEAN_PORTAL_URL;
 
   // ── Handlers ─────────────────────────────────────────────────────────────
   function handleTrack() {
@@ -277,27 +273,16 @@ export function RastreoDeEmbarquesPage() {
             <Container>
 
               {/* Encabezado de referencia */}
-              <div className="flex items-start justify-between flex-wrap gap-4 mb-7">
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.24em] text-primary/58 mb-1.5">
-                    {trackingMode === 'air' ? 'Carga Aérea' : 'Carga Marítima'} · Rastreo en Vivo
-                  </p>
-                  <p className="text-white/38 text-[13px]">
-                    Referencia:{' '}
-                    <span className="text-white/70 font-mono font-semibold tracking-wide">
-                      {submittedQuery}
-                    </span>
-                  </p>
-                </div>
-                <a
-                  href={portalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white/28 hover:text-white/58 transition-colors mt-1 shrink-0"
-                >
-                  Abrir Portal de Rastreo
-                  <ExternalLink size={10} />
-                </a>
+              <div className="mb-7">
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-primary/58 mb-1.5">
+                  {trackingMode === 'air' ? 'Carga Aérea' : 'Carga Marítima'} · Rastreo en Vivo
+                </p>
+                <p className="text-white/38 text-[13px]">
+                  Referencia:{' '}
+                  <span className="text-white/70 font-mono font-semibold tracking-wide">
+                    {submittedQuery}
+                  </span>
+                </p>
               </div>
 
               {/* ── Iframe embed de Shipsgo ───────────────────────────────
@@ -343,37 +328,15 @@ export function RastreoDeEmbarquesPage() {
                   <p className="text-[11px] font-black uppercase tracking-[0.18em] text-white/35 mb-3">
                     Token No Configurado
                   </p>
-                  <p className="text-[13px] text-white/35 leading-relaxed mb-6">
+                  <p className="text-[13px] text-white/35 leading-relaxed">
                     Configura{' '}
                     <code className="text-white/55 font-mono text-[12px]">VITE_SHIPSGO_EMBED_TOKEN</code>{' '}
                     en <code className="text-white/55 font-mono text-[12px]">.env.local</code> para
                     habilitar el rastreo embebido.
                   </p>
-                  <a
-                    href={portalUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 text-[11px] font-black uppercase tracking-[0.14em] bg-primary text-white hover:bg-primary/85 transition-colors"
-                  >
-                    Abrir Portal de Rastreo
-                    <ExternalLink size={12} />
-                  </a>
                 </div>
               )}
 
-              {/* Nota al pie */}
-              <p className="mt-5 text-[11px] text-white/18 leading-relaxed">
-                Los datos de rastreo son proporcionados por Shipsgo y se actualizan según
-                los intervalos del transportista. Para consultas urgentes sobre el estado
-                de tu carga, contacta a{' '}
-                <a
-                  href="mailto:ggm@globalgatemexico.com"
-                  className="text-white/32 hover:text-white/52 transition-colors"
-                >
-                  ggm@globalgatemexico.com
-                </a>{' '}
-                o llama al +52 812 165 4040.
-              </p>
 
             </Container>
           </motion.section>
