@@ -49,6 +49,8 @@ import { AvisoLegalPage } from './pages/AvisoLegal';
 import { TerminosDeServicioPage } from './pages/TerminosDeServicio';
 import { StandardTradeConditionsPage } from './pages/StandardTradeConditions';
 import { CondicionesEstandarDeComercioPage } from './pages/CondicionesEstandarDeComercio';
+import { DangerousGoodsGroundTransportationPage } from './pages/DangerousGoodsGroundTransportation';
+import { TransporteTerrestreMercanciasPeligrosasPage } from './pages/TransporteTerrestreMercanciasPeligrosas';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -108,6 +110,8 @@ export default function App() {
             <Route path="/terminos-de-servicio"            element={<TerminosDeServicioPage />} />
             <Route path="/standard-trade-conditions"       element={<StandardTradeConditionsPage />} />
             <Route path="/condiciones-estandar-de-comercio" element={<CondicionesEstandarDeComercioPage />} />
+            <Route path="/dangerous-goods-ground-transportation" element={<DangerousGoodsGroundTransportationPage />} />
+            <Route path="/transporte-terrestre-mercancias-peligrosas" element={<TransporteTerrestreMercanciasPeligrosasPage />} />
             <Route path="*"         element={<Home />} />
           </Routes>
         </Layout>

@@ -24,9 +24,10 @@ const NAV_ITEMS: NavItem[] = [
     id: 'dgt',
     label: { EN: 'Transportation', ES: 'Transporte' },
     dropdown: [
-      { label: { EN: 'Air Freight',    ES: 'Transporte Aéreo' },     href: { EN: '/dangerous-goods-transportation/air-transportation', ES: '/es/transporte-mercancias-peligrosas/transporte-aereo' } },
-      { label: { EN: 'Sea Freight',   ES: 'Transporte Marítimo' },  href: { EN: '/dangerous-goods-transportation/ocean-freight',      ES: '/es/transporte-mercancias-peligrosas/transporte-maritimo' } },
-      { label: { EN: 'Request Quote', ES: 'Solicitar Cotización' }, href: { EN: '/request-quote',                                     ES: '/solicitar-cotizacion' } },
+      { label: { EN: 'Air Freight',           ES: 'Transporte Aéreo' },       href: { EN: '/dangerous-goods-transportation/air-transportation',    ES: '/es/transporte-mercancias-peligrosas/transporte-aereo' } },
+      { label: { EN: 'Ocean Freight',         ES: 'Transporte Marítimo' },     href: { EN: '/dangerous-goods-transportation/ocean-freight',          ES: '/es/transporte-mercancias-peligrosas/transporte-maritimo' } },
+      { label: { EN: 'Ground Transportation', ES: 'Transporte Terrestre' },    href: { EN: '/dangerous-goods-ground-transportation',                 ES: '/transporte-terrestre-mercancias-peligrosas' } },
+      { label: { EN: 'Request Quote',         ES: 'Solicitar Cotización' },    href: { EN: '/request-quote',                                        ES: '/solicitar-cotizacion' } },
     ],
   },
   {
@@ -103,8 +104,10 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/aviso-legal':                { EN: '/legal-notice',              ES: '/aviso-legal' },
   '/terms-of-service':                    { EN: '/terms-of-service',                   ES: '/terminos-de-servicio' },
   '/terminos-de-servicio':               { EN: '/terms-of-service',                   ES: '/terminos-de-servicio' },
-  '/standard-trade-conditions':          { EN: '/standard-trade-conditions',          ES: '/condiciones-estandar-de-comercio' },
-  '/condiciones-estandar-de-comercio':   { EN: '/standard-trade-conditions',          ES: '/condiciones-estandar-de-comercio' },
+  '/standard-trade-conditions':                   { EN: '/standard-trade-conditions',                  ES: '/condiciones-estandar-de-comercio' },
+  '/condiciones-estandar-de-comercio':            { EN: '/standard-trade-conditions',                  ES: '/condiciones-estandar-de-comercio' },
+  '/dangerous-goods-ground-transportation':       { EN: '/dangerous-goods-ground-transportation',      ES: '/transporte-terrestre-mercancias-peligrosas' },
+  '/transporte-terrestre-mercancias-peligrosas':  { EN: '/dangerous-goods-ground-transportation',      ES: '/transporte-terrestre-mercancias-peligrosas' },
 };
 
 export const Navbar = () => {
