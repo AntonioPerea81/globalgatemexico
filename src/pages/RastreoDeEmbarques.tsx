@@ -1,34 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plane, Ship, Search, ExternalLink, Info } from 'lucide-react';
+import { Plane, Ship, Search, ExternalLink } from 'lucide-react';
 import { Container, FadeIn, Eyebrow } from '../components/UI';
 import { useLanguage } from '../context/LanguageContext';
 import { usePageMeta } from '../hooks/usePageMeta';
 
-// ── Resultados Fase 1 ─────────────────────────────────────────────────────────
+// ── Integración Oficial Shipsgo Embed ─────────────────────────────────────────
 //
-// RESULTADO: El embedding vía iframe NO está bloqueado por Shipsgo.
-// X-Frame-Options / CSP no impiden el embedding en globalgatemexico.com.
+// Endpoint oficial de embed: https://embed.shipsgo.com/
+// Script de integración:     https://embed.shipsgo.com/embed-integration.js
 //
-// BLOQUEO ACTUAL: La URL de rastreo de Shipsgo usada en Fase 1
-// era una ruta estimada y devuelve un 404 de Shipsgo. El contenedor
-// del iframe, los estados de carga y el manejo de fallback funcionaron correctamente.
+// El token se inyecta via variable de entorno Vite: VITE_SHIPSGO_EMBED_TOKEN
+// NUNCA hardcodear el token aquí. Configurarlo en .env.local para desarrollo
+// y en variables de entorno de Vercel para producción.
 //
-// SIGUIENTE PASO (Fase 2):
-//   1. Iniciar sesión en el dashboard de Shipsgo.
-//   2. Localizar la sección de configuración "Embed" o "Live Map".
-//   3. Copiar la URL exacta de embed o live-map proporcionada por Shipsgo.
-//   4. Reemplazar las constantes de marcador de posición con esas URLs.
+// ── Orígenes Permitidos ───────────────────────────────────────────────────────
+// Los siguientes orígenes deben agregarse en el dashboard de Shipsgo
+// bajo Configuración → Embed → Orígenes Permitidos (Allowed Origins):
 //
-// IMPORTANTE — NUNCA exponer el token de API de Shipsgo en código frontend.
-// Todas las solicitudes autenticadas deben ser enviadas a través de una
-// Supabase Edge Function u otro handler del lado del servidor. La URL de
-// embed en sí puede no requerir token si Shipsgo usa un enlace iframe compartible.
+//   https://globalgatemexico.com
+//   https://www.globalgatemexico.com
+//
+// Para desarrollo local:
+//   http://localhost:5173
 //
 // ─────────────────────────────────────────────────────────────────────────────
 
-// TODO (Fase 2): Reemplazar con las URLs reales de embed / live-map de Shipsgo
-// obtenidas desde el dashboard. NO construir URLs desde rutas estimadas.
+const EMBED_BASE   = 'https://embed.shipsgo.com/';
+const EMBED_SCRIPT = 'https://embed.shipsgo.com/embed-integration.js';
+
 const AIR_PORTAL_URL   = 'https://www.shipsgo.com/air-tracking';
 const OCEAN_PORTAL_URL = 'https://www.shipsgo.com/container-tracking';
 
@@ -53,24 +53,54 @@ export function RastreoDeEmbarquesPage() {
     ],
   });
 
+  // ── Cargar el script de integración Shipsgo una sola vez ─────────────────
+  // El script habilita comunicación postMessage entre el iframe embed
+  // y esta página. La verificación de deduplicación evita inyección
+  // duplicada en re-renders o re-navegación dentro del SPA.
+  useEffect(() => {
+    if (document.querySelector(`script[src="${EMBED_SCRIPT}"]`)) return;
+    const script = document.createElement('script');
+    script.src = EMBED_SCRIPT;
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
+
   // ── Estado ───────────────────────────────────────────────────────────────
-  const [activeTab,    setActiveTab]    = useState<Tab>('air');
-  const [airInput,     setAirInput]     = useState('');
-  const [oceanInput,   setOceanInput]   = useState('');
-  const [submitted,    setSubmitted]    = useState(false);
-  const [trackingMode, setTrackingMode] = useState<Tab | null>(null);
+  const [activeTab,       setActiveTab]       = useState<Tab>('air');
+  const [airInput,        setAirInput]        = useState('');
+  const [oceanInput,      setOceanInput]      = useState('');
+  const [submittedQuery,  setSubmittedQuery]  = useState<string | null>(null);
+  const [trackingMode,    setTrackingMode]    = useState<Tab | null>(null);
+
+  const embedSectionRef = useRef<HTMLElement>(null);
+
+  // ── Construir URL del embed ───────────────────────────────────────────────
+  // VITE_SHIPSGO_EMBED_TOKEN debe configurarse en .env.local / variables de entorno Vercel.
+  // NO hardcodear el token aquí.
+  const token = import.meta.env.VITE_SHIPSGO_EMBED_TOKEN as string | undefined;
+
+  const embedUrl = (submittedQuery && trackingMode && token)
+    ? `${EMBED_BASE}?token=${token}&transport=${trackingMode}&query=${encodeURIComponent(submittedQuery)}`
+    : null;
+
+  const portalUrl = trackingMode === 'air' ? AIR_PORTAL_URL : OCEAN_PORTAL_URL;
 
   // ── Handlers ─────────────────────────────────────────────────────────────
   function handleTrack() {
     const raw = (activeTab === 'air' ? airInput : oceanInput).trim();
     if (!raw) return;
     setTrackingMode(activeTab);
-    setSubmitted(true);
+    setSubmittedQuery(raw);
+    setTimeout(
+      () => embedSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+      120,
+    );
   }
 
   function handleTabSwitch(tab: Tab) {
     setActiveTab(tab);
-    if (trackingMode && tab !== trackingMode) setSubmitted(false);
+    // Limpiar resultados cuando el usuario cambia a un modo distinto al que buscó
+    if (trackingMode && tab !== trackingMode) setSubmittedQuery(null);
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -78,7 +108,7 @@ export function RastreoDeEmbarquesPage() {
   }
 
   const currentInput = activeTab === 'air' ? airInput : oceanInput;
-  const portalUrl    = trackingMode === 'air' ? AIR_PORTAL_URL : OCEAN_PORTAL_URL;
+  const isSubmitted  = submittedQuery !== null;
 
   // ── Render ───────────────────────────────────────────────────────────────
   return (
@@ -232,56 +262,92 @@ export function RastreoDeEmbarquesPage() {
         </Container>
       </section>
 
-      {/* ── 3. ÁREA DE RESULTADOS ────────────────────────────────────────── */}
+      {/* ── 3. SECCIÓN DE EMBED ──────────────────────────────────────────── */}
       <AnimatePresence>
-        {submitted && (
+        {isSubmitted && (
           <motion.section
-            key="result-section-es"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            ref={embedSectionRef}
+            key="embed-section-es"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.38 }}
-            style={{ background: '#060e1c', padding: '48px 0 72px' }}
+            transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+            style={{ background: '#060e1c', padding: '48px 0 80px' }}
           >
             <Container>
 
               {/* Encabezado de referencia */}
-              <div className="mb-6">
-                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-primary/58 mb-1.5">
-                  {trackingMode === 'air' ? 'Carga Aérea' : 'Carga Marítima'} · Rastreo
-                </p>
-                <p className="text-white/38 text-[13px]">
-                  Referencia:{' '}
-                  <span className="text-white/70 font-mono font-semibold tracking-wide">
-                    {trackingMode === 'air' ? airInput : oceanInput}
-                  </span>
-                </p>
+              <div className="flex items-start justify-between flex-wrap gap-4 mb-7">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.24em] text-primary/58 mb-1.5">
+                    {trackingMode === 'air' ? 'Carga Aérea' : 'Carga Marítima'} · Rastreo en Vivo
+                  </p>
+                  <p className="text-white/38 text-[13px]">
+                    Referencia:{' '}
+                    <span className="text-white/70 font-mono font-semibold tracking-wide">
+                      {submittedQuery}
+                    </span>
+                  </p>
+                </div>
+                <a
+                  href={portalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white/28 hover:text-white/58 transition-colors mt-1 shrink-0"
+                >
+                  Abrir Portal de Rastreo
+                  <ExternalLink size={10} />
+                </a>
               </div>
 
-              {/* ── Card de configuración pendiente ──────────────────────
-                  Embedding vía iframe confirmado funcional (Fase 1 completa).
-                  En espera de la URL correcta de embed de Shipsgo desde el dashboard. */}
-              <FadeIn>
+              {/* ── Iframe embed de Shipsgo ───────────────────────────────
+                  La src se construye desde VITE_SHIPSGO_EMBED_TOKEN + transport + query.
+                  La prop key fuerza un remount limpio cuando cambia la consulta,
+                  asegurando que Shipsgo cargue datos frescos en cada búsqueda.
+                  El script de integración (cargado una vez al montar) maneja
+                  eventos postMessage entre esta página y el embed.              */}
+              {embedUrl ? (
                 <div
-                  className="max-w-xl p-8"
+                  style={{
+                    background: '#050c17',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    boxShadow: '0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.03)',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <iframe
+                    key={embedUrl}
+                    id="shipsgo-embed"
+                    src={embedUrl}
+                    width="100%"
+                    title="Rastreo de Embarque"
+                    style={{
+                      display: 'block',
+                      minHeight: '700px',
+                      height: '700px',
+                      border: 'none',
+                    }}
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              ) : (
+                /* Token no configurado — variable de entorno faltante */
+                <div
+                  className="p-8 max-w-xl"
                   style={{
                     background: '#0a1628',
                     border: '1px solid rgba(255,255,255,0.08)',
-                    borderLeft: '3px solid rgba(37,99,235,0.5)',
+                    borderLeft: '3px solid rgba(255,255,255,0.15)',
                   }}
                 >
-                  <div className="flex items-center gap-3 mb-4">
-                    <Info size={15} className="text-primary/65 shrink-0" />
-                    <p className="text-[11px] font-black uppercase tracking-[0.18em] text-primary/65">
-                      Configuración de Embed Pendiente
-                    </p>
-                  </div>
-                  <p className="text-[14px] text-white/65 leading-relaxed mb-2 font-semibold">
-                    URL de rastreo embebido pendiente de configuración.
+                  <p className="text-[11px] font-black uppercase tracking-[0.18em] text-white/35 mb-3">
+                    Token No Configurado
                   </p>
-                  <p className="text-[13px] text-white/35 leading-relaxed mb-7">
-                    Favor de confirmar el formato de URL embed o live map
-                    desde el dashboard de Shipsgo.
+                  <p className="text-[13px] text-white/35 leading-relaxed mb-6">
+                    Configura{' '}
+                    <code className="text-white/55 font-mono text-[12px]">VITE_SHIPSGO_EMBED_TOKEN</code>{' '}
+                    en <code className="text-white/55 font-mono text-[12px]">.env.local</code> para
+                    habilitar el rastreo embebido.
                   </p>
                   <a
                     href={portalUrl}
@@ -293,7 +359,21 @@ export function RastreoDeEmbarquesPage() {
                     <ExternalLink size={12} />
                   </a>
                 </div>
-              </FadeIn>
+              )}
+
+              {/* Nota al pie */}
+              <p className="mt-5 text-[11px] text-white/18 leading-relaxed">
+                Los datos de rastreo son proporcionados por Shipsgo y se actualizan según
+                los intervalos del transportista. Para consultas urgentes sobre el estado
+                de tu carga, contacta a{' '}
+                <a
+                  href="mailto:ggm@globalgatemexico.com"
+                  className="text-white/32 hover:text-white/52 transition-colors"
+                >
+                  ggm@globalgatemexico.com
+                </a>{' '}
+                o llama al +52 812 165 4040.
+              </p>
 
             </Container>
           </motion.section>
@@ -301,7 +381,7 @@ export function RastreoDeEmbarquesPage() {
       </AnimatePresence>
 
       {/* ── 4. ESTADO INICIAL — antes de la primera búsqueda ────────────── */}
-      {!submitted && (
+      {!isSubmitted && (
         <section style={{ background: '#060e1c', padding: '64px 0 96px' }}>
           <Container>
             <div className="grid md:grid-cols-2 gap-16 items-start max-w-4xl">

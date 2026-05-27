@@ -1,25 +1,36 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plane, Ship, Search, ExternalLink, AlertTriangle, Loader2 } from 'lucide-react';
+import { Plane, Ship, Search, ExternalLink } from 'lucide-react';
 import { Container, FadeIn, Eyebrow } from '../components/UI';
 import { useLanguage } from '../context/LanguageContext';
 import { usePageMeta } from '../hooks/usePageMeta';
 
-// ── Phase 1: iframe embed compatibility test ───────────────────────────────────
-// These are placeholder Shipsgo tracking URLs used to test whether iframe
-// embedding is permitted (X-Frame-Options / CSP). Replace with authenticated
-// embed endpoints when Phase 2 API integration is ready.
-const AIR_TRACKING_BASE   = 'https://www.shipsgo.com/air-tracking';
-const OCEAN_TRACKING_BASE = 'https://www.shipsgo.com/container-tracking';
+// ── Shipsgo Embed Integration ─────────────────────────────────────────────────
+//
+// Official embed endpoint: https://embed.shipsgo.com/
+// Integration script:      https://embed.shipsgo.com/embed-integration.js
+//
+// Token is injected via Vite env variable VITE_SHIPSGO_EMBED_TOKEN.
+// NEVER hardcode the token here. Set it in .env.local for development
+// and in Vercel environment variables for production.
+//
+// ── Allowed Origins ──────────────────────────────────────────────────────────
+// The following origins must be added to the Shipsgo dashboard
+// under Settings → Embed → Allowed Origins:
+//
+//   https://globalgatemexico.com
+//   https://www.globalgatemexico.com
+//
+// For local development:
+//   http://localhost:5173
+//
+// ─────────────────────────────────────────────────────────────────────────────
 
-// Fallback portal URLs — opened in new tab when iframe is blocked.
+const EMBED_BASE   = 'https://embed.shipsgo.com/';
+const EMBED_SCRIPT = 'https://embed.shipsgo.com/embed-integration.js';
+
 const AIR_PORTAL_URL   = 'https://www.shipsgo.com/air-tracking';
 const OCEAN_PORTAL_URL = 'https://www.shipsgo.com/container-tracking';
-
-// How long to wait before showing the fallback card (ms).
-// Note: onLoad fires even for X-Frame-Options-blocked iframes in most browsers,
-// so the timeout is the primary guard against network failures / indefinite hangs.
-const IFRAME_TIMEOUT_MS = 12_000;
 
 type Tab = 'air' | 'ocean';
 
@@ -41,76 +52,63 @@ export function ShipmentTrackingPage() {
     ],
   });
 
-  // ── State ────────────────────────────────────────────────────────────────
-  const [activeTab,    setActiveTab]    = useState<Tab>('air');
-  const [airInput,     setAirInput]     = useState('');
-  const [oceanInput,   setOceanInput]   = useState('');
-  const [iframeUrl,    setIframeUrl]    = useState<string | null>(null);
-  const [iframeLoaded, setIframeLoaded] = useState(false);
-  const [iframeFailed, setIframeFailed] = useState(false);
-  const [trackingMode, setTrackingMode] = useState<Tab | null>(null);
+  // ── Load Shipsgo integration script once ─────────────────────────────────
+  // The script enables postMessage communication between the embed iframe
+  // and this page. Deduplication check prevents duplicate injection on
+  // re-renders or re-navigation within the SPA.
+  useEffect(() => {
+    if (document.querySelector(`script[src="${EMBED_SCRIPT}"]`)) return;
+    const script = document.createElement('script');
+    script.src = EMBED_SCRIPT;
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
 
-  // Refs
-  const iframeLoadedRef  = useRef(false);
-  const failureTimer     = useRef<ReturnType<typeof setTimeout>>();
-  const iframeSectionRef = useRef<HTMLDivElement>(null);
+  // ── State ─────────────────────────────────────────────────────────────────
+  const [activeTab,       setActiveTab]       = useState<Tab>('air');
+  const [airInput,        setAirInput]        = useState('');
+  const [oceanInput,      setOceanInput]      = useState('');
+  const [submittedQuery,  setSubmittedQuery]  = useState<string | null>(null);
+  const [trackingMode,    setTrackingMode]    = useState<Tab | null>(null);
 
-  useEffect(() => () => clearTimeout(failureTimer.current), []);
+  const embedSectionRef = useRef<HTMLElement>(null);
+
+  // ── Build embed URL ───────────────────────────────────────────────────────
+  // VITE_SHIPSGO_EMBED_TOKEN must be set in .env.local / Vercel env vars.
+  // Do NOT hardcode the token here.
+  const token = import.meta.env.VITE_SHIPSGO_EMBED_TOKEN as string | undefined;
+
+  const embedUrl = (submittedQuery && trackingMode && token)
+    ? `${EMBED_BASE}?token=${token}&transport=${trackingMode}&query=${encodeURIComponent(submittedQuery)}`
+    : null;
+
+  const portalUrl = trackingMode === 'air' ? AIR_PORTAL_URL : OCEAN_PORTAL_URL;
 
   // ── Handlers ─────────────────────────────────────────────────────────────
   function handleTrack() {
     const raw = (activeTab === 'air' ? airInput : oceanInput).trim();
     if (!raw) return;
-
-    const base = activeTab === 'air' ? AIR_TRACKING_BASE : OCEAN_TRACKING_BASE;
-    const url  = `${base}?ref=${encodeURIComponent(raw)}`;
-
-    iframeLoadedRef.current = false;
-    setIframeUrl(url);
-    setIframeLoaded(false);
-    setIframeFailed(false);
     setTrackingMode(activeTab);
-
-    clearTimeout(failureTimer.current);
-    failureTimer.current = setTimeout(() => {
-      if (!iframeLoadedRef.current) setIframeFailed(true);
-    }, IFRAME_TIMEOUT_MS);
-
+    setSubmittedQuery(raw);
     setTimeout(
-      () => iframeSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+      () => embedSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
       120,
     );
   }
 
-  function handleIframeLoad() {
-    clearTimeout(failureTimer.current);
-    iframeLoadedRef.current = true;
-    setIframeLoaded(true);
-  }
-
-  function handleIframeError() {
-    clearTimeout(failureTimer.current);
-    setIframeFailed(true);
+  function handleTabSwitch(tab: Tab) {
+    setActiveTab(tab);
+    // Clear results when the user switches to a different mode than what was submitted
+    if (trackingMode && tab !== trackingMode) setSubmittedQuery(null);
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Enter') handleTrack();
   }
 
-  function handleTabSwitch(tab: Tab) {
-    setActiveTab(tab);
-    // Clear iframe when switching tabs so stale results don't persist
-    if (trackingMode && tab !== trackingMode) {
-      setIframeUrl(null);
-      setIframeLoaded(false);
-      setIframeFailed(false);
-    }
-  }
-
   const currentInput = activeTab === 'air' ? airInput : oceanInput;
-  const portalUrl    = trackingMode === 'air' ? AIR_PORTAL_URL : OCEAN_PORTAL_URL;
+  const isSubmitted  = submittedQuery !== null;
 
-  // ── Render ───────────────────────────────────────────────────────────────
   return (
     <div className="bg-[#060e1c] min-h-screen">
 
@@ -119,7 +117,6 @@ export function ShipmentTrackingPage() {
         className="relative pt-[106px] pb-20 lg:pb-24 overflow-hidden"
         style={{ background: '#030810' }}
       >
-        {/* Dot grid */}
         <div
           className="absolute inset-0 pointer-events-none opacity-[0.07]"
           style={{
@@ -127,9 +124,7 @@ export function ShipmentTrackingPage() {
             backgroundSize: '36px 36px',
           }}
         />
-        {/* Bottom gradient fade */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#030810] to-transparent pointer-events-none" />
-        {/* Blue accent line */}
         <div className="absolute bottom-0 left-0 right-0 h-px bg-primary/25" />
 
         <Container className="relative z-10">
@@ -209,7 +204,7 @@ export function ShipmentTrackingPage() {
               ))}
             </div>
 
-            {/* Form — animated on tab switch */}
+            {/* Form */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -264,22 +259,22 @@ export function ShipmentTrackingPage() {
         </Container>
       </section>
 
-      {/* ── 3. IFRAME / TRACKING RESULTS ────────────────────────────────── */}
+      {/* ── 3. EMBED SECTION ────────────────────────────────────────────── */}
       <AnimatePresence>
-        {iframeUrl && (
+        {isSubmitted && (
           <motion.section
-            ref={iframeSectionRef}
-            key="iframe-section"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            ref={embedSectionRef}
+            key="embed-section"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.38 }}
-            style={{ background: '#060e1c', padding: '48px 0 72px' }}
+            transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+            style={{ background: '#060e1c', padding: '48px 0 80px' }}
           >
             <Container>
 
-              {/* Result header */}
-              <div className="flex items-start justify-between mb-5 flex-wrap gap-4">
+              {/* Reference header */}
+              <div className="flex items-start justify-between flex-wrap gap-4 mb-7">
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-[0.24em] text-primary/58 mb-1.5">
                     {trackingMode === 'air' ? 'Air Cargo' : 'Ocean Freight'} · Live Tracking
@@ -287,152 +282,85 @@ export function ShipmentTrackingPage() {
                   <p className="text-white/38 text-[13px]">
                     Reference:{' '}
                     <span className="text-white/70 font-mono font-semibold tracking-wide">
-                      {trackingMode === 'air' ? airInput : oceanInput}
+                      {submittedQuery}
                     </span>
                   </p>
                 </div>
-                {iframeLoaded && !iframeFailed && (
+                <a
+                  href={portalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white/28 hover:text-white/58 transition-colors mt-1 shrink-0"
+                >
+                  Open Tracking Portal
+                  <ExternalLink size={10} />
+                </a>
+              </div>
+
+              {/* ── Shipsgo embed iframe ──────────────────────────────────
+                  src is built from VITE_SHIPSGO_EMBED_TOKEN + transport + query.
+                  The key prop forces a clean remount when the query changes,
+                  ensuring Shipsgo loads fresh data for each search.
+                  The integration script (loaded once on mount) handles
+                  postMessage events between this page and the embed.        */}
+              {embedUrl ? (
+                <div
+                  style={{
+                    background: '#050c17',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    boxShadow: '0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.03)',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <iframe
+                    key={embedUrl}
+                    id="shipsgo-embed"
+                    src={embedUrl}
+                    width="100%"
+                    title="Shipment Tracking"
+                    style={{
+                      display: 'block',
+                      minHeight: '700px',
+                      height: '700px',
+                      border: 'none',
+                    }}
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              ) : (
+                /* Token not configured — env variable missing */
+                <div
+                  className="p-8 max-w-xl"
+                  style={{
+                    background: '#0a1628',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderLeft: '3px solid rgba(255,255,255,0.15)',
+                  }}
+                >
+                  <p className="text-[11px] font-black uppercase tracking-[0.18em] text-white/35 mb-3">
+                    Token Not Configured
+                  </p>
+                  <p className="text-[13px] text-white/35 leading-relaxed mb-6">
+                    Set <code className="text-white/55 font-mono text-[12px]">VITE_SHIPSGO_EMBED_TOKEN</code> in{' '}
+                    <code className="text-white/55 font-mono text-[12px]">.env.local</code> to enable
+                    the tracking embed.
+                  </p>
                   <a
                     href={portalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white/28 hover:text-white/58 transition-colors mt-1"
+                    className="inline-flex items-center gap-2 px-6 py-3 text-[11px] font-black uppercase tracking-[0.14em] bg-primary text-white hover:bg-primary/85 transition-colors"
                   >
-                    Open in Portal
-                    <ExternalLink size={10} />
+                    Open Tracking Portal
+                    <ExternalLink size={12} />
                   </a>
-                )}
-              </div>
+                </div>
+              )}
 
-              {/* Iframe wrapper */}
-              <div
-                className="relative overflow-hidden"
-                style={{
-                  minHeight: '900px',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                  background: '#050c17',
-                }}
-              >
-
-                {/* ── Loading skeleton ─────────────────────────────────── */}
-                {!iframeLoaded && !iframeFailed && (
-                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-start pt-20 gap-6 px-8">
-                    <div className="flex flex-col items-center gap-4">
-                      <Loader2 size={20} className="animate-spin text-primary/40" />
-                      <p className="text-[11px] text-white/22 uppercase tracking-[0.2em] font-semibold">
-                        Loading tracking data…
-                      </p>
-                    </div>
-                    {/* Simulated content rows */}
-                    <div className="w-full max-w-lg space-y-3 mt-6">
-                      {[
-                        { w: '70%',  h: '12px' },
-                        { w: '50%',  h: '10px' },
-                        { w: '85%',  h: '10px' },
-                        { w: '45%',  h: '10px' },
-                        { w: '62%',  h: '10px' },
-                      ].map(({ w, h }, i) => (
-                        <div
-                          key={i}
-                          className="rounded-sm animate-pulse"
-                          style={{
-                            width: w,
-                            height: h,
-                            background: 'rgba(255,255,255,0.05)',
-                            animationDelay: `${i * 0.09}s`,
-                          }}
-                        />
-                      ))}
-                    </div>
-                    <div className="w-full max-w-lg space-y-3 mt-4">
-                      {[
-                        { w: '88%',  h: '10px' },
-                        { w: '55%',  h: '10px' },
-                        { w: '72%',  h: '10px' },
-                      ].map(({ w, h }, i) => (
-                        <div
-                          key={i}
-                          className="rounded-sm animate-pulse"
-                          style={{
-                            width: w,
-                            height: h,
-                            background: 'rgba(255,255,255,0.04)',
-                            animationDelay: `${(i + 5) * 0.09}s`,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* ── Fallback card ─────────────────────────────────────── */}
-                {iframeFailed && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center p-8">
-                    <FadeIn>
-                      <div
-                        className="max-w-md w-full p-8"
-                        style={{
-                          background: '#0a1628',
-                          border: '1px solid rgba(255,255,255,0.08)',
-                          borderLeft: '3px solid rgba(234,88,12,0.55)',
-                        }}
-                      >
-                        <div className="flex items-center gap-3 mb-4">
-                          <AlertTriangle size={15} style={{ color: '#ea580c', opacity: 0.78 }} />
-                          <p
-                            className="text-[11px] font-black uppercase tracking-[0.18em]"
-                            style={{ color: '#ea580c', opacity: 0.78 }}
-                          >
-                            Embedded Tracking Unavailable
-                          </p>
-                        </div>
-                        <p className="text-[15px] text-white/72 font-semibold leading-snug mb-3">
-                          The tracking module could not be loaded.
-                        </p>
-                        <p className="text-[13px] text-white/38 leading-relaxed mb-7">
-                          Embedded tracking is currently unavailable. Please continue
-                          tracking through the external tracking portal.
-                        </p>
-                        <a
-                          href={portalUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-6 py-3 text-[11px] font-black uppercase tracking-[0.14em] bg-primary text-white hover:bg-primary/85 transition-colors"
-                        >
-                          Open Tracking Portal
-                          <ExternalLink size={12} />
-                        </a>
-                      </div>
-                    </FadeIn>
-                  </div>
-                )}
-
-                {/* ── The iframe ───────────────────────────────────────── */}
-                {/* Sandbox is intentionally omitted in Phase 1 to maximise
-                    compatibility and accurately test X-Frame-Options / CSP
-                    behaviour. Add sandbox restrictions in Phase 2 once
-                    embedding is confirmed to work as expected. */}
-                <iframe
-                  src={iframeUrl}
-                  title="Shipment Tracking"
-                  width="100%"
-                  style={{
-                    minHeight: '900px',
-                    border: 'none',
-                    display: 'block',
-                    opacity: iframeLoaded ? 1 : 0,
-                    transition: 'opacity 0.35s ease',
-                  }}
-                  onLoad={handleIframeLoad}
-                  onError={handleIframeError}
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
-
-              {/* Small-print disclaimer */}
-              <p className="mt-4 text-[11px] text-white/18 leading-relaxed">
-                Tracking data is sourced from Shipsgo and updated at carrier intervals.
-                For time-critical status enquiries contact{' '}
+              {/* Footer note */}
+              <p className="mt-5 text-[11px] text-white/18 leading-relaxed">
+                Tracking data is provided by Shipsgo and updated according to carrier
+                reporting intervals. For urgent shipment status queries, contact{' '}
                 <a
                   href="mailto:ggm@globalgatemexico.com"
                   className="text-white/32 hover:text-white/52 transition-colors"
@@ -447,17 +375,16 @@ export function ShipmentTrackingPage() {
         )}
       </AnimatePresence>
 
-      {/* ── 4. EMPTY STATE — shown before first search ──────────────────── */}
-      {!iframeUrl && (
+      {/* ── 4. EMPTY STATE — before first search ────────────────────────── */}
+      {!isSubmitted && (
         <section style={{ background: '#060e1c', padding: '64px 0 96px' }}>
           <Container>
             <div className="grid md:grid-cols-2 gap-16 items-start max-w-4xl">
 
-              {/* Left — reference types */}
               <FadeIn direction="left">
                 <Eyebrow light>Supported Reference Types</Eyebrow>
                 <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-8 leading-[1.1]">
-                  Air &amp; Ocean<br />Tracking in One Place.
+                  Air &amp; Ocean Tracking<br />in One Place.
                 </h2>
                 <div className="space-y-5">
                   {[
@@ -498,7 +425,6 @@ export function ShipmentTrackingPage() {
                 </div>
               </FadeIn>
 
-              {/* Right — need help block */}
               <FadeIn direction="right" delay={0.1}>
                 <div
                   className="p-8"
