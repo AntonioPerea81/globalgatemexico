@@ -276,14 +276,14 @@ export function TransporteTerrestreMercanciasPeligrosasPage() {
         <Container>
 
           <FadeIn className="mb-16">
-            <Eyebrow>Clases DG 1–9 · NOM-002-SCT · Materiales Peligrosos</Eyebrow>
+            <Eyebrow>Clases DG 2–9 · SICT Autorizado · Materiales Peligrosos</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-5 leading-[1.08]">
               Qué Transportamos
             </h2>
             <p className="text-secondary text-[15px] max-w-xl leading-relaxed">
-              Operamos con todas las clases de mercancías peligrosas relevantes para la industria mexicana. No somos
-              transportistas genéricos — somos operadores especializados en logística de materiales peligrosos con
-              control regulatorio en cada etapa.
+              Nos especializamos en el transporte de materiales peligrosos en las clases reguladas relevantes
+              para la industria y el comercio mexicano — no somos transportistas genéricos, sino operadores
+              logísticos con enfoque en cumplimiento y control regulatorio en cada etapa.
             </p>
           </FadeIn>
 

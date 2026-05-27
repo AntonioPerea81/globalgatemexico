@@ -275,14 +275,14 @@ export function DangerousGoodsGroundTransportationPage() {
         <Container>
 
           <FadeIn className="mb-16">
-            <Eyebrow>DG Classes 1–9 · NOM-002-SCT · Hazardous Materials</Eyebrow>
+            <Eyebrow>DG Classes 2–9 · SICT Authorized · Hazardous Materials</Eyebrow>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-5 leading-[1.08]">
               What We Transport
             </h2>
             <p className="text-secondary text-[15px] max-w-xl leading-relaxed">
-              We operate across all dangerous goods classes relevant to Mexican industry. We are not general
-              freight carriers — we are specialized hazardous materials logistics operators with regulatory
-              control at every stage.
+              We specialize in hazardous materials transportation across regulated dangerous goods classes
+              relevant to Mexican industrial and commercial operations — not general freight carriers, but
+              compliance-driven logistics operators with regulatory control at every stage.
             </p>
           </FadeIn>
 
