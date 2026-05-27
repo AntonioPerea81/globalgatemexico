@@ -41,6 +41,9 @@ import { ContactoPage } from './pages/Contacto';
 import { RequestQuotePage } from './pages/RequestQuote';
 import { SolicitarCotizacionPage } from './pages/SolicitarCotizacion';
 import { TrainingProposalPage } from './pages/TrainingProposal';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicy';
+import { LegalNoticePage } from './pages/LegalNotice';
+import { TermsOfServicePage } from './pages/TermsOfService';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -92,6 +95,9 @@ export default function App() {
             <Route path="/request-quote" element={<RequestQuotePage />} />
             <Route path="/solicitar-cotizacion" element={<SolicitarCotizacionPage />} />
             <Route path="/training-proposal" element={<TrainingProposalPage />} />
+            <Route path="/privacy-policy"    element={<PrivacyPolicyPage />} />
+            <Route path="/legal-notice"      element={<LegalNoticePage />} />
+            <Route path="/terms-of-service"  element={<TermsOfServicePage />} />
             <Route path="*"         element={<Home />} />
           </Routes>
         </Layout>
