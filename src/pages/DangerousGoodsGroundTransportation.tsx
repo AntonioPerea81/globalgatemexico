@@ -267,7 +267,7 @@ export function DangerousGoodsGroundTransportationPage() {
               { num: '20+',       label: 'Years Operational',    sub: 'DG logistics since 2006' },
               { num: 'SICT',      label: 'Active Permits',       sub: 'Authorized hazmat vehicles' },
               { num: 'SEMARNAT',  label: 'Battery Authorization', sub: 'Lithium metal for disposal' },
-              { num: 'Classes 1–9', label: 'All DG Classes',     sub: 'Excl. radioactive — separate division' },
+              { num: 'Classes 2–9', label: 'Authorized DG Operations', sub: 'Excl. Class 1 and radioactive — specialized division' },
               { num: 'National',  label: 'Coverage',             sub: 'CDMX · MTY · GDL · Bajío · North' },
             ].map(({ num, label, sub }) => (
               <div key={label} className="flex-1 min-w-[150px] px-7 py-9 xl:px-9 xl:py-11">

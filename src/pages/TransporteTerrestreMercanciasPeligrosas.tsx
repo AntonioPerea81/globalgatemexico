@@ -268,7 +268,7 @@ export function TransporteTerrestreMercanciasPeligrosasPage() {
               { num: '20+',       label: 'Años de Operación',     sub: 'Logística DG desde 2006' },
               { num: 'SICT',      label: 'Permisos Vigentes',      sub: 'Unidades autorizadas para MP' },
               { num: 'SEMARNAT',  label: 'Autorización Baterías',  sub: 'Litio metálico para disposición' },
-              { num: 'Clases 1–9', label: 'Todas las Clases DG',   sub: 'Excl. material radioactivo esta división' },
+              { num: 'Clases 2–9', label: 'Operaciones DG Autorizadas', sub: 'Excl. Clase 1 y radiactivo — división especializada' },
               { num: 'Nacional',  label: 'Cobertura',              sub: 'CDMX · MTY · GDL · Bajío · Norte' },
             ].map(({ num, label, sub }) => (
               <div key={label} className="flex-1 min-w-[150px] px-7 py-9 xl:px-9 xl:py-11">
