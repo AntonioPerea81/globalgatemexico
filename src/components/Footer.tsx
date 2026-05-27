@@ -28,6 +28,20 @@ export const Footer = () => {
               </ul>
             </div>
 
+            {/* Operations column */}
+            <div className="space-y-4">
+              <h4 className="text-[11px] font-black uppercase tracking-widest text-accent">
+                {isES ? 'Operaciones' : 'Operations'}
+              </h4>
+              <ul className="space-y-3 text-[13px] text-white/60">
+                <li>
+                  <Link to="/shipment-tracking" className="hover:text-white transition-colors">
+                    {isES ? 'Rastrear Envío' : 'Track Shipment'}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
             {/* Legal column */}
             <div className="space-y-4">
               <h4 className="text-[11px] font-black uppercase tracking-widest text-accent">Legal</h4>

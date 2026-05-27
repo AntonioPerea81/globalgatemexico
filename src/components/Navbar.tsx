@@ -53,6 +53,11 @@ const NAV_ITEMS: NavItem[] = [
     href: { EN: '/radioactive-material-logistics', ES: '/logistica-material-radiactivo' },
   },
   {
+    id: 'tracking',
+    label: { EN: 'Track Shipment', ES: 'Rastrear Envío' },
+    href: '/shipment-tracking',
+  },
+  {
     id: 'about',
     label: { EN: 'About Us', ES: 'Acerca' },
     href: { EN: '/about', ES: '/acerca' },
@@ -108,6 +113,7 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/condiciones-estandar-de-comercio':            { EN: '/standard-trade-conditions',                  ES: '/condiciones-estandar-de-comercio' },
   '/dangerous-goods-ground-transportation':       { EN: '/dangerous-goods-ground-transportation',      ES: '/transporte-terrestre-mercancias-peligrosas' },
   '/transporte-terrestre-mercancias-peligrosas':  { EN: '/dangerous-goods-ground-transportation',      ES: '/transporte-terrestre-mercancias-peligrosas' },
+  '/shipment-tracking':                           { EN: '/shipment-tracking',                          ES: '/shipment-tracking' },
 };
 
 export const Navbar = () => {
