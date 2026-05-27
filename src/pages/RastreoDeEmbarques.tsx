@@ -1,23 +1,36 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plane, Ship, Search, ExternalLink, AlertTriangle, Loader2 } from 'lucide-react';
+import { Plane, Ship, Search, ExternalLink, Info } from 'lucide-react';
 import { Container, FadeIn, Eyebrow } from '../components/UI';
 import { useLanguage } from '../context/LanguageContext';
 import { usePageMeta } from '../hooks/usePageMeta';
 
-// ── Fase 1: prueba de compatibilidad de iframe ────────────────────────────────
-// URLs de Shipsgo de marcador de posición para validar si el embedding via
-// iframe es permitido (X-Frame-Options / CSP). Reemplazar con endpoints
-// autenticados de la API Shipsgo en la Fase 2.
-const AIR_TRACKING_BASE   = 'https://www.shipsgo.com/air-tracking';
-const OCEAN_TRACKING_BASE = 'https://www.shipsgo.com/container-tracking';
+// ── Resultados Fase 1 ─────────────────────────────────────────────────────────
+//
+// RESULTADO: El embedding vía iframe NO está bloqueado por Shipsgo.
+// X-Frame-Options / CSP no impiden el embedding en globalgatemexico.com.
+//
+// BLOQUEO ACTUAL: La URL de rastreo de Shipsgo usada en Fase 1
+// era una ruta estimada y devuelve un 404 de Shipsgo. El contenedor
+// del iframe, los estados de carga y el manejo de fallback funcionaron correctamente.
+//
+// SIGUIENTE PASO (Fase 2):
+//   1. Iniciar sesión en el dashboard de Shipsgo.
+//   2. Localizar la sección de configuración "Embed" o "Live Map".
+//   3. Copiar la URL exacta de embed o live-map proporcionada por Shipsgo.
+//   4. Reemplazar las constantes de marcador de posición con esas URLs.
+//
+// IMPORTANTE — NUNCA exponer el token de API de Shipsgo en código frontend.
+// Todas las solicitudes autenticadas deben ser enviadas a través de una
+// Supabase Edge Function u otro handler del lado del servidor. La URL de
+// embed en sí puede no requerir token si Shipsgo usa un enlace iframe compartible.
+//
+// ─────────────────────────────────────────────────────────────────────────────
 
-// URLs del portal externo — se abren en nueva pestaña si el iframe es bloqueado.
+// TODO (Fase 2): Reemplazar con las URLs reales de embed / live-map de Shipsgo
+// obtenidas desde el dashboard. NO construir URLs desde rutas estimadas.
 const AIR_PORTAL_URL   = 'https://www.shipsgo.com/air-tracking';
 const OCEAN_PORTAL_URL = 'https://www.shipsgo.com/container-tracking';
-
-// Tiempo de espera antes de mostrar el card de error (ms).
-const IFRAME_TIMEOUT_MS = 12_000;
 
 type Tab = 'air' | 'ocean';
 
@@ -44,65 +57,24 @@ export function RastreoDeEmbarquesPage() {
   const [activeTab,    setActiveTab]    = useState<Tab>('air');
   const [airInput,     setAirInput]     = useState('');
   const [oceanInput,   setOceanInput]   = useState('');
-  const [iframeUrl,    setIframeUrl]    = useState<string | null>(null);
-  const [iframeLoaded, setIframeLoaded] = useState(false);
-  const [iframeFailed, setIframeFailed] = useState(false);
+  const [submitted,    setSubmitted]    = useState(false);
   const [trackingMode, setTrackingMode] = useState<Tab | null>(null);
-
-  // Refs
-  const iframeLoadedRef  = useRef(false);
-  const failureTimer     = useRef<ReturnType<typeof setTimeout>>();
-  const iframeSectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => () => clearTimeout(failureTimer.current), []);
 
   // ── Handlers ─────────────────────────────────────────────────────────────
   function handleTrack() {
     const raw = (activeTab === 'air' ? airInput : oceanInput).trim();
     if (!raw) return;
-
-    const base = activeTab === 'air' ? AIR_TRACKING_BASE : OCEAN_TRACKING_BASE;
-    const url  = `${base}?ref=${encodeURIComponent(raw)}`;
-
-    iframeLoadedRef.current = false;
-    setIframeUrl(url);
-    setIframeLoaded(false);
-    setIframeFailed(false);
     setTrackingMode(activeTab);
-
-    clearTimeout(failureTimer.current);
-    failureTimer.current = setTimeout(() => {
-      if (!iframeLoadedRef.current) setIframeFailed(true);
-    }, IFRAME_TIMEOUT_MS);
-
-    setTimeout(
-      () => iframeSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-      120,
-    );
-  }
-
-  function handleIframeLoad() {
-    clearTimeout(failureTimer.current);
-    iframeLoadedRef.current = true;
-    setIframeLoaded(true);
-  }
-
-  function handleIframeError() {
-    clearTimeout(failureTimer.current);
-    setIframeFailed(true);
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Enter') handleTrack();
+    setSubmitted(true);
   }
 
   function handleTabSwitch(tab: Tab) {
     setActiveTab(tab);
-    if (trackingMode && tab !== trackingMode) {
-      setIframeUrl(null);
-      setIframeLoaded(false);
-      setIframeFailed(false);
-    }
+    if (trackingMode && tab !== trackingMode) setSubmitted(false);
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') handleTrack();
   }
 
   const currentInput = activeTab === 'air' ? airInput : oceanInput;
@@ -182,8 +154,8 @@ export function RastreoDeEmbarquesPage() {
               style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
             >
               {([
-                { id: 'air'   as Tab, label: 'Carga Aérea',     Icon: Plane },
-                { id: 'ocean' as Tab, label: 'Carga Marítima',   Icon: Ship  },
+                { id: 'air'   as Tab, label: 'Carga Aérea',   Icon: Plane },
+                { id: 'ocean' as Tab, label: 'Carga Marítima', Icon: Ship  },
               ] as const).map(({ id, label, Icon }) => (
                 <button
                   key={id}
@@ -260,12 +232,11 @@ export function RastreoDeEmbarquesPage() {
         </Container>
       </section>
 
-      {/* ── 3. SECCIÓN DE IFRAME ─────────────────────────────────────────── */}
+      {/* ── 3. ÁREA DE RESULTADOS ────────────────────────────────────────── */}
       <AnimatePresence>
-        {iframeUrl && (
+        {submitted && (
           <motion.section
-            ref={iframeSectionRef}
-            key="iframe-section-es"
+            key="result-section-es"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -274,168 +245,55 @@ export function RastreoDeEmbarquesPage() {
           >
             <Container>
 
-              {/* Encabezado de resultados */}
-              <div className="flex items-start justify-between mb-5 flex-wrap gap-4">
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.24em] text-primary/58 mb-1.5">
-                    {trackingMode === 'air' ? 'Carga Aérea' : 'Carga Marítima'} · Rastreo en Vivo
+              {/* Encabezado de referencia */}
+              <div className="mb-6">
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-primary/58 mb-1.5">
+                  {trackingMode === 'air' ? 'Carga Aérea' : 'Carga Marítima'} · Rastreo
+                </p>
+                <p className="text-white/38 text-[13px]">
+                  Referencia:{' '}
+                  <span className="text-white/70 font-mono font-semibold tracking-wide">
+                    {trackingMode === 'air' ? airInput : oceanInput}
+                  </span>
+                </p>
+              </div>
+
+              {/* ── Card de configuración pendiente ──────────────────────
+                  Embedding vía iframe confirmado funcional (Fase 1 completa).
+                  En espera de la URL correcta de embed de Shipsgo desde el dashboard. */}
+              <FadeIn>
+                <div
+                  className="max-w-xl p-8"
+                  style={{
+                    background: '#0a1628',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderLeft: '3px solid rgba(37,99,235,0.5)',
+                  }}
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <Info size={15} className="text-primary/65 shrink-0" />
+                    <p className="text-[11px] font-black uppercase tracking-[0.18em] text-primary/65">
+                      Configuración de Embed Pendiente
+                    </p>
+                  </div>
+                  <p className="text-[14px] text-white/65 leading-relaxed mb-2 font-semibold">
+                    URL de rastreo embebido pendiente de configuración.
                   </p>
-                  <p className="text-white/38 text-[13px]">
-                    Referencia:{' '}
-                    <span className="text-white/70 font-mono font-semibold tracking-wide">
-                      {trackingMode === 'air' ? airInput : oceanInput}
-                    </span>
+                  <p className="text-[13px] text-white/35 leading-relaxed mb-7">
+                    Favor de confirmar el formato de URL embed o live map
+                    desde el dashboard de Shipsgo.
                   </p>
-                </div>
-                {iframeLoaded && !iframeFailed && (
                   <a
                     href={portalUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white/28 hover:text-white/58 transition-colors mt-1"
+                    className="inline-flex items-center gap-2 px-6 py-3 text-[11px] font-black uppercase tracking-[0.14em] bg-primary text-white hover:bg-primary/85 transition-colors"
                   >
-                    Abrir en Portal
-                    <ExternalLink size={10} />
+                    Abrir Portal de Rastreo
+                    <ExternalLink size={12} />
                   </a>
-                )}
-              </div>
-
-              {/* Contenedor del iframe */}
-              <div
-                className="relative overflow-hidden"
-                style={{
-                  minHeight: '900px',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                  background: '#050c17',
-                }}
-              >
-
-                {/* ── Esqueleto de carga ───────────────────────────────── */}
-                {!iframeLoaded && !iframeFailed && (
-                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-start pt-20 gap-6 px-8">
-                    <div className="flex flex-col items-center gap-4">
-                      <Loader2 size={20} className="animate-spin text-primary/40" />
-                      <p className="text-[11px] text-white/22 uppercase tracking-[0.2em] font-semibold">
-                        Cargando datos de rastreo…
-                      </p>
-                    </div>
-                    <div className="w-full max-w-lg space-y-3 mt-6">
-                      {[
-                        { w: '70%',  h: '12px' },
-                        { w: '50%',  h: '10px' },
-                        { w: '85%',  h: '10px' },
-                        { w: '45%',  h: '10px' },
-                        { w: '62%',  h: '10px' },
-                      ].map(({ w, h }, i) => (
-                        <div
-                          key={i}
-                          className="rounded-sm animate-pulse"
-                          style={{
-                            width: w,
-                            height: h,
-                            background: 'rgba(255,255,255,0.05)',
-                            animationDelay: `${i * 0.09}s`,
-                          }}
-                        />
-                      ))}
-                    </div>
-                    <div className="w-full max-w-lg space-y-3 mt-4">
-                      {[
-                        { w: '88%',  h: '10px' },
-                        { w: '55%',  h: '10px' },
-                        { w: '72%',  h: '10px' },
-                      ].map(({ w, h }, i) => (
-                        <div
-                          key={i}
-                          className="rounded-sm animate-pulse"
-                          style={{
-                            width: w,
-                            height: h,
-                            background: 'rgba(255,255,255,0.04)',
-                            animationDelay: `${(i + 5) * 0.09}s`,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* ── Card de error / fallback ──────────────────────────── */}
-                {iframeFailed && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center p-8">
-                    <FadeIn>
-                      <div
-                        className="max-w-md w-full p-8"
-                        style={{
-                          background: '#0a1628',
-                          border: '1px solid rgba(255,255,255,0.08)',
-                          borderLeft: '3px solid rgba(234,88,12,0.55)',
-                        }}
-                      >
-                        <div className="flex items-center gap-3 mb-4">
-                          <AlertTriangle size={15} style={{ color: '#ea580c', opacity: 0.78 }} />
-                          <p
-                            className="text-[11px] font-black uppercase tracking-[0.18em]"
-                            style={{ color: '#ea580c', opacity: 0.78 }}
-                          >
-                            Rastreo No Disponible
-                          </p>
-                        </div>
-                        <p className="text-[15px] text-white/72 font-semibold leading-snug mb-3">
-                          El módulo de rastreo no pudo cargarse.
-                        </p>
-                        <p className="text-[13px] text-white/38 leading-relaxed mb-7">
-                          El rastreo embebido no está disponible en este momento. Puedes
-                          continuar el rastreo en el portal externo.
-                        </p>
-                        <a
-                          href={portalUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-6 py-3 text-[11px] font-black uppercase tracking-[0.14em] bg-primary text-white hover:bg-primary/85 transition-colors"
-                        >
-                          Abrir Portal de Rastreo
-                          <ExternalLink size={12} />
-                        </a>
-                      </div>
-                    </FadeIn>
-                  </div>
-                )}
-
-                {/* ── El iframe ────────────────────────────────────────── */}
-                {/* sandbox omitido en Fase 1 para maximizar compatibilidad y
-                    validar el comportamiento de X-Frame-Options / CSP con
-                    precisión. Agregar restricciones en Fase 2. */}
-                <iframe
-                  src={iframeUrl}
-                  title="Rastreo de Embarque"
-                  width="100%"
-                  style={{
-                    minHeight: '900px',
-                    border: 'none',
-                    display: 'block',
-                    opacity: iframeLoaded ? 1 : 0,
-                    transition: 'opacity 0.35s ease',
-                  }}
-                  onLoad={handleIframeLoad}
-                  onError={handleIframeError}
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
-
-              {/* Nota al pie */}
-              <p className="mt-4 text-[11px] text-white/18 leading-relaxed">
-                Los datos de rastreo son proporcionados por Shipsgo y se actualizan según
-                los intervalos del transportista. Para consultas urgentes sobre el estado
-                de tu carga, contacta a{' '}
-                <a
-                  href="mailto:ggm@globalgatemexico.com"
-                  className="text-white/32 hover:text-white/52 transition-colors"
-                >
-                  ggm@globalgatemexico.com
-                </a>{' '}
-                o llama al +52 812 165 4040.
-              </p>
+                </div>
+              </FadeIn>
 
             </Container>
           </motion.section>
@@ -443,7 +301,7 @@ export function RastreoDeEmbarquesPage() {
       </AnimatePresence>
 
       {/* ── 4. ESTADO INICIAL — antes de la primera búsqueda ────────────── */}
-      {!iframeUrl && (
+      {!submitted && (
         <section style={{ background: '#060e1c', padding: '64px 0 96px' }}>
           <Container>
             <div className="grid md:grid-cols-2 gap-16 items-start max-w-4xl">
