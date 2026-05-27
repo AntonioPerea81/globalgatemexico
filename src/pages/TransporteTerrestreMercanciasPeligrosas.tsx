@@ -118,34 +118,19 @@ const INDUSTRIES = [
 
 const REGULATIONS = [
   {
-    code: 'NOM-002-SCT/2011',
-    name: 'Listado de Materiales y Residuos Peligrosos',
-    desc: 'Norma oficial que establece las especificaciones para clasificación, descripción y transporte terrestre de sustancias y residuos peligrosos en territorio mexicano.',
+    code: 'Regl. TTMRP',
+    name: 'Reglamento para el Transporte Terrestre',
+    desc: 'Reglamento federal que establece las condiciones operativas para vehículos, rutas, responsabilidades y documentación en el transporte de materiales y residuos peligrosos en México.',
   },
   {
-    code: 'SICT',
-    name: 'Secretaría de Infraestructura, Comunicaciones y Transportes',
-    desc: 'Autoridad federal emisora de permisos para el transporte terrestre de materiales y residuos peligrosos. Toda unidad operativa debe contar con autorización SICT vigente.',
+    code: 'NOMs · Normas Operativas',
+    name: 'Normas Oficiales para Materiales Peligrosos',
+    desc: 'Las normas oficiales mexicanas que establecen la clasificación, descripción, embalaje, marcado y requisitos de transporte terrestre para sustancias y residuos peligrosos. Incluye NOM-002-SCT, NOM-003-SCT, NOM-004-SCT y NOM-005-SCT.',
   },
   {
     code: 'SEMARNAT',
-    name: 'Secretaría de Medio Ambiente y Recursos Naturales',
-    desc: 'Autoridad ambiental federal. Otorga autorizaciones para el manejo, transporte y disposición de residuos peligrosos, incluyendo baterías de litio metálico para disposición final.',
-  },
-  {
-    code: 'NOM-010-SCT2',
-    name: 'Especificaciones de Embalaje para Transporte',
-    desc: 'Norma que regula los requerimientos de embalaje, marcado, etiquetado y placardeo de mercancías peligrosas en transporte terrestre federal.',
-  },
-  {
-    code: 'Regl. TTMRP',
-    name: 'Reglamento para el Transporte Terrestre',
-    desc: 'Reglamento federal que establece las condiciones operativas para vehículos, rutas, responsabilidades y documentación en el transporte de materiales y residuos peligrosos.',
-  },
-  {
-    code: 'IATA DGR · IMDG',
-    name: 'Coordinación Multimodal Internacional',
-    desc: 'Para operaciones multimodales, GGM garantiza trazabilidad y continuidad regulatoria entre el transporte terrestre y el despacho aéreo o marítimo internacional.',
+    name: 'Autorización para Residuos Peligrosos',
+    desc: 'Autoridad ambiental federal que otorga autorizaciones para el manejo, transporte y disposición de residuos peligrosos — incluyendo baterías de litio metálico destinadas a disposición final.',
   },
 ];
 
@@ -698,17 +683,17 @@ export function TransporteTerrestreMercanciasPeligrosasPage() {
             </p>
           </FadeIn>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-black/[0.06]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black/[0.06]">
             {REGULATIONS.map(({ code, name, desc }, i) => (
-              <FadeIn key={code} delay={i * 0.06}>
-                <div className="group bg-white p-8 xl:p-10 h-full hover:bg-[#060e1c] transition-colors duration-300">
+              <FadeIn key={code} delay={i * 0.08}>
+                <div className="group bg-white p-10 xl:p-12 h-full hover:bg-[#060e1c] transition-colors duration-300">
                   <p
-                    className="text-[10px] font-black uppercase tracking-[0.22em] mb-2"
+                    className="text-[10px] font-black uppercase tracking-[0.22em] mb-3"
                     style={{ color: ACCENT }}
                   >
                     {code}
                   </p>
-                  <h3 className="text-[13px] font-extrabold uppercase tracking-wide mb-4 text-dark group-hover:text-white transition-colors leading-snug">
+                  <h3 className="text-[14px] font-extrabold uppercase tracking-wide mb-5 text-dark group-hover:text-white transition-colors leading-snug">
                     {name}
                   </h3>
                   <p className="text-[13px] text-secondary group-hover:text-white/45 leading-relaxed transition-colors">

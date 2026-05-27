@@ -118,34 +118,19 @@ const INDUSTRIES = [
 
 const REGULATIONS = [
   {
-    code: 'NOM-002-SCT/2011',
-    name: 'Hazardous Materials & Waste List',
-    desc: "Mexico's official standard establishing classification, description, and road transport requirements for hazardous substances and waste.",
+    code: 'Regl. TTMRP',
+    name: 'Ground Transport Regulation',
+    desc: 'Federal regulation establishing operational conditions for vehicles, routes, responsibilities, and documentation in hazardous materials and waste transport throughout Mexico.',
   },
   {
-    code: 'SICT',
-    name: 'Secretaría de Infraestructura, Comunicaciones y Transportes',
-    desc: 'Federal authority issuing permits for road transport of hazardous materials and waste. All operating vehicles must hold current SICT authorization.',
+    code: "NOMs · Operational Standards",
+    name: 'Hazardous Materials & Waste Standards',
+    desc: "Mexico's official NOM standards establishing classification, description, packaging, marking, and road transport requirements for hazardous substances and waste. Includes NOM-002-SCT, NOM-003-SCT, NOM-004-SCT, and NOM-005-SCT.",
   },
   {
     code: 'SEMARNAT',
-    name: 'Secretaría de Medio Ambiente y Recursos Naturales',
-    desc: 'Federal environmental authority. Issues authorizations for handling, transporting, and disposing of hazardous waste — including lithium metal batteries for final disposal.',
-  },
-  {
-    code: 'NOM-010-SCT2',
-    name: 'Packaging & Transport Specifications',
-    desc: 'Regulation governing packaging, marking, labelling, and placarding requirements for hazardous materials in federal road transport.',
-  },
-  {
-    code: 'Regl. TTMRP',
-    name: 'Ground Transport Regulation',
-    desc: 'Federal regulation establishing operational conditions for vehicles, routes, responsibilities, and documentation in hazardous materials transport.',
-  },
-  {
-    code: 'IATA DGR · IMDG',
-    name: 'International Multimodal Coordination',
-    desc: 'For multimodal operations, GGM ensures regulatory traceability and continuity between ground transport and international air or sea dispatch.',
+    name: 'Hazardous Waste Authorization',
+    desc: 'Federal environmental authority issuing authorizations for the handling, transportation, and disposal logistics of hazardous waste — including lithium metal batteries intended for final disposal.',
   },
 ];
 
@@ -696,17 +681,17 @@ export function DangerousGoodsGroundTransportationPage() {
             </p>
           </FadeIn>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-black/[0.06]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black/[0.06]">
             {REGULATIONS.map(({ code, name, desc }, i) => (
-              <FadeIn key={code} delay={i * 0.06}>
-                <div className="group bg-white p-8 xl:p-10 h-full hover:bg-[#060e1c] transition-colors duration-300">
+              <FadeIn key={code} delay={i * 0.08}>
+                <div className="group bg-white p-10 xl:p-12 h-full hover:bg-[#060e1c] transition-colors duration-300">
                   <p
-                    className="text-[10px] font-black uppercase tracking-[0.22em] mb-2"
+                    className="text-[10px] font-black uppercase tracking-[0.22em] mb-3"
                     style={{ color: ACCENT }}
                   >
                     {code}
                   </p>
-                  <h3 className="text-[13px] font-extrabold uppercase tracking-wide mb-4 text-dark group-hover:text-white transition-colors leading-snug">
+                  <h3 className="text-[14px] font-extrabold uppercase tracking-wide mb-5 text-dark group-hover:text-white transition-colors leading-snug">
                     {name}
                   </h3>
                   <p className="text-[13px] text-secondary group-hover:text-white/45 leading-relaxed transition-colors">
