@@ -49,6 +49,11 @@ export const Footer = () => {
                         Aviso Legal
                       </Link>
                     </li>
+                    <li>
+                      <Link to="/condiciones-estandar-de-comercio" className="hover:text-white transition-colors">
+                        Condiciones Estándar de Comercio
+                      </Link>
+                    </li>
                   </>
                 ) : (
                   <>
@@ -60,6 +65,11 @@ export const Footer = () => {
                     </li>
                     <li>
                       <Link to="/legal-notice" className="hover:text-white transition-colors">Legal Notice</Link>
+                    </li>
+                    <li>
+                      <Link to="/standard-trade-conditions" className="hover:text-white transition-colors">
+                        Standard Trade Conditions
+                      </Link>
                     </li>
                   </>
                 )}

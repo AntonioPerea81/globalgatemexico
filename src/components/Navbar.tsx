@@ -101,8 +101,10 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/politica-de-privacidad':     { EN: '/privacy-policy',            ES: '/politica-de-privacidad' },
   '/legal-notice':               { EN: '/legal-notice',              ES: '/aviso-legal' },
   '/aviso-legal':                { EN: '/legal-notice',              ES: '/aviso-legal' },
-  '/terms-of-service':           { EN: '/terms-of-service',          ES: '/terminos-de-servicio' },
-  '/terminos-de-servicio':       { EN: '/terms-of-service',          ES: '/terminos-de-servicio' },
+  '/terms-of-service':                    { EN: '/terms-of-service',                   ES: '/terminos-de-servicio' },
+  '/terminos-de-servicio':               { EN: '/terms-of-service',                   ES: '/terminos-de-servicio' },
+  '/standard-trade-conditions':          { EN: '/standard-trade-conditions',          ES: '/condiciones-estandar-de-comercio' },
+  '/condiciones-estandar-de-comercio':   { EN: '/standard-trade-conditions',          ES: '/condiciones-estandar-de-comercio' },
 };
 
 export const Navbar = () => {

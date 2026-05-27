@@ -47,6 +47,8 @@ import { TermsOfServicePage } from './pages/TermsOfService';
 import { PoliticaDePrivacidadPage } from './pages/PoliticaDePrivacidad';
 import { AvisoLegalPage } from './pages/AvisoLegal';
 import { TerminosDeServicioPage } from './pages/TerminosDeServicio';
+import { StandardTradeConditionsPage } from './pages/StandardTradeConditions';
+import { CondicionesEstandarDeComercioPage } from './pages/CondicionesEstandarDeComercio';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -101,9 +103,11 @@ export default function App() {
             <Route path="/privacy-policy"          element={<PrivacyPolicyPage />} />
             <Route path="/legal-notice"            element={<LegalNoticePage />} />
             <Route path="/terms-of-service"        element={<TermsOfServicePage />} />
-            <Route path="/politica-de-privacidad"  element={<PoliticaDePrivacidadPage />} />
-            <Route path="/aviso-legal"             element={<AvisoLegalPage />} />
-            <Route path="/terminos-de-servicio"    element={<TerminosDeServicioPage />} />
+            <Route path="/politica-de-privacidad"          element={<PoliticaDePrivacidadPage />} />
+            <Route path="/aviso-legal"                     element={<AvisoLegalPage />} />
+            <Route path="/terminos-de-servicio"            element={<TerminosDeServicioPage />} />
+            <Route path="/standard-trade-conditions"       element={<StandardTradeConditionsPage />} />
+            <Route path="/condiciones-estandar-de-comercio" element={<CondicionesEstandarDeComercioPage />} />
             <Route path="*"         element={<Home />} />
           </Routes>
         </Layout>
