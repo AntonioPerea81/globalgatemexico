@@ -260,7 +260,7 @@ export function StandardTradeConditionsPage() {
 
               <a
                 href={STC_PDF_EN}
-                download
+                download="global-gate-mexico-stc-en.pdf"
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: '7px',
                   padding: '10px 20px',
