@@ -1,6 +1,5 @@
 import { ComponentType } from 'react';
 import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
 import { Container, FadeIn, Eyebrow } from '../../components/UI';
 
 interface TemplateStrings {
@@ -72,7 +71,7 @@ export interface CompliancePageData {
 export function CompliancePageTemplate({ data, lang = 'EN' }: { data: CompliancePageData; lang?: 'EN' | 'ES' }) {
   const { hero, risk, scope, why, cta } = data;
   const s = lang === 'ES' ? ES_STRINGS : EN_STRINGS;
-  const contactRoute = lang === 'ES' ? '/agendar-consultoria' : '/book-consultation';
+  const contactRoute = 'https://bookings.globalgatemexico.com';
 
   return (
     <div className="bg-white">
@@ -115,12 +114,14 @@ export function CompliancePageTemplate({ data, lang = 'EN' }: { data: Compliance
             <p className="text-base md:text-lg text-white/65 font-normal leading-relaxed mb-10 max-w-2xl">
               {hero.sub}
             </p>
-            <Link
-              to={contactRoute}
+            <a
+              href={contactRoute}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-block px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.5)] transition-all duration-200"
             >
               {s.cta1}
-            </Link>
+            </a>
           </motion.div>
         </Container>
       </section>
@@ -238,12 +239,14 @@ export function CompliancePageTemplate({ data, lang = 'EN' }: { data: Compliance
               <p className="text-white/65 text-[15px] max-w-xl mx-auto mb-10 leading-relaxed">
                 {cta.sub}
               </p>
-              <Link
-                to={contactRoute}
+              <a
+                href={contactRoute}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-block px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-white text-primary hover:bg-white/90 hover:shadow-lg transition-all duration-200"
               >
                 {s.cta1}
-              </Link>
+              </a>
             </FadeIn>
           </Container>
         </div>

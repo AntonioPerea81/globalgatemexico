@@ -1,14 +1,11 @@
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
 import { CheckCircle, Radiation } from 'lucide-react';
 import { Container, FadeIn, Eyebrow } from '../components/UI';
 import { useLanguage } from '../context/LanguageContext';
 import { usePageMeta } from '../hooks/usePageMeta';
 
-// Consultation CTA destination — update this single constant to swap to a
-// booking page (Calendly / Microsoft Bookings) when the paid intake flow is ready.
-const CLASS7_CONSULTATION_HREF = '/book-consultation';
+const CLASS7_CONSULTATION_HREF = 'https://bookings.globalgatemexico.com';
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
@@ -176,12 +173,14 @@ export const RadioactiveMaterialLogisticsPage = () => {
               </p>
 
               <div className="flex flex-wrap gap-4 mb-12">
-                <Link
-                  to={CLASS7_CONSULTATION_HREF}
+                <a
+                  href={CLASS7_CONSULTATION_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_28px_rgba(7,56,223,0.45)] transition-all duration-200 inline-block"
                 >
                   Request Consultation
-                </Link>
+                </a>
               </div>
 
               <div className="flex flex-wrap gap-x-8 gap-y-3 pt-7 border-t border-white/[0.07]">
@@ -753,12 +752,14 @@ export const RadioactiveMaterialLogisticsPage = () => {
             </p>
 
             <div className="flex flex-wrap gap-4 justify-center">
-              <Link
-                to={CLASS7_CONSULTATION_HREF}
+              <a
+                href={CLASS7_CONSULTATION_HREF}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.18em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_36px_rgba(7,56,223,0.45)] transition-all duration-200 inline-block"
               >
                 Request Consultation
-              </Link>
+              </a>
             </div>
           </FadeIn>
         </Container>

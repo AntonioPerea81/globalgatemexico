@@ -115,8 +115,6 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/transporte-terrestre-mercancias-peligrosas':  { EN: '/dangerous-goods-ground-transportation',      ES: '/transporte-terrestre-mercancias-peligrosas' },
   '/shipment-tracking':                           { EN: '/shipment-tracking',    ES: '/rastreo-de-embarques' },
   '/rastreo-de-embarques':                        { EN: '/shipment-tracking',    ES: '/rastreo-de-embarques' },
-  '/book-consultation':                           { EN: '/book-consultation',    ES: '/agendar-consultoria' },
-  '/agendar-consultoria':                         { EN: '/book-consultation',    ES: '/agendar-consultoria' },
 };
 
 export const Navbar = () => {
