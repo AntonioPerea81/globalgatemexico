@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Calendar, Shield, Truck, Radiation } from 'lucide-react';
+import { Calendar, Shield, Truck, Radiation, ExternalLink } from 'lucide-react';
 import { Container, FadeIn } from '../components/UI';
 import { useLanguage } from '../context/LanguageContext';
 import { usePageMeta } from '../hooks/usePageMeta';
@@ -92,29 +92,25 @@ export function BookConsultationPage() {
         </Container>
       </section>
 
-      {/* ── 2. TRAFFT BOOKING EMBED ─────────────────────────────────────── */}
-      <section style={{ background: '#060e1c', padding: '56px 0 96px' }}>
+      {/* ── 2. BOOKING CTA ──────────────────────────────────────────────── */}
+      <section style={{ background: '#060e1c', padding: '72px 0 104px' }}>
         <Container>
           <FadeIn>
-            {/* Premium frame */}
-            <div
-              style={{
-                background: '#050c17',
-                border: '1px solid rgba(255,255,255,0.08)',
-                boxShadow: '0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.03)',
-                overflow: 'hidden',
-              }}
-            >
-              <iframe
-                src={TRAFFT_URL}
-                title="Schedule a Consultation — Global Gate México"
-                width="100%"
-                loading="lazy"
-                className="block min-h-[1000px] md:min-h-[900px]"
-                style={{ border: 'none' }}
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
+            <div className="max-w-xl">
+              <a
+                href={TRAFFT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_36px_rgba(37,99,235,0.45)] transition-all duration-200 mb-7"
+              >
+                Open Booking Portal
+                <ExternalLink size={13} />
+              </a>
+
+              <p className="text-[13px] text-white/35 leading-relaxed">
+                You will be redirected to Global Gate México's secure booking portal to
+                select your consultation, complete payment, and receive calendar confirmation.
+              </p>
             </div>
           </FadeIn>
         </Container>
