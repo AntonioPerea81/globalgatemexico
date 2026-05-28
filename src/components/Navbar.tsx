@@ -46,6 +46,9 @@ const NAV_ITEMS: NavItem[] = [
     id: 'training',
     label: { EN: 'Training', ES: 'Capacitación' },
     href: { EN: '/training', ES: '/es/capacitacion' },
+    dropdown: [
+      { label: { EN: 'Online Academy', ES: 'Academia Online' }, href: { EN: '/training/online-academy', ES: '/training/online-academy' } },
+    ],
   },
   {
     id: 'radioactive',
@@ -115,6 +118,7 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/transporte-terrestre-mercancias-peligrosas':  { EN: '/dangerous-goods-ground-transportation',      ES: '/transporte-terrestre-mercancias-peligrosas' },
   '/shipment-tracking':                           { EN: '/shipment-tracking',    ES: '/rastreo-de-embarques' },
   '/rastreo-de-embarques':                        { EN: '/shipment-tracking',    ES: '/rastreo-de-embarques' },
+  '/training/online-academy':                     { EN: '/training/online-academy', ES: '/training/online-academy' },
 };
 
 export const Navbar = () => {

@@ -53,6 +53,7 @@ import { DangerousGoodsGroundTransportationPage } from './pages/DangerousGoodsGr
 import { TransporteTerrestreMercanciasPeligrosasPage } from './pages/TransporteTerrestreMercanciasPeligrosas';
 import { ShipmentTrackingPage } from './pages/ShipmentTracking';
 import { RastreoDeEmbarquesPage } from './pages/RastreoDeEmbarques';
+import { OnlineAcademyPage } from './pages/OnlineAcademy';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -99,6 +100,7 @@ export default function App() {
             <Route path="/logistica-material-radiactivo" element={<LogisticaMaterialRadiacticoPage />} />
             <Route path="/training" element={<TrainingPage />} />
             <Route path="/es/capacitacion" element={<CapacitacionPage />} />
+            <Route path="/training/online-academy" element={<OnlineAcademyPage />} />
             <Route path="/contact"  element={<ContactPage />} />
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/request-quote" element={<RequestQuotePage />} />
