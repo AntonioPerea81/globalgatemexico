@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
 import {
   GraduationCap, Award, BookOpen, Globe, ShieldCheck, Users,
   CheckCircle, Clock, Plane, Truck, Ship, Radiation,
@@ -283,9 +282,7 @@ function CertCard({ cert, primary = false }: { cert: Certification; primary?: bo
 }
 
 // ── CTA destinations ─────────────────────────────────────────────────────────
-// Formal corporate training proposals.
-// Swap to a Calendly / booking page URL when the paid intake flow is ready.
-const TRAINING_PROPOSAL_HREF = '/training-proposal';
+const TRAINING_PROPOSAL_HREF = 'https://bookings.globalgatemexico.com';
 
 // Quick commercial / pre-sales communication — WhatsApp direct.
 // Training-specific pre-filled message.
@@ -364,12 +361,14 @@ export function TrainingPage() {
                 Train your personnel with internationally certified instructors, real operational experience, and competency-based dangerous goods programs aligned with IATA, IMDG, SCT, and DOT requirements.
               </p>
               <div className="flex flex-wrap gap-3 mb-10">
-                <Link
-                  to={TRAINING_PROPOSAL_HREF}
+                <a
+                  href={TRAINING_PROPOSAL_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-block px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.5)] transition-all duration-200"
                 >
-                  Request Training Proposal
-                </Link>
+                  Schedule Training Consultation
+                </a>
                 <button
                   onClick={scrollToPrograms}
                   className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-transparent border border-white/25 text-white hover:border-white/60 hover:bg-white/5 transition-all duration-200"
@@ -618,23 +617,25 @@ export function TrainingPage() {
                   Need a Customized Dangerous Goods<br className="hidden sm:block" /> Training Program?
                 </h3>
                 <p className="text-secondary text-[13px] leading-relaxed max-w-lg">
-                  We help companies train personnel in compliance with international dangerous goods regulations across air, ground, and maritime operations.
+                  Custom dangerous goods training programs designed for shippers, freight forwarders, carriers, airlines and industrial operations handling regulated materials.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
-                <Link
-                  to={TRAINING_PROPOSAL_HREF}
+                <a
+                  href={TRAINING_PROPOSAL_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-block px-7 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_20px_rgba(7,56,223,0.35)] transition-all duration-200 whitespace-nowrap"
                 >
-                  Request Training Proposal
-                </Link>
+                  Schedule Training Consultation
+                </a>
                 <a
                   href={TRAINING_WA_HREF}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block px-7 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] bg-transparent border border-black/15 text-dark/60 hover:border-primary/40 hover:text-primary transition-all duration-200 whitespace-nowrap"
                 >
-                  Contact Our Team
+                  Chat With Our Team
                 </a>
               </div>
             </div>
@@ -828,22 +829,24 @@ export function TrainingPage() {
                 Train Your Team Before Mistakes Become Expensive.
               </h2>
               <p className="text-white/60 text-[15px] max-w-xl mx-auto mb-10 leading-relaxed">
-                We help companies develop competent dangerous goods personnel aligned with international regulations and the operational realities of air, ground, maritime, and cross-border logistics.
+                We help companies train personnel in compliance with international dangerous goods regulations across air, ground, maritime and radioactive material operations.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Link
-                  to={TRAINING_PROPOSAL_HREF}
+                <a
+                  href={TRAINING_PROPOSAL_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-block px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-white text-primary hover:bg-white/92 hover:shadow-lg transition-all duration-200"
                 >
-                  Request a Proposal
-                </Link>
+                  Schedule Training Consultation
+                </a>
                 <a
                   href={TRAINING_WA_HREF}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-transparent border-2 border-white/35 text-white hover:border-white hover:bg-white/10 transition-all duration-200"
                 >
-                  Contact Our Team
+                  Chat With Our Team
                 </a>
               </div>
             </FadeIn>
