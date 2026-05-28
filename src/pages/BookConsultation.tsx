@@ -32,7 +32,7 @@ export function BookConsultationPage() {
 
       {/* ── 1. HERO ─────────────────────────────────────────────────────── */}
       <section
-        className="relative pt-[106px] pb-20 lg:pb-28 overflow-hidden"
+        className="relative pt-[106px] pb-10 lg:pb-14 overflow-hidden"
         style={{ background: '#030810' }}
       >
         {/* Dot grid */}
@@ -93,7 +93,7 @@ export function BookConsultationPage() {
       </section>
 
       {/* ── 2. BOOKING CTA ──────────────────────────────────────────────── */}
-      <section style={{ background: '#060e1c', padding: '72px 0 104px' }}>
+      <section style={{ background: '#060e1c', padding: '40px 0 96px' }}>
         <Container>
           <FadeIn>
             <div className="max-w-xl">
