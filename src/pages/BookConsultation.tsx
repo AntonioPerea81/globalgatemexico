@@ -103,13 +103,13 @@ export function BookConsultationPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_36px_rgba(37,99,235,0.45)] transition-all duration-200 mb-7"
               >
-                Open Booking Portal
+                Book DG Consultation
                 <ExternalLink size={13} />
               </a>
 
               <p className="text-[13px] text-white/35 leading-relaxed">
-                You will be redirected to Global Gate México's secure booking portal to
-                select your consultation, complete payment, and receive calendar confirmation.
+                You will be redirected to Global Gate México's secure consultation scheduling
+                platform to select your service, complete payment, and receive calendar confirmation.
               </p>
             </div>
           </FadeIn>
