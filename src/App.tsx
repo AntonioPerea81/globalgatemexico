@@ -53,6 +53,7 @@ import { DangerousGoodsGroundTransportationPage } from './pages/DangerousGoodsGr
 import { TransporteTerrestreMercanciasPeligrosasPage } from './pages/TransporteTerrestreMercanciasPeligrosas';
 import { ShipmentTrackingPage } from './pages/ShipmentTracking';
 import { RastreoDeEmbarquesPage } from './pages/RastreoDeEmbarques';
+import { BookConsultationPage } from './pages/BookConsultation';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -116,6 +117,7 @@ export default function App() {
             <Route path="/transporte-terrestre-mercancias-peligrosas" element={<TransporteTerrestreMercanciasPeligrosasPage />} />
             <Route path="/shipment-tracking"     element={<ShipmentTrackingPage />} />
             <Route path="/rastreo-de-embarques" element={<RastreoDeEmbarquesPage />} />
+            <Route path="/book-consultation"    element={<BookConsultationPage />} />
             <Route path="*"         element={<Home />} />
           </Routes>
         </Layout>

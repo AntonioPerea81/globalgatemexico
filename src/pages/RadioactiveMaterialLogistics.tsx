@@ -8,7 +8,7 @@ import { usePageMeta } from '../hooks/usePageMeta';
 
 // Consultation CTA destination — update this single constant to swap to a
 // booking page (Calendly / Microsoft Bookings) when the paid intake flow is ready.
-const CLASS7_CONSULTATION_HREF = '/contact';
+const CLASS7_CONSULTATION_HREF = '/book-consultation';
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 

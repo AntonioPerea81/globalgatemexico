@@ -8,7 +8,7 @@ import { usePageMeta } from '../hooks/usePageMeta';
 
 // Destino del CTA de consulta — actualizar este constante para conectar a
 // Calendly / Microsoft Bookings cuando el flujo de reserva esté listo.
-const CLASS7_CONSULTATION_HREF = '/contacto';
+const CLASS7_CONSULTATION_HREF = '/book-consultation';
 
 // ── Datos ─────────────────────────────────────────────────────────────────────
 

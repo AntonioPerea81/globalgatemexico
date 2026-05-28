@@ -131,7 +131,7 @@ const INDUSTRIES = [
 // When the paid booking page is ready (Calendly / Microsoft Bookings / TidyCal),
 // update this single constant and every "Request a Consultation" CTA on this
 // page will switch automatically.
-const CONSULTATION_HREF = '/contact';
+const CONSULTATION_HREF = '/book-consultation';
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
