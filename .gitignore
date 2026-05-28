@@ -6,3 +6,9 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Claude Code internal worktrees
+.claude/worktrees/
+
+# Supabase CLI temp files
+supabase/.temp/
