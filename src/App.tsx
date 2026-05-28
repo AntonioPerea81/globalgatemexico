@@ -54,6 +54,7 @@ import { TransporteTerrestreMercanciasPeligrosasPage } from './pages/TransporteT
 import { ShipmentTrackingPage } from './pages/ShipmentTracking';
 import { RastreoDeEmbarquesPage } from './pages/RastreoDeEmbarques';
 import { BookConsultationPage } from './pages/BookConsultation';
+import { AgendarConsultoriaPage } from './pages/AgendarConsultoria';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -118,6 +119,7 @@ export default function App() {
             <Route path="/shipment-tracking"     element={<ShipmentTrackingPage />} />
             <Route path="/rastreo-de-embarques" element={<RastreoDeEmbarquesPage />} />
             <Route path="/book-consultation"    element={<BookConsultationPage />} />
+            <Route path="/agendar-consultoria"  element={<AgendarConsultoriaPage />} />
             <Route path="*"         element={<Home />} />
           </Routes>
         </Layout>

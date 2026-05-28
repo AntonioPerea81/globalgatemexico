@@ -9,21 +9,21 @@ import { usePageMeta } from '../hooks/usePageMeta';
 // Do NOT change this URL. It is the official GGM Trafft public booking link.
 const TRAFFT_URL = 'https://globalgatemexico.trafft.com';
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// ── Página ────────────────────────────────────────────────────────────────────
 
-export function BookConsultationPage() {
+export function AgendarConsultoriaPage() {
   const { setLanguage } = useLanguage();
-  useEffect(() => { setLanguage('EN'); }, []);
+  useEffect(() => { setLanguage('ES'); }, []);
 
   usePageMeta({
-    title: 'Book a Consultation | Global Gate México',
+    title: 'Agendar Consultoría | Global Gate México',
     description:
-      'Schedule a consultation with Global Gate México specialists in dangerous goods transportation, radioactive materials logistics, regulatory compliance, and CBTA training solutions.',
-    canonical: 'https://globalgatemexico.com/book-consultation',
-    lang: 'en',
+      'Agenda una consulta con los especialistas de Global Gate México en transporte de mercancías peligrosas, logística de materiales radiactivos, cumplimiento regulatorio y soluciones de capacitación CBTA.',
+    canonical: 'https://globalgatemexico.com/agendar-consultoria',
+    lang: 'es',
     hreflang: [
-      { lang: 'en', href: 'https://globalgatemexico.com/book-consultation' },
       { lang: 'es', href: 'https://globalgatemexico.com/agendar-consultoria' },
+      { lang: 'en', href: 'https://globalgatemexico.com/book-consultation' },
       { lang: 'x-default', href: 'https://globalgatemexico.com/book-consultation' },
     ],
   });
@@ -59,29 +59,29 @@ export function BookConsultationPage() {
             <div className="flex items-center gap-4 mb-8">
               <div className="w-8 h-px bg-primary/45" />
               <span className="text-[10px] font-black uppercase tracking-[0.28em] text-primary/68">
-                Schedule a Consultation · DG Specialists · Since 2006
+                Agendar Consultoría · Especialistas DG · Desde 2006
               </span>
             </div>
 
             {/* Headline */}
             <h1 className="text-4xl md:text-5xl xl:text-[3.2rem] font-extrabold text-white leading-[1.06] tracking-tight mb-6">
-              Schedule a Dangerous<br />Goods Consultation.
+              Agenda una Consultoría en<br />Mercancías Peligrosas.
             </h1>
 
             {/* Sub */}
             <p className="text-white/50 text-[16px] leading-relaxed max-w-2xl mb-10">
-              Book a consultation with Global Gate México specialists in dangerous goods
-              transportation, radioactive materials logistics, regulatory compliance, and
-              CBTA training solutions.
+              Agenda una consulta con los especialistas de Global Gate México en transporte
+              de mercancías peligrosas, logística de materiales radiactivos, cumplimiento
+              regulatorio y soluciones de capacitación CBTA.
             </p>
 
             {/* Trust strip */}
             <div className="flex flex-wrap items-center gap-x-8 gap-y-3 pt-7 border-t border-white/[0.07]">
               {[
-                { Icon: Shield,    label: 'IATA CBTA Certified' },
-                { Icon: Radiation, label: 'CNSNS Authorized' },
-                { Icon: Truck,     label: 'SICT Licensed' },
-                { Icon: Calendar,  label: 'Operational Since 2006' },
+                { Icon: Shield,    label: 'Proveedor IATA CBTA' },
+                { Icon: Radiation, label: 'Autorizado CNSNS' },
+                { Icon: Truck,     label: 'Permiso SICT' },
+                { Icon: Calendar,  label: 'Operando desde 2006' },
               ].map(({ Icon, label }) => (
                 <div key={label} className="flex items-center gap-2.5">
                   <Icon size={12} className="text-primary/45 shrink-0" />
@@ -93,7 +93,7 @@ export function BookConsultationPage() {
         </Container>
       </section>
 
-      {/* ── 2. BOOKING CTA ──────────────────────────────────────────────── */}
+      {/* ── 2. CTA DE RESERVA ───────────────────────────────────────────── */}
       <section style={{ background: '#060e1c', padding: '40px 0 96px' }}>
         <Container>
           <FadeIn>
@@ -104,13 +104,14 @@ export function BookConsultationPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_36px_rgba(37,99,235,0.45)] transition-all duration-200 mb-7"
               >
-                Book DG Consultation
+                Agendar Consultoría DG
                 <ExternalLink size={13} />
               </a>
 
               <p className="text-[13px] text-white/35 leading-relaxed">
-                You will be redirected to Global Gate México's secure consultation scheduling
-                platform to select your service, complete payment, and receive calendar confirmation.
+                Serás redirigido a la plataforma segura de programación de consultas de
+                Global Gate México para seleccionar tu servicio, completar el pago y
+                recibir la confirmación en tu calendario.
               </p>
             </div>
           </FadeIn>

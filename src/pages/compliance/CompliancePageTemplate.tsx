@@ -72,7 +72,7 @@ export interface CompliancePageData {
 export function CompliancePageTemplate({ data, lang = 'EN' }: { data: CompliancePageData; lang?: 'EN' | 'ES' }) {
   const { hero, risk, scope, why, cta } = data;
   const s = lang === 'ES' ? ES_STRINGS : EN_STRINGS;
-  const contactRoute = '/book-consultation';
+  const contactRoute = lang === 'ES' ? '/agendar-consultoria' : '/book-consultation';
 
   return (
     <div className="bg-white">
