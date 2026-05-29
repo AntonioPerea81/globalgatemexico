@@ -141,6 +141,9 @@ export const LogisticaMaterialRadiacticoPage = () => {
           />
         </div>
 
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
+
         <Container className="relative z-20 w-full pb-20 lg:pb-28">
           <div className="max-w-4xl">
             <motion.div
@@ -200,9 +203,6 @@ export const LogisticaMaterialRadiacticoPage = () => {
             </motion.div>
           </div>
         </Container>
-
-        {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#060e1c] to-transparent z-10 pointer-events-none" />
       </section>
 
       {/* ── 2. FRANJA DE CREDIBILIDAD ─────────────────────────────────────────── */}

@@ -75,7 +75,7 @@ export const AboutPage = () => {
         <div className="absolute bottom-0 right-[5%] w-[500px] h-[400px] rounded-full blur-[110px] pointer-events-none"
           style={{ background: 'radial-gradient(ellipse, rgba(30,64,175,0.05) 0%, transparent 70%)' }} />
 
-        <div className="relative max-w-7xl mx-auto px-8 lg:px-12">
+        <div className="relative z-20 max-w-7xl mx-auto px-8 lg:px-12">
           {/* Section label */}
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -119,7 +119,7 @@ export const AboutPage = () => {
         </div>
 
         {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#060e1c] to-transparent z-10 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
       </section>
 
       {/* ── Metrics Grid ──────────────────────────────────────────────────── */}
@@ -248,7 +248,7 @@ export const AcercaPage = () => {
         <div className="absolute bottom-0 right-[5%] w-[500px] h-[400px] rounded-full blur-[110px] pointer-events-none"
           style={{ background: 'radial-gradient(ellipse, rgba(30,64,175,0.05) 0%, transparent 70%)' }} />
 
-        <div className="relative max-w-7xl mx-auto px-8 lg:px-12">
+        <div className="relative z-20 max-w-7xl mx-auto px-8 lg:px-12">
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -288,7 +288,7 @@ export const AcercaPage = () => {
         </div>
 
         {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#060e1c] to-transparent z-10 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
       </section>
 
       {/* ── Métricas Grid ─────────────────────────────────────────────────── */}
