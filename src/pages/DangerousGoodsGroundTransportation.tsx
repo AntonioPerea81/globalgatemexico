@@ -242,6 +242,9 @@ export function DangerousGoodsGroundTransportationPage() {
             </motion.div>
           </div>
         </Container>
+
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#060e1c] to-transparent z-10 pointer-events-none" />
       </section>
 
       {/* ── 2. CREDIBILITY STRIP ─────────────────────────────────────────────── */}
