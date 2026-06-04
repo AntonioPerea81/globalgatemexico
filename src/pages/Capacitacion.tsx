@@ -281,6 +281,15 @@ function CertCard({ cert, primary = false }: { cert: Certification; primary?: bo
   );
 }
 
+// ── Destinos de CTA ───────────────────────────────────────────────────────────
+
+// Plataforma de reservas — misma que la página de Training en inglés.
+const TRAINING_PROPOSAL_HREF = 'https://bookings.globalgatemexico.com';
+
+// Canal WhatsApp preconfigurado con mensaje de capacitación en español.
+const TRAINING_WA_HREF =
+  'https://wa.me/525587894742?text=Hola%20GGM%2C%20me%20interesa%20capacitaci%C3%B3n%20en%20mercanc%C3%ADas%20peligrosas%20para%20mi%20equipo.';
+
 // ── Página ────────────────────────────────────────────────────────────────────
 
 export function CapacitacionPage() {
@@ -294,10 +303,6 @@ export function CapacitacionPage() {
     canonical: 'https://globalgatemexico.com/es/capacitacion',
     lang: 'es',
   });
-
-  function scrollToContact() {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  }
 
   function scrollToPrograms() {
     document.getElementById('programas')?.scrollIntoView({ behavior: 'smooth' });
@@ -357,12 +362,14 @@ export function CapacitacionPage() {
                 Forme a su personal con instructores certificados internacionalmente, experiencia operativa real y programas de capacitación basada en competencias, alineados con IATA, IMDG, SCT y DOT.
               </p>
               <div className="flex flex-wrap gap-3 mb-10">
-                <button
-                  onClick={scrollToContact}
-                  className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.5)] transition-all duration-200"
+                <a
+                  href={TRAINING_PROPOSAL_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.5)] transition-all duration-200"
                 >
                   Solicitar Propuesta de Capacitación
-                </button>
+                </a>
                 <button
                   onClick={scrollToPrograms}
                   className="px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-transparent border border-white/25 text-white hover:border-white/60 hover:bg-white/5 transition-all duration-200"
@@ -615,18 +622,22 @@ export function CapacitacionPage() {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
-                <button
-                  onClick={scrollToContact}
-                  className="px-7 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_20px_rgba(7,56,223,0.35)] transition-all duration-200 whitespace-nowrap"
+                <a
+                  href={TRAINING_PROPOSAL_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-7 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_20px_rgba(7,56,223,0.35)] transition-all duration-200 whitespace-nowrap"
                 >
                   Solicitar Propuesta de Capacitación
-                </button>
-                <button
-                  onClick={scrollToContact}
-                  className="px-7 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] bg-transparent border border-black/15 text-dark/60 hover:border-primary/40 hover:text-primary transition-all duration-200 whitespace-nowrap"
+                </a>
+                <a
+                  href={TRAINING_WA_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-7 py-3.5 text-[10px] font-black uppercase tracking-[0.15em] bg-transparent border border-black/15 text-dark/60 hover:border-primary/40 hover:text-primary transition-all duration-200 whitespace-nowrap"
                 >
                   Contactar al Equipo
-                </button>
+                </a>
               </div>
             </div>
           </FadeIn>
@@ -822,18 +833,22 @@ export function CapacitacionPage() {
                 Ayudamos a las empresas a desarrollar personal competente en mercancías peligrosas, alineado con la normativa internacional y las realidades operativas del transporte aéreo, terrestre, marítimo y transfronterizo.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <button
-                  onClick={scrollToContact}
-                  className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-white text-primary hover:bg-white/92 hover:shadow-lg transition-all duration-200"
+                <a
+                  href={TRAINING_PROPOSAL_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-white text-primary hover:bg-white/92 hover:shadow-lg transition-all duration-200"
                 >
                   Solicitar Propuesta
-                </button>
-                <button
-                  onClick={scrollToContact}
-                  className="px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-transparent border-2 border-white/35 text-white hover:border-white hover:bg-white/10 transition-all duration-200"
+                </a>
+                <a
+                  href={TRAINING_WA_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-10 py-4 text-[11px] font-black uppercase tracking-[0.15em] bg-transparent border-2 border-white/35 text-white hover:border-white hover:bg-white/10 transition-all duration-200"
                 >
                   Hablar con un Especialista
-                </button>
+                </a>
               </div>
             </FadeIn>
           </Container>
