@@ -151,57 +151,6 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
         </Container>
       </section>
 
-      <section className="py-20 lg:py-28 bg-[#f7f8fb]">
-        <Container>
-          <FadeIn className="max-w-2xl mb-12">
-            <Eyebrow>Choose your course</Eyebrow>
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-4">Initial or recurrent training</h2>
-            <p className="text-secondary leading-relaxed">Select the option that matches your current experience and certification status.</p>
-          </FadeIn>
-          <div className="grid lg:grid-cols-2 gap-6">
-            <FadeIn>
-              <article className="h-full bg-white border border-black/[0.08] border-t-[3px] border-t-primary p-7 md:p-9 flex flex-col">
-                <div className="flex items-start justify-between gap-6 mb-8">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-black mb-2">Initial training</p>
-                    <h3 className="text-2xl font-extrabold">CAD $1,200 <span className="text-sm text-secondary font-semibold">per participant</span></h3>
-                  </div>
-                  <GraduationCap className="text-primary" size={26} />
-                </div>
-                <div className="grid grid-cols-2 gap-3 mb-7">
-                  <Detail icon={Clock3} label="Duration" value="24 hours" />
-                  <Detail icon={CalendarDays} label="Schedule" value="3 consecutive days" />
-                </div>
-                <p className="text-sm text-secondary leading-relaxed mb-7">No previous dangerous goods experience is required. Recommended level: Basic.</p>
-                <a href="#dates" className="mt-auto inline-flex justify-center items-center gap-2 bg-primary text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black hover:bg-[#052db5] transition-colors">
-                  View available dates <ArrowRight size={15} />
-                </a>
-              </article>
-            </FadeIn>
-
-            <FadeIn delay={0.08}>
-              <article className="h-full bg-[#07101f] text-white border border-white/[0.08] border-t-[3px] border-t-[#d6b850] p-7 md:p-9 flex flex-col">
-                <div className="flex items-start justify-between gap-6 mb-8">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-[#d6b850] font-black mb-2">Recurrent training</p>
-                    <h3 className="text-2xl font-extrabold">CAD $1,000 <span className="text-sm text-white/38 font-semibold">per participant</span></h3>
-                  </div>
-                  <ShieldCheck className="text-[#d6b850]" size={26} />
-                </div>
-                <div className="grid grid-cols-2 gap-3 mb-7">
-                  <Detail icon={Clock3} label="Duration" value="16 hours" dark />
-                  <Detail icon={CalendarDays} label="Schedule" value="2 consecutive days" dark />
-                </div>
-                <p className="text-sm text-white/48 leading-relaxed mb-7">Valid prior training for the corresponding function is required. Recommended level: Intermediate.</p>
-                <Link to="/training-proposal" className="mt-auto inline-flex justify-center items-center gap-2 border border-white/15 text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black hover:border-white/35 transition-colors">
-                  Request on-demand dates <ArrowRight size={15} />
-                </Link>
-              </article>
-            </FadeIn>
-          </div>
-        </Container>
-      </section>
-
       <section className="py-20 lg:py-28 bg-white">
         <Container>
           <div className="grid lg:grid-cols-[0.72fr_1.28fr] gap-12 lg:gap-20 items-start">
@@ -263,6 +212,57 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
               <button type="button" disabled className="mt-7 w-full bg-primary/35 text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black cursor-not-allowed">
                 Online enrollment opening soon
               </button>
+            </FadeIn>
+          </div>
+        </Container>
+      </section>
+
+      <section className="py-20 lg:py-28 bg-white">
+        <Container>
+          <FadeIn className="max-w-2xl mb-12">
+            <Eyebrow>Course options and tuition</Eyebrow>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4">Initial or recurrent training</h2>
+            <p className="text-secondary leading-relaxed">Choose the option that matches your current experience and certification status.</p>
+          </FadeIn>
+          <div className="grid lg:grid-cols-2 gap-6">
+            <FadeIn>
+              <article className="h-full bg-white border border-black/[0.08] border-t-[3px] border-t-primary p-7 md:p-9 flex flex-col shadow-[0_18px_50px_rgba(8,20,45,0.06)]">
+                <div className="flex items-start justify-between gap-6 mb-8">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-black mb-2">Initial training</p>
+                    <h3 className="text-2xl font-extrabold">CAD $1,200 <span className="text-sm text-secondary font-semibold">per participant</span></h3>
+                  </div>
+                  <GraduationCap className="text-primary" size={26} />
+                </div>
+                <div className="grid grid-cols-2 gap-3 mb-7">
+                  <Detail icon={Clock3} label="Duration" value="24 hours" />
+                  <Detail icon={CalendarDays} label="Schedule" value="3 consecutive days" />
+                </div>
+                <p className="text-sm text-secondary leading-relaxed mb-7">No previous dangerous goods experience is required. Recommended level: Basic.</p>
+                <a href="#dates" className="mt-auto inline-flex justify-center items-center gap-2 bg-primary text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black hover:bg-[#052db5] transition-colors">
+                  Review available dates <ArrowRight size={15} />
+                </a>
+              </article>
+            </FadeIn>
+
+            <FadeIn delay={0.08}>
+              <article className="h-full bg-[#07101f] text-white border border-white/[0.08] border-t-[3px] border-t-[#d6b850] p-7 md:p-9 flex flex-col shadow-[0_18px_50px_rgba(8,20,45,0.14)]">
+                <div className="flex items-start justify-between gap-6 mb-8">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-[#d6b850] font-black mb-2">Recurrent training</p>
+                    <h3 className="text-2xl font-extrabold">CAD $1,000 <span className="text-sm text-white/38 font-semibold">per participant</span></h3>
+                  </div>
+                  <ShieldCheck className="text-[#d6b850]" size={26} />
+                </div>
+                <div className="grid grid-cols-2 gap-3 mb-7">
+                  <Detail icon={Clock3} label="Duration" value="16 hours" dark />
+                  <Detail icon={CalendarDays} label="Schedule" value="2 consecutive days" dark />
+                </div>
+                <p className="text-sm text-white/48 leading-relaxed mb-7">Valid prior training for the corresponding function is required. Recommended level: Intermediate.</p>
+                <Link to="/training-proposal" className="mt-auto inline-flex justify-center items-center gap-2 border border-white/15 text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black hover:border-white/35 transition-colors">
+                  Request on-demand dates <ArrowRight size={15} />
+                </Link>
+              </article>
             </FadeIn>
           </div>
         </Container>
