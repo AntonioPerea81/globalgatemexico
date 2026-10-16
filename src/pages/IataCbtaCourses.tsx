@@ -84,31 +84,50 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
         <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,.16) 1px, transparent 0)', backgroundSize: '34px 34px' }} />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_35%,rgba(7,56,223,.25),transparent_38%)]" />
         <Container className="relative z-10">
-          <FadeIn className="max-w-4xl">
-            <div className="flex items-center gap-3 mb-7">
-              <span className="px-3 py-1 bg-primary text-[10px] font-black uppercase tracking-[0.2em]">{course.label}</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/45">IATA CBTA · Live Virtual</span>
-            </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-[-0.035em] leading-[1.02] max-w-3xl mb-6">
-              {course.title}
-            </h1>
-            <p className="text-base md:text-lg leading-relaxed text-white/58 max-w-2xl mb-10">
-              {course.description}
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 max-w-3xl">
-              {[
-                ['Delivery', 'Live online'],
-                ['Language', 'English'],
-                ['Time', '8:00–16:00 ET'],
-                ['Class size', 'Maximum 10'],
-              ].map(([label, value]) => (
-                <div key={label} className="bg-[#07101f] p-5">
-                  <p className="text-[9px] uppercase tracking-[0.18em] text-white/28 font-black mb-2">{label}</p>
-                  <p className="text-sm font-bold text-white/85">{value}</p>
+          <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-12 lg:gap-16 items-center">
+            <FadeIn>
+              <div className="flex items-center gap-3 mb-7">
+                <span className="px-3 py-1 bg-primary text-[10px] font-black uppercase tracking-[0.2em]">{course.label}</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/45">IATA CBTA · Live Virtual</span>
+              </div>
+              <h1 className="text-4xl md:text-6xl font-extrabold tracking-[-0.035em] leading-[1.02] max-w-3xl mb-6">
+                {course.title}
+              </h1>
+              <p className="text-base md:text-lg leading-relaxed text-white/58 max-w-2xl mb-10">
+                {course.description}
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10 max-w-3xl">
+                {[
+                  ['Delivery', 'Live online'],
+                  ['Language', 'English'],
+                  ['Time', '8:00–16:00 ET'],
+                  ['Class size', 'Maximum 10'],
+                ].map(([label, value]) => (
+                  <div key={label} className="bg-[#07101f] p-5">
+                    <p className="text-[9px] uppercase tracking-[0.18em] text-white/28 font-black mb-2">{label}</p>
+                    <p className="text-sm font-bold text-white/85">{value}</p>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.12} className="flex justify-center lg:justify-end">
+              <aside className="relative w-full max-w-[280px] bg-white/[0.055] border border-white/10 p-7 text-center shadow-[0_28px_70px_rgba(0,0,0,0.35)] backdrop-blur-sm">
+                <div className="absolute top-0 inset-x-0 h-[3px] bg-[#f7c844]" />
+                <div className="absolute -inset-px bg-[radial-gradient(circle_at_50%_35%,rgba(247,200,68,.14),transparent_58%)] pointer-events-none" />
+                <img
+                  src="/IATA-CBTA_Provider_RGB.png"
+                  alt="IATA Competency Training and Assessment Center Provider"
+                  className="relative w-[190px] md:w-[215px] h-auto mx-auto drop-shadow-[0_16px_30px_rgba(0,0,0,0.35)]"
+                />
+                <div className="relative mt-5 pt-5 border-t border-white/10">
+                  <p className="text-[10px] uppercase tracking-[0.22em] font-black text-[#f7c844] mb-2">Recognized training provider</p>
+                  <p className="text-sm font-bold text-white/85">IATA CBTA Provider</p>
+                  <p className="text-[11px] text-white/40 mt-1">Certified functions 7.1 and 7.3</p>
                 </div>
-              ))}
-            </div>
-          </FadeIn>
+              </aside>
+            </FadeIn>
+          </div>
         </Container>
       </section>
 

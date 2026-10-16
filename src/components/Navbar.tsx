@@ -47,6 +47,8 @@ const NAV_ITEMS: NavItem[] = [
     label: { EN: 'Training', ES: 'Capacitación' },
     href: { EN: '/training', ES: '/es/capacitacion' },
     dropdown: [
+      { label: { EN: 'IATA CBTA Function 7.1', ES: 'IATA CBTA Función 7.1' }, href: { EN: '/training/iata-cbta-7-1', ES: '/training/iata-cbta-7-1' } },
+      { label: { EN: 'IATA CBTA Function 7.3', ES: 'IATA CBTA Función 7.3' }, href: { EN: '/training/iata-cbta-7-3', ES: '/training/iata-cbta-7-3' } },
       { label: { EN: 'Online Academy', ES: 'Academia Online' }, href: { EN: '/training/online-academy', ES: '/training/online-academy' } },
     ],
   },
@@ -119,6 +121,8 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/shipment-tracking':                           { EN: '/shipment-tracking',    ES: '/rastreo-de-embarques' },
   '/rastreo-de-embarques':                        { EN: '/shipment-tracking',    ES: '/rastreo-de-embarques' },
   '/training/online-academy':                     { EN: '/training/online-academy', ES: '/training/online-academy' },
+  '/training/iata-cbta-7-1':                      { EN: '/training/iata-cbta-7-1', ES: '/training/iata-cbta-7-1' },
+  '/training/iata-cbta-7-3':                      { EN: '/training/iata-cbta-7-3', ES: '/training/iata-cbta-7-3' },
 };
 
 export const Navbar = () => {
