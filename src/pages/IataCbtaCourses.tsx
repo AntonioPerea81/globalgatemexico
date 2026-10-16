@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, BookOpen, CalendarDays, CheckCircle2, Clock3,
-  FileCheck2, GraduationCap, Monitor, PackageCheck, ShieldCheck, Users,
+  FileCheck2, GraduationCap, Monitor, PackageCheck, ShieldCheck, Target,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Container, FadeIn, Eyebrow } from '../components/UI';
@@ -30,14 +30,24 @@ const COURSE_DATA = {
       'Personnel responsible for classification, packing, marking or labelling',
       'Operator personnel acting as the shipper',
     ],
-    curriculum: [
-      'Regulatory scope, responsibilities, limitations and variations',
-      'Identification and classification of dangerous goods',
-      'Packing instructions, quantity limits and package selection',
-      'Marks, labels and overpack requirements',
-      'Dangerous Goods Declarations and air waybill information',
-      'Practical shipment-preparation exercises using the current IATA DGR',
+    objectives: [
+      'Interpret and apply the current IATA Dangerous Goods Regulations to the preparation of air cargo shipments.',
+      'Identify and classify dangerous goods, including applicable limitations, quantity provisions and variations.',
+      'Select compliant packaging and correctly apply marks, labels and overpack requirements.',
+      'Prepare accurate shipment documentation and complete a compliant dangerous goods consignment from start to finish.',
     ],
+    curriculum: [
+      'Regulatory framework, stakeholder responsibilities and compliance obligations',
+      'General limitations, forbidden dangerous goods, exemptions and State or Operator variations',
+      'Classification, identification, UN numbers, proper shipping names and packing groups',
+      'Packing instructions, package specifications and net quantity limits',
+      'Marks, hazard and handling labels, and overpack requirements',
+      'Shipper’s Declaration for Dangerous Goods and air waybill information',
+      'Reporting requirements and communication of hazards through the transport chain',
+      'Case studies, practical shipment and documentation exercises, and final assessment',
+    ],
+    recurrentFocus: 'Recurrent training refreshes these competencies and incorporates significant changes and amendments from the latest IATA DGR edition.',
+    scopeNote: 'This function course does not include the preparation of Class 7 radioactive material consignments.',
     path: 'iata-cbta-7-1',
   },
   '7.3': {
@@ -50,14 +60,24 @@ const COURSE_DATA = {
       'Ground-handling personnel responsible for acceptance checks',
       'Supervisors overseeing dangerous goods acceptance activities',
     ],
-    curriculum: [
-      'Regulatory scope, responsibilities, limitations and variations',
-      'Shipment documentation and package verification',
-      'Use of the dangerous goods acceptance checklist',
-      'Marks, labels, packaging and quantity-limit checks',
-      'Identification of discrepancies and required corrective action',
-      'Pre-loading information and practical acceptance exercises',
+    objectives: [
+      'Apply the current IATA Dangerous Goods Regulations when performing a dangerous goods acceptance check.',
+      'Verify the accuracy and consistency of transport documents, packaging, quantities, marks and labels.',
+      'Complete the acceptance checklist while applying relevant State and Operator variations.',
+      'Recognize discrepancies, determine the required corrective action and make a sound accept-or-reject decision.',
     ],
+    curriculum: [
+      'Regulatory framework, stakeholder responsibilities and mandatory acceptance duties',
+      'General limitations and the effect of State and Operator variations',
+      'Identification and classification information relevant to acceptance personnel',
+      'Verification of the Dangerous Goods Declaration and air waybill information',
+      'Packaging types, quantity limitations, marks, labels and overpacks',
+      'Correct completion and application of the dangerous goods acceptance checklist',
+      'Acceptance provisions relevant to Class 7 radioactive material shipments',
+      'Discrepancy handling, simulated acceptance scenarios, case studies and final assessment',
+    ],
+    recurrentFocus: 'Recurrent training reinforces the acceptance process and addresses significant changes and amendments from the latest IATA DGR edition.',
+    scopeNote: 'Practical exercises use simulated shipment and documentation scenarios to support operational decision-making.',
     path: 'iata-cbta-7-3',
   },
 } as const;
@@ -182,7 +202,39 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
         </Container>
       </section>
 
-      <section id="dates" className="py-20 lg:py-28 bg-white scroll-mt-24">
+      <section className="py-20 lg:py-28 bg-white">
+        <Container>
+          <div className="grid lg:grid-cols-[0.72fr_1.28fr] gap-12 lg:gap-20 items-start">
+            <FadeIn>
+              <Eyebrow>Learning objectives</Eyebrow>
+              <h2 className="text-3xl md:text-4xl font-extrabold mb-5">What you will be prepared to do</h2>
+              <p className="text-secondary leading-relaxed mb-7">
+                Develop the practical knowledge and judgment required to perform the responsibilities assigned to {course.label} personnel with confidence and regulatory awareness.
+              </p>
+              <div className="flex items-start gap-3 border-l-[3px] border-primary bg-[#f5f7fc] p-5">
+                <Target size={19} className="text-primary shrink-0 mt-0.5" />
+                <p className="text-sm leading-relaxed text-dark/68">{course.recurrentFocus}</p>
+              </div>
+            </FadeIn>
+
+            <div className="grid sm:grid-cols-2 gap-px bg-black/[0.07]">
+              {course.objectives.map((objective, index) => (
+                <FadeIn key={objective} delay={index * 0.05}>
+                  <article className="h-full bg-white p-7 md:p-8">
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="text-[10px] uppercase tracking-[0.2em] font-black text-primary">Objective</span>
+                      <span className="text-2xl font-extrabold text-black/[0.09]">0{index + 1}</span>
+                    </div>
+                    <p className="text-sm leading-relaxed text-dark/72 font-medium">{objective}</p>
+                  </article>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <section id="dates" className="py-20 lg:py-28 bg-[#f7f8fb] scroll-mt-24">
         <Container>
           <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-12 lg:gap-20 items-start">
             <FadeIn>
@@ -230,12 +282,13 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
             </FadeIn>
             <FadeIn delay={0.08}>
               <Eyebrow light>Course content</Eyebrow>
-              <h2 className="text-3xl font-extrabold mb-8">Practical competency development</h2>
+              <h2 className="text-3xl font-extrabold mb-8">Topics covered during the course</h2>
               <ul className="space-y-4">
                 {course.curriculum.map((item) => (
                   <li key={item} className="flex gap-3 text-sm leading-relaxed text-white/58"><CheckCircle2 size={17} className="text-primary shrink-0 mt-0.5" />{item}</li>
                 ))}
               </ul>
+              <p className="mt-7 pt-6 border-t border-white/10 text-xs leading-relaxed text-white/38">{course.scopeNote}</p>
             </FadeIn>
           </div>
         </Container>
