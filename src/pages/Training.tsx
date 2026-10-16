@@ -126,6 +126,10 @@ const PROGRAMS = [
     title: 'IATA Dangerous Goods Regulations',
     desc: 'Full IATA DGR compliance training for shippers, freight forwarders, and airline personnel. Initial and recurrent courses aligned with the current IATA edition.',
     audience: 'Shippers · Forwarders · Airlines',
+    links: [
+      { label: 'Function 7.1', href: '/training/iata-cbta-7-1' },
+      { label: 'Function 7.3', href: '/training/iata-cbta-7-3' },
+    ],
   },
   {
     Icon: Truck,
@@ -572,7 +576,7 @@ export function TrainingPage() {
           </FadeIn>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-black/[0.06]">
-            {PROGRAMS.map(({ Icon: PIcon, code, title, desc, audience }, i) => (
+            {PROGRAMS.map(({ Icon: PIcon, code, title, desc, audience, links }, i) => (
               <FadeIn key={title} delay={i * 0.05}>
                 <div className="group bg-white p-7 h-full flex flex-col hover:bg-[#060e1c] transition-colors duration-300">
 
@@ -600,6 +604,16 @@ export function TrainingPage() {
                   <p className="mt-auto text-[9px] text-primary/60 uppercase tracking-[0.15em] font-black group-hover:text-primary/80 transition-colors">
                     {audience}
                   </p>
+
+                  {links && (
+                    <div className="mt-5 pt-5 border-t border-black/[0.06] group-hover:border-white/[0.08] flex flex-wrap gap-3">
+                      {links.map((link) => (
+                        <a key={link.href} href={link.href} className="text-[9px] uppercase tracking-[0.14em] font-black text-primary hover:text-primary/70">
+                          {link.label} →
+                        </a>
+                      ))}
+                    </div>
+                  )}
 
                 </div>
               </FadeIn>
