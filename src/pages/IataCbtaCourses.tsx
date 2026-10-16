@@ -12,11 +12,11 @@ import { usePageMeta } from '../hooks/usePageMeta';
 type CourseFunction = '7.1' | '7.3';
 
 const INITIAL_DATES = [
-  { month: 'January', days: '19–21', year: '2027' },
-  { month: 'February', days: '16–18', year: '2027' },
-  { month: 'April', days: '13–15', year: '2027' },
-  { month: 'May', days: '18–20', year: '2027' },
-  { month: 'June', days: '22–24', year: '2027' },
+  { month: 'January', days: '19–21', year: '2027', suffix: '2027-01' },
+  { month: 'February', days: '16–18', year: '2027', suffix: '2027-02' },
+  { month: 'April', days: '13–15', year: '2027', suffix: '2027-04' },
+  { month: 'May', days: '18–20', year: '2027', suffix: '2027-05' },
+  { month: 'June', days: '22–24', year: '2027', suffix: '2027-06' },
 ];
 
 const COURSE_DATA = {
@@ -86,6 +86,8 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
   const course = COURSE_DATA[functionCode];
   const otherCode: CourseFunction = functionCode === '7.1' ? '7.3' : '7.1';
   const other = COURSE_DATA[otherCode];
+  const enrollmentEnabled = import.meta.env.VITE_ENROLLMENT_ENABLED === 'true';
+  const cohortPrefix = functionCode === '7.1' ? '71i' : '73i';
 
   usePageMeta({
     title: `${course.label} ${course.title} | Live Virtual IATA DGR Training | GGM`,
@@ -205,13 +207,23 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
                         <p className="text-xs text-secondary mt-1">Tuesday–Thursday · Eastern Time</p>
                       </div>
                     </div>
-                    <span className="hidden sm:inline-flex px-3 py-1 bg-[#f1f3f8] text-[9px] uppercase tracking-[0.16em] font-black text-dark/55">10 seats</span>
+                    {enrollmentEnabled ? (
+                      <Link to={`/training/enrollment?function=${functionCode}&cohort=${cohortPrefix}-${date.suffix}`} className="inline-flex px-4 py-2 bg-primary text-white text-[9px] uppercase tracking-[0.16em] font-black">Enroll</Link>
+                    ) : (
+                      <span className="hidden sm:inline-flex px-3 py-1 bg-[#f1f3f8] text-[9px] uppercase tracking-[0.16em] font-black text-dark/55">10 seats</span>
+                    )}
                   </div>
                 ))}
               </div>
-              <button type="button" disabled className="mt-7 w-full bg-primary/35 text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black cursor-not-allowed">
-                Online enrollment opening soon
-              </button>
+              {enrollmentEnabled ? (
+                <Link to={`/training/enrollment?function=${functionCode}&cohort=${cohortPrefix}-${INITIAL_DATES[0].suffix}`} className="mt-7 w-full inline-flex justify-center bg-primary text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black">
+                  Start secure enrollment
+                </Link>
+              ) : (
+                <button type="button" disabled className="mt-7 w-full bg-primary/35 text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black cursor-not-allowed">
+                  Online enrollment opening soon
+                </button>
+              )}
             </FadeIn>
           </div>
         </Container>

@@ -55,6 +55,7 @@ import { ShipmentTrackingPage } from './pages/ShipmentTracking';
 import { RastreoDeEmbarquesPage } from './pages/RastreoDeEmbarques';
 import { OnlineAcademyPage } from './pages/OnlineAcademy';
 import { IataCbta71Page, IataCbta73Page } from './pages/IataCbtaCourses';
+import { TrainingEnrollmentCompletePage, TrainingEnrollmentPage } from './pages/TrainingEnrollment';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -104,6 +105,8 @@ export default function App() {
             <Route path="/training/online-academy" element={<OnlineAcademyPage />} />
             <Route path="/training/iata-cbta-7-1" element={<IataCbta71Page />} />
             <Route path="/training/iata-cbta-7-3" element={<IataCbta73Page />} />
+            <Route path="/training/enrollment" element={<TrainingEnrollmentPage />} />
+            <Route path="/training/enrollment/complete" element={<TrainingEnrollmentCompletePage />} />
             <Route path="/contact"  element={<ContactPage />} />
             <Route path="/contacto" element={<ContactoPage />} />
             <Route path="/request-quote" element={<RequestQuotePage />} />
