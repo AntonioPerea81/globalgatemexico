@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   ArrowRight, BookOpen, CalendarDays, CheckCircle2, Clock3,
   FileCheck2, GraduationCap, Monitor, PackageCheck, ShieldCheck, Target,
@@ -82,12 +82,35 @@ const COURSE_DATA = {
   },
 } as const;
 
+const ATTRIBUTION_PARAMS = [
+  'ref', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'gclid', 'li_fat_id',
+] as const;
+
 function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
+  const [searchParams] = useSearchParams();
   const course = COURSE_DATA[functionCode];
   const otherCode: CourseFunction = functionCode === '7.1' ? '7.3' : '7.1';
   const other = COURSE_DATA[otherCode];
   const enrollmentEnabled = import.meta.env.VITE_ENROLLMENT_ENABLED === 'true';
   const cohortPrefix = functionCode === '7.1' ? '71i' : '73i';
+  const attributionQuery = useMemo(() => {
+    const attribution = new URLSearchParams();
+    ATTRIBUTION_PARAMS.forEach((key) => {
+      const value = searchParams.get(key);
+      if (value) attribution.set(key, value);
+    });
+    return attribution;
+  }, [searchParams]);
+  const enrollmentHref = (dateSuffix: string) => {
+    const params = new URLSearchParams(attributionQuery);
+    params.set('function', functionCode);
+    params.set('cohort', `${cohortPrefix}-${dateSuffix}`);
+    return `/training/enrollment?${params.toString()}`;
+  };
+  const relatedCourseHref = useMemo(() => {
+    const query = attributionQuery.toString();
+    return `/training/${other.path}${query ? `?${query}` : ''}`;
+  }, [attributionQuery, other.path]);
 
   usePageMeta({
     title: `${course.label} ${course.title} | Live Virtual IATA DGR Training | GGM`,
@@ -208,7 +231,7 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
                       </div>
                     </div>
                     {enrollmentEnabled ? (
-                      <Link to={`/training/enrollment?function=${functionCode}&cohort=${cohortPrefix}-${date.suffix}`} className="inline-flex px-4 py-2 bg-primary text-white text-[9px] uppercase tracking-[0.16em] font-black">Enroll</Link>
+                      <Link to={enrollmentHref(date.suffix)} className="inline-flex px-4 py-2 bg-primary text-white text-[9px] uppercase tracking-[0.16em] font-black">Enroll</Link>
                     ) : (
                       <span className="hidden sm:inline-flex px-3 py-1 bg-[#f1f3f8] text-[9px] uppercase tracking-[0.16em] font-black text-dark/55">10 seats</span>
                     )}
@@ -216,7 +239,7 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
                 ))}
               </div>
               {enrollmentEnabled ? (
-                <Link to={`/training/enrollment?function=${functionCode}&cohort=${cohortPrefix}-${INITIAL_DATES[0].suffix}`} className="mt-7 w-full inline-flex justify-center bg-primary text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black">
+                <Link to={enrollmentHref(INITIAL_DATES[0].suffix)} className="mt-7 w-full inline-flex justify-center bg-primary text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black">
                   Start secure enrollment
                 </Link>
               ) : (
@@ -318,7 +341,7 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
               <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-black mb-2">Related IATA CBTA course</p>
               <h3 className="text-xl font-extrabold">{other.label} · {other.title}</h3>
             </div>
-            <Link to={`/training/${other.path}`} className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] font-black text-primary">
+            <Link to={relatedCourseHref} className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] font-black text-primary">
               View course <ArrowRight size={15} />
             </Link>
           </FadeIn>
