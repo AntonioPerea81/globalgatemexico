@@ -42,7 +42,7 @@ export async function sendTrainingPaymentEmails(admin: any, orderId: string) {
   if (!apiKey) throw new Error('RESEND_API_KEY is not configured');
 
   const { data: order, error: orderError } = await admin.from('training_orders').select(
-    'id, reference, course_id, cohort_id, buyer_name, buyer_email, buyer_phone, company_name, billing_country, referral_code, seats, subtotal_cents, tax_cents, total_cents, currency, paypal_order_id, paypal_capture_id, paid_at',
+    'id, reference, course_id, cohort_id, buyer_name, buyer_email, buyer_phone, company_name, billing_country, referral_code, marketing_attribution, seats, subtotal_cents, tax_cents, total_cents, currency, paypal_order_id, paypal_capture_id, paid_at',
   ).eq('id', orderId).single();
   if (orderError || !order) throw orderError ?? new Error('Training order not found for email');
 
@@ -69,6 +69,12 @@ export async function sendTrainingPaymentEmails(admin: any, orderId: string) {
     : `${displayDate(cohort.start_date)}–${displayDate(cohort.end_date)}`;
   const schedule = `${dates}, ${cohort.start_time.slice(0, 5)}–${cohort.end_time.slice(0, 5)} ${cohort.timezone}`;
   const referral = order.referral_code || 'Organic / no referral code';
+  const attribution = order.marketing_attribution ?? {};
+  const acquisitionSource = order.referral_code
+    ? `Referral · ${order.referral_code}`
+    : attribution.utm_source
+      ? [attribution.utm_source, attribution.utm_medium, attribution.utm_campaign].filter(Boolean).join(' / ')
+      : 'Direct or untagged traffic';
 
   const adminHtml = layout('New paid training enrollment', `
     <p style="margin-top:0">A payment has been confirmed. The enrollment is ready for administrative follow-up.</p>
@@ -83,6 +89,9 @@ export async function sendTrainingPaymentEmails(admin: any, orderId: string) {
       ${row('Company', order.company_name)}
       ${row('Country', order.billing_country)}
       ${row('Referral Code', referral)}
+      ${row('Acquisition source', acquisitionSource)}
+      ${row('Campaign content', attribution.utm_content)}
+      ${row('Campaign term', attribution.utm_term)}
       ${row('Seats', order.seats)}
       ${row('Subtotal', money(order.subtotal_cents, order.currency))}
       ${row('Tax (0%)', money(order.tax_cents, order.currency))}

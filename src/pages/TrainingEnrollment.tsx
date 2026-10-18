@@ -6,6 +6,7 @@ import { Container, Eyebrow } from '../components/UI';
 import { supabase } from '../lib/supabase';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { trackPurchase } from '../lib/analytics';
 
 const DATES = [
   { suffix: '2027-01', label: 'January 19–21, 2027' },
@@ -32,6 +33,8 @@ const normalizeReferralCode = (value: string) => value
   .replace(/[^A-Z0-9-]/g, '')
   .slice(0, 32);
 
+const ATTRIBUTION_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'] as const;
+
 export function TrainingEnrollmentPage() {
   const [params] = useSearchParams();
   const initialFunction = params.get('function') === '7.3' ? '7.3' : '7.1';
@@ -43,6 +46,12 @@ export function TrainingEnrollmentPage() {
   );
   const [buyer, setBuyer] = useState({ name: '', email: '', phone: '', company: '', country: 'CA' });
   const [referralCode, setReferralCode] = useState(() => normalizeReferralCode(params.get('ref') ?? ''));
+  const attribution = useMemo(() => Object.fromEntries(
+    ATTRIBUTION_PARAMS.flatMap((key) => {
+      const value = params.get(key)?.trim();
+      return value ? [[key, value.slice(0, 160)]] : [];
+    }),
+  ), [params]);
   const [participants, setParticipants] = useState<Participant[]>([{ fullName: '', email: '', jobTitle: '' }]);
   const [accepted, setAccepted] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState('');
@@ -89,6 +98,7 @@ export function TrainingEnrollmentPage() {
           buyer,
           participants,
           referralCode,
+          attribution,
           turnstileToken,
         },
       });
@@ -243,6 +253,13 @@ export function TrainingEnrollmentCompletePage() {
         return;
       }
       setReference(data.reference);
+      trackPurchase({
+        transactionId: data.reference,
+        value: Number(data.totalCents ?? 0) / 100,
+        currency: data.currency ?? 'CAD',
+        itemId: data.courseId ?? 'iata-cbta-training',
+        quantity: Number(data.seats ?? 1),
+      });
       setState('success');
       setMessage('Your payment and course enrollment have been confirmed.');
     });

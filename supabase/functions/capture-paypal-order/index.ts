@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
     );
     const { data: order, error: orderError } = await admin
       .from('training_orders')
-      .select('id, reference, status, total_cents, currency, hold_expires_at')
+      .select('id, reference, status, total_cents, currency, course_id, seats, hold_expires_at')
       .eq('paypal_order_id', paypalOrderId)
       .eq('checkout_session_token', sessionToken)
       .single();
@@ -59,7 +59,14 @@ Deno.serve(async (req) => {
       } catch (emailError) {
         console.error('Payment email delivery failed', emailError);
       }
-      return json({ status: 'COMPLETED', reference: order.reference }, 200, origin);
+      return json({
+        status: 'COMPLETED',
+        reference: order.reference,
+        totalCents: order.total_cents,
+        currency: order.currency,
+        courseId: order.course_id,
+        seats: order.seats,
+      }, 200, origin);
     }
     if (order.status !== 'pending_payment' || new Date(order.hold_expires_at).getTime() < Date.now()) {
       return json({ error: 'This seat reservation has expired' }, 409, origin);
@@ -99,7 +106,14 @@ Deno.serve(async (req) => {
       console.error('Payment email delivery failed', emailError);
     }
 
-    return json({ status: 'COMPLETED', reference: order.reference }, 200, origin);
+    return json({
+      status: 'COMPLETED',
+      reference: order.reference,
+      totalCents: order.total_cents,
+      currency: order.currency,
+      courseId: order.course_id,
+      seats: order.seats,
+    }, 200, origin);
   } catch (error) {
     return json({ error: error instanceof Error ? error.message : 'Unable to confirm payment' }, 500, origin);
   }

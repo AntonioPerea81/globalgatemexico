@@ -49,6 +49,13 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const participants = Array.isArray(body.participants) ? body.participants : [];
     const referralCode = String(body.referralCode ?? '').trim().toUpperCase();
+    const rawAttribution = body.attribution && typeof body.attribution === 'object' ? body.attribution : {};
+    const marketingAttribution = Object.fromEntries(
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].flatMap((key) => {
+        const value = String(rawAttribution[key] ?? '').trim().slice(0, 160);
+        return value ? [[key, value]] : [];
+      }),
+    );
 
     if (referralCode && !/^[A-Z0-9][A-Z0-9-]{0,31}$/.test(referralCode)) {
       return json({ error: 'Referral code is not valid' }, 400, origin);
@@ -91,7 +98,11 @@ Deno.serve(async (req) => {
     orderId = reserved.id;
     const { data: secureOrder, error: secureOrderError } = await admin
       .from('training_orders')
-      .update({ referral_code: referralCode || null, updated_at: new Date().toISOString() })
+      .update({
+        referral_code: referralCode || null,
+        marketing_attribution: marketingAttribution,
+        updated_at: new Date().toISOString(),
+      })
       .select('checkout_session_token')
       .eq('id', reserved.id)
       .single();

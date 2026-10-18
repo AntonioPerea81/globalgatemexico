@@ -83,3 +83,25 @@ export function trackPageView(path: string) {
   if (!GA_ID || !loaded) return;
   window.gtag('event', 'page_view', { page_path: path });
 }
+
+export function trackPurchase({
+  transactionId,
+  value,
+  currency,
+  itemId,
+  quantity,
+}: {
+  transactionId: string;
+  value: number;
+  currency: string;
+  itemId: string;
+  quantity: number;
+}) {
+  if (!GA_ID || !loaded || !transactionId || value <= 0) return;
+  window.gtag('event', 'purchase', {
+    transaction_id: transactionId,
+    value,
+    currency,
+    items: [{ item_id: itemId, item_name: itemId, price: value / Math.max(quantity, 1), quantity }],
+  });
+}
