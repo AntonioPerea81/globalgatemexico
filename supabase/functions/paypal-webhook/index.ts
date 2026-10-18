@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { sendTrainingPaymentEmails } from '../_shared/training-payment-emails.ts';
 
 const paypalBaseUrl = () => Deno.env.get('PAYPAL_ENV') === 'live'
   ? 'https://api-m.paypal.com'
@@ -56,8 +57,8 @@ Deno.serve(async (req) => {
       event_type: event.event_type,
       payload: event,
     });
-    if (eventError?.code === '23505') return new Response('Already processed', { status: 200 });
-    if (eventError) throw eventError;
+    const duplicateEvent = eventError?.code === '23505';
+    if (eventError && !duplicateEvent) throw eventError;
 
     const paypalOrderId = event.resource?.supplementary_data?.related_ids?.order_id;
     if (paypalOrderId && event.event_type === 'PAYMENT.CAPTURE.COMPLETED') {
@@ -67,13 +68,15 @@ Deno.serve(async (req) => {
         .eq('paypal_order_id', paypalOrderId)
         .single();
       if (order && amountCents === order.total_cents && event.resource?.amount?.currency_code === order.currency) {
-        await admin.from('training_orders').update({
+        const { error: updateError } = await admin.from('training_orders').update({
           status: 'paid',
           paypal_capture_id: event.resource.id,
           paid_at: event.resource.create_time ?? new Date().toISOString(),
           hold_expires_at: null,
           updated_at: new Date().toISOString(),
         }).eq('id', order.id);
+        if (updateError) throw updateError;
+        await sendTrainingPaymentEmails(admin, order.id);
       }
     }
     if (paypalOrderId && event.event_type === 'PAYMENT.CAPTURE.REFUNDED') {
@@ -81,7 +84,7 @@ Deno.serve(async (req) => {
         .eq('paypal_order_id', paypalOrderId);
     }
 
-    return new Response('OK', { status: 200 });
+    return new Response(duplicateEvent ? 'Already processed' : 'OK', { status: 200 });
   } catch (error) {
     console.error(error);
     return new Response('Webhook processing failed', { status: 500 });

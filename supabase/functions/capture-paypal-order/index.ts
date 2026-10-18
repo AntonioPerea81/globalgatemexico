@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { sendTrainingPaymentEmails } from '../_shared/training-payment-emails.ts';
 
 const allowedOrigins = new Set(['https://www.globalgatemexico.com', 'https://globalgatemexico.com']);
 const corsHeaders = (origin: string | null) => ({
@@ -52,7 +53,14 @@ Deno.serve(async (req) => {
       .eq('checkout_session_token', sessionToken)
       .single();
     if (orderError || !order) return json({ error: 'Enrollment order not found' }, 404, origin);
-    if (order.status === 'paid') return json({ status: 'COMPLETED', reference: order.reference }, 200, origin);
+    if (order.status === 'paid') {
+      try {
+        await sendTrainingPaymentEmails(admin, order.id);
+      } catch (emailError) {
+        console.error('Payment email delivery failed', emailError);
+      }
+      return json({ status: 'COMPLETED', reference: order.reference }, 200, origin);
+    }
     if (order.status !== 'pending_payment' || new Date(order.hold_expires_at).getTime() < Date.now()) {
       return json({ error: 'This seat reservation has expired' }, 409, origin);
     }
@@ -84,6 +92,12 @@ Deno.serve(async (req) => {
       updated_at: new Date().toISOString(),
     }).eq('id', order.id).eq('status', 'pending_payment');
     if (updateError) throw updateError;
+
+    try {
+      await sendTrainingPaymentEmails(admin, order.id);
+    } catch (emailError) {
+      console.error('Payment email delivery failed', emailError);
+    }
 
     return json({ status: 'COMPLETED', reference: order.reference }, 200, origin);
   } catch (error) {
