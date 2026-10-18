@@ -185,7 +185,7 @@ export function PrivacyPolicyPage() {
 
             <Section title="8. Cookies and Tracking Technologies">
               <P>
-                Our website uses cookies and similar tracking technologies to improve functionality and analyze traffic. You may control cookie preferences through our cookie consent notice displayed upon your first visit. Essential cookies required for site operation cannot be disabled.
+                Our website uses cookies and similar tracking technologies to improve functionality, analyze traffic, and measure advertising attribution. With your consent, these tools may include Google Analytics, Microsoft Clarity, and the LinkedIn Insight Tag. We do not enable LinkedIn enhanced matching or send participant contact or payment details through the Insight Tag. You may control cookie preferences through our cookie consent notice displayed upon your first visit. Essential cookies required for site operation cannot be disabled.
               </P>
             </Section>
 

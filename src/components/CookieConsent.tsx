@@ -41,7 +41,7 @@ export function CookieConsent() {
       className="fixed bottom-0 left-0 right-0 z-50 bg-dark text-white px-6 py-5 flex flex-col sm:flex-row sm:items-center gap-4 shadow-lg"
     >
       <p className="text-[13px] leading-relaxed flex-1 text-secondary">
-        We use analytics cookies to understand how visitors interact with our site. You can accept or decline.{' '}
+        We use analytics and advertising-measurement cookies to understand site activity and attribute course enrollments. You can accept or decline.{' '}
         <a href="/privacy" className="underline text-white/80 hover:text-white">
           Privacy Policy
         </a>

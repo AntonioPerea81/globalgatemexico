@@ -208,7 +208,7 @@ export function PoliticaDePrivacidadPage() {
 
             <Section title="7. Uso de Tecnologías de Rastreo">
               <P>
-                El presente sitio web utiliza cookies y tecnologías de rastreo similares con el fin de mejorar la funcionalidad del sitio y analizar el comportamiento de navegación de manera agregada y anónima. Al ingresar al sitio, se le informará sobre el uso de estas tecnologías mediante un aviso de consentimiento. Las cookies esenciales para el funcionamiento del sitio no pueden desactivarse.
+                El presente sitio web utiliza cookies y tecnologías de rastreo similares con el fin de mejorar la funcionalidad, analizar el tráfico y medir la atribución publicitaria. Con su consentimiento, estas herramientas pueden incluir Google Analytics, Microsoft Clarity y LinkedIn Insight Tag. No habilitamos la coincidencia mejorada de LinkedIn ni enviamos datos de contacto o pago de los participantes mediante dicho tag. Al ingresar al sitio, se le informará sobre el uso de estas tecnologías mediante un aviso de consentimiento. Las cookies esenciales para el funcionamiento del sitio no pueden desactivarse.
               </P>
               <P>
                 Usted puede configurar su navegador para bloquear o eliminar cookies; sin embargo, esto podría afectar la funcionalidad de determinadas secciones del sitio.

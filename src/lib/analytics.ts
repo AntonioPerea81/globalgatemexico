@@ -1,9 +1,18 @@
 const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
 const CLARITY_ID = import.meta.env.VITE_CLARITY_PROJECT_ID as string | undefined;
+const LINKEDIN_PARTNER_ID = (import.meta.env.VITE_LINKEDIN_PARTNER_ID as string | undefined) || '2904172';
+const LINKEDIN_PURCHASE_CONVERSION_ID = Number(
+  (import.meta.env.VITE_LINKEDIN_PURCHASE_CONVERSION_ID as string | undefined) || '29858508',
+);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  interface Window { dataLayer: any[]; gtag: (...args: unknown[]) => void; }
+  interface Window {
+    dataLayer: any[];
+    gtag: (...args: unknown[]) => void;
+    _linkedin_data_partner_ids?: string[];
+    lintrk?: ((action: string, data?: { conversion_id: number }) => void) & { q?: unknown[][] };
+  }
 }
 
 let loaded = false;
@@ -40,6 +49,8 @@ function loadScript() {
 }
 
 export function initAnalytics(granted: boolean) {
+  if (granted) loadLinkedInInsightTag();
+
   if (!GA_ID) {
     console.warn('[GGM Analytics] VITE_GA_MEASUREMENT_ID not set — analytics disabled');
     return;
@@ -54,6 +65,30 @@ export function initAnalytics(granted: boolean) {
     console.log('[GGM Analytics] consent granted, page_view fired');
     loadClarity();
   }
+}
+
+let linkedinLoaded = false;
+
+function loadLinkedInInsightTag() {
+  if (linkedinLoaded || !LINKEDIN_PARTNER_ID) return;
+  linkedinLoaded = true;
+
+  window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+  if (!window._linkedin_data_partner_ids.includes(LINKEDIN_PARTNER_ID)) {
+    window._linkedin_data_partner_ids.push(LINKEDIN_PARTNER_ID);
+  }
+
+  window.lintrk = window.lintrk || function lintrk(action: string, data?: { conversion_id: number }) {
+    window.lintrk!.q = window.lintrk!.q || [];
+    window.lintrk!.q.push([action, data]);
+  };
+
+  const s = document.createElement('script');
+  s.src = 'https://snap.licdn.com/li.lms-analytics/insight.min.js';
+  s.async = true;
+  document.head.appendChild(s);
+
+  console.log('[GGM Analytics] LinkedIn Insight Tag injected');
 }
 
 let clarityLoaded = false;
@@ -97,11 +132,22 @@ export function trackPurchase({
   itemId: string;
   quantity: number;
 }) {
-  if (!GA_ID || !loaded || !transactionId || value <= 0) return;
-  window.gtag('event', 'purchase', {
-    transaction_id: transactionId,
-    value,
-    currency,
-    items: [{ item_id: itemId, item_name: itemId, price: value / Math.max(quantity, 1), quantity }],
-  });
+  if (!transactionId || value <= 0) return;
+
+  if (GA_ID && loaded) {
+    window.gtag('event', 'purchase', {
+      transaction_id: transactionId,
+      value,
+      currency,
+      items: [{ item_id: itemId, item_name: itemId, price: value / Math.max(quantity, 1), quantity }],
+    });
+  }
+
+  if (linkedinLoaded && window.lintrk && LINKEDIN_PURCHASE_CONVERSION_ID > 0) {
+    const dedupeKey = `ggm_linkedin_purchase_${transactionId}`;
+    if (!sessionStorage.getItem(dedupeKey)) {
+      window.lintrk('track', { conversion_id: LINKEDIN_PURCHASE_CONVERSION_ID });
+      sessionStorage.setItem(dedupeKey, 'sent');
+    }
+  }
 }
