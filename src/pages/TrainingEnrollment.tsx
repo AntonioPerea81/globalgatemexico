@@ -42,8 +42,7 @@ export function TrainingEnrollmentPage() {
   const [turnstileToken, setTurnstileToken] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const sandboxReviewEnabled = params.get('sandboxReview') === 'ggm-paypal-20261017-8f2d';
-  const enrollmentEnabled = import.meta.env.VITE_ENROLLMENT_ENABLED === 'true' || sandboxReviewEnabled;
+  const enrollmentEnabled = import.meta.env.VITE_ENROLLMENT_ENABLED === 'true';
 
   usePageMeta({
     title: 'Secure Course Enrollment | Global Gate México',
@@ -105,12 +104,6 @@ export function TrainingEnrollmentPage() {
             <Eyebrow>Secure enrollment</Eyebrow>
             <h1 className="text-3xl md:text-4xl font-extrabold mb-3">Reserve your seat</h1>
             <p className="text-secondary leading-relaxed mb-9">Complete the participant information below. Your selected seats are held for 30 minutes when you continue to PayPal.</p>
-
-            {sandboxReviewEnabled && (
-              <div className="mb-8 border-l-[3px] border-primary bg-primary/[0.04] p-4 text-sm text-dark/70">
-                Private Sandbox review is active. This test uses simulated PayPal funds and cannot create a real charge.
-              </div>
-            )}
 
             {!enrollmentEnabled && (
               <div className="mb-8 border-l-[3px] border-[#d6b850] bg-[#fffaf0] p-4 text-sm text-dark/70">
