@@ -34,6 +34,14 @@ create table if not exists public.training_cohorts (
   unique (course_id, start_date)
 );
 
+create table if not exists public.training_referral_codes (
+  code text primary key check (code ~ '^[A-Z0-9][A-Z0-9-]{0,31}$'),
+  source_name text not null,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.training_orders (
   id uuid primary key default gen_random_uuid(),
   reference text not null unique,
@@ -44,6 +52,7 @@ create table if not exists public.training_orders (
   buyer_phone text,
   company_name text,
   billing_country text not null default 'CA',
+  referral_code text references public.training_referral_codes(code) on update cascade,
   seats integer not null check (seats between 1 and 10),
   unit_amount_cents integer not null check (unit_amount_cents >= 0),
   subtotal_cents integer not null check (subtotal_cents >= 0),
@@ -80,11 +89,14 @@ create table if not exists public.paypal_webhook_events (
 
 create index if not exists training_orders_cohort_status_idx
   on public.training_orders (cohort_id, status, hold_expires_at);
+create index if not exists training_orders_referral_status_idx
+  on public.training_orders (referral_code, status, paid_at);
 create index if not exists training_participants_order_idx
   on public.training_participants (order_id);
 
 alter table public.training_courses enable row level security;
 alter table public.training_cohorts enable row level security;
+alter table public.training_referral_codes enable row level security;
 alter table public.training_orders enable row level security;
 alter table public.training_participants enable row level security;
 alter table public.paypal_webhook_events enable row level security;
@@ -202,6 +214,13 @@ $$;
 
 revoke all on function public.reserve_training_order(text, text, text, text, text, text, text, jsonb) from public, anon, authenticated;
 grant execute on function public.reserve_training_order(text, text, text, text, text, text, text, jsonb) to service_role;
+
+insert into public.training_referral_codes (code, source_name)
+values ('SMDG', 'Solutions MDG')
+on conflict (code) do update set
+  source_name = excluded.source_name,
+  is_active = true,
+  updated_at = now();
 
 insert into public.training_courses
   (id, function_code, training_type, title, duration_hours, duration_days, tuition_cents, currency, tax_rate_bps)

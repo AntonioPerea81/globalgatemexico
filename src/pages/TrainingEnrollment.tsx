@@ -27,6 +27,11 @@ const money = (cents: number) => new Intl.NumberFormat('en-CA', {
   style: 'currency', currency: 'CAD', currencyDisplay: 'code',
 }).format(cents / 100);
 
+const normalizeReferralCode = (value: string) => value
+  .toUpperCase()
+  .replace(/[^A-Z0-9-]/g, '')
+  .slice(0, 32);
+
 export function TrainingEnrollmentPage() {
   const [params] = useSearchParams();
   const initialFunction = params.get('function') === '7.3' ? '7.3' : '7.1';
@@ -37,6 +42,7 @@ export function TrainingEnrollmentPage() {
     suggestedCohort?.startsWith(`${course.prefix}-`) ? suggestedCohort.replace(`${course.prefix}-`, '') : DATES[0].suffix,
   );
   const [buyer, setBuyer] = useState({ name: '', email: '', phone: '', company: '', country: 'CA' });
+  const [referralCode, setReferralCode] = useState(() => normalizeReferralCode(params.get('ref') ?? ''));
   const [participants, setParticipants] = useState<Participant[]>([{ fullName: '', email: '', jobTitle: '' }]);
   const [accepted, setAccepted] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState('');
@@ -82,6 +88,7 @@ export function TrainingEnrollmentPage() {
           cohortCode: `${course.prefix}-${dateSuffix}`,
           buyer,
           participants,
+          referralCode,
           turnstileToken,
         },
       });
@@ -136,6 +143,17 @@ export function TrainingEnrollmentPage() {
                 <Field label="Company" value={buyer.company} onChange={(value) => setBuyer({ ...buyer, company: value })} />
                 <Field label="Phone" type="tel" value={buyer.phone} onChange={(value) => setBuyer({ ...buyer, phone: value })} />
               </div>
+              <label className="mt-4 block text-xs font-bold text-dark/70">Referral Code (optional)
+                <input
+                  type="text"
+                  autoComplete="off"
+                  maxLength={32}
+                  value={referralCode}
+                  onChange={(event) => setReferralCode(normalizeReferralCode(event.target.value))}
+                  className="mt-2 w-full border border-black/10 bg-white px-4 py-3 text-sm uppercase tracking-[0.08em] text-dark outline-none focus:border-primary"
+                />
+                <span className="mt-2 block text-[11px] font-normal normal-case tracking-normal text-dark/45">Enter your referral code, if applicable.</span>
+              </label>
             </section>
 
             <section className="mb-9">

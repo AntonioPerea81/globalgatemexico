@@ -48,6 +48,22 @@ Deno.serve(async (req) => {
   try {
     const body = await req.json();
     const participants = Array.isArray(body.participants) ? body.participants : [];
+    const referralCode = String(body.referralCode ?? '').trim().toUpperCase();
+
+    if (referralCode && !/^[A-Z0-9][A-Z0-9-]{0,31}$/.test(referralCode)) {
+      return json({ error: 'Referral code is not valid' }, 400, origin);
+    }
+
+    if (referralCode) {
+      const { data: referral, error: referralError } = await admin
+        .from('training_referral_codes')
+        .select('code')
+        .eq('code', referralCode)
+        .eq('is_active', true)
+        .maybeSingle();
+      if (referralError) throw referralError;
+      if (!referral) return json({ error: 'Referral code is not recognized. Please check the code or leave the field blank.' }, 400, origin);
+    }
 
     const turnstileSecret = Deno.env.get('TURNSTILE_SECRET_KEY');
     if (!turnstileSecret || !body.turnstileToken) return json({ error: 'Security verification is required' }, 400, origin);
@@ -75,6 +91,7 @@ Deno.serve(async (req) => {
     orderId = reserved.id;
     const { data: secureOrder, error: secureOrderError } = await admin
       .from('training_orders')
+      .update({ referral_code: referralCode || null, updated_at: new Date().toISOString() })
       .select('checkout_session_token')
       .eq('id', reserved.id)
       .single();
