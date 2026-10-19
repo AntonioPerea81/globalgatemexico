@@ -1,6 +1,9 @@
 const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
 const GOOGLE_ADS_ID =
   (import.meta.env.VITE_GOOGLE_ADS_ID as string | undefined) || 'AW-1024571678';
+const GOOGLE_ADS_PURCHASE_SEND_TO =
+  (import.meta.env.VITE_GOOGLE_ADS_PURCHASE_SEND_TO as string | undefined) ||
+  'AW-1024571678/0pCuCKe81qIdEJ7yxugD';
 const CLARITY_ID = import.meta.env.VITE_CLARITY_PROJECT_ID as string | undefined;
 const LINKEDIN_PARTNER_ID = (import.meta.env.VITE_LINKEDIN_PARTNER_ID as string | undefined) || '2904172';
 const LINKEDIN_PURCHASE_CONVERSION_ID = Number(
@@ -150,6 +153,19 @@ export function trackPurchase({
       currency,
       items: [{ item_id: itemId, item_name: itemId, price: value / Math.max(quantity, 1), quantity }],
     });
+  }
+
+  if (GOOGLE_ADS_PURCHASE_SEND_TO && loaded) {
+    const dedupeKey = `ggm_google_ads_purchase_${transactionId}`;
+    if (!sessionStorage.getItem(dedupeKey)) {
+      window.gtag('event', 'conversion', {
+        send_to: GOOGLE_ADS_PURCHASE_SEND_TO,
+        value,
+        currency,
+        transaction_id: transactionId,
+      });
+      sessionStorage.setItem(dedupeKey, 'sent');
+    }
   }
 
   if (linkedinLoaded && window.lintrk && LINKEDIN_PURCHASE_CONVERSION_ID > 0) {
