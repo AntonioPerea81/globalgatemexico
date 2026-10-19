@@ -1,4 +1,6 @@
 const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
+const GOOGLE_ADS_ID =
+  (import.meta.env.VITE_GOOGLE_ADS_ID as string | undefined) || 'AW-1024571678';
 const CLARITY_ID = import.meta.env.VITE_CLARITY_PROJECT_ID as string | undefined;
 const LINKEDIN_PARTNER_ID = (import.meta.env.VITE_LINKEDIN_PARTNER_ID as string | undefined) || '2904172';
 const LINKEDIN_PURCHASE_CONVERSION_ID = Number(
@@ -18,7 +20,8 @@ declare global {
 let loaded = false;
 
 function loadScript() {
-  if (loaded || !GA_ID) return;
+  const tagId = GA_ID || GOOGLE_ADS_ID;
+  if (loaded || !tagId) return;
   loaded = true;
 
   window.dataLayer = window.dataLayer || [];
@@ -35,30 +38,36 @@ function loadScript() {
   window.gtag('consent', 'default', {
     analytics_storage: 'denied',
     ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
     wait_for_update: 500,
   });
   window.gtag('js', new Date());
-  window.gtag('config', GA_ID, { send_page_view: false });
+  if (GA_ID) window.gtag('config', GA_ID, { send_page_view: false });
+  if (GOOGLE_ADS_ID) window.gtag('config', GOOGLE_ADS_ID);
 
   const s = document.createElement('script');
-  s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+  s.src = `https://www.googletagmanager.com/gtag/js?id=${tagId}`;
   s.async = true;
   document.head.appendChild(s);
 
-  console.log('[GGM Analytics] script injected, id:', GA_ID);
+  console.log('[GGM Analytics] script injected, ids:', { ga: GA_ID, ads: GOOGLE_ADS_ID });
 }
 
 export function initAnalytics(granted: boolean) {
   if (granted) loadLinkedInInsightTag();
 
-  if (!GA_ID) {
-    console.warn('[GGM Analytics] VITE_GA_MEASUREMENT_ID not set — analytics disabled');
+  if (!GA_ID && !GOOGLE_ADS_ID) {
+    console.warn('[GGM Analytics] no Google measurement IDs set — Google tags disabled');
     return;
   }
   console.log('[GGM Analytics] initAnalytics called, granted:', granted);
   loadScript();
   window.gtag('consent', 'update', {
     analytics_storage: granted ? 'granted' : 'denied',
+    ad_storage: granted ? 'granted' : 'denied',
+    ad_user_data: granted ? 'granted' : 'denied',
+    ad_personalization: granted ? 'granted' : 'denied',
   });
   if (granted) {
     window.gtag('event', 'page_view');
