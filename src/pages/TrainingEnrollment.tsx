@@ -8,7 +8,7 @@ import { Turnstile } from '@marsidev/react-turnstile';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { trackPurchase } from '../lib/analytics';
 
-const DATES = [
+const INITIAL_DATES = [
   { suffix: '2027-01', label: 'January 19–21, 2027' },
   { suffix: '2027-02', label: 'February 16–18, 2027' },
   { suffix: '2027-04', label: 'April 13–15, 2027' },
@@ -16,12 +16,27 @@ const DATES = [
   { suffix: '2027-06', label: 'June 22–24, 2027' },
 ];
 
+const RECURRENT_DATES = [
+  { suffix: '2027-01', label: 'January 27–28, 2027' },
+  { suffix: '2027-02', label: 'February 24–25, 2027' },
+  { suffix: '2027-04', label: 'April 21–22, 2027' },
+  { suffix: '2027-05', label: 'May 26–27, 2027' },
+  { suffix: '2027-06', label: 'June 30–July 1, 2027' },
+];
+
 const COURSES = {
-  '7.1': { id: 'iata-71-initial', prefix: '71i', title: 'Preparing Dangerous Goods Consignments — Initial' },
-  '7.3': { id: 'iata-73-initial', prefix: '73i', title: 'Accepting Dangerous Goods Consignments — Initial' },
+  '7.1': {
+    initial: { id: 'iata-71-initial', prefix: '71i', title: 'Preparing Dangerous Goods Consignments — Initial', tuitionCents: 120000 },
+    recurrent: { id: 'iata-71-recurrent', prefix: '71r', title: 'Preparing Dangerous Goods Consignments — Recurrent', tuitionCents: 100000 },
+  },
+  '7.3': {
+    initial: { id: 'iata-73-initial', prefix: '73i', title: 'Accepting Dangerous Goods Consignments — Initial', tuitionCents: 120000 },
+    recurrent: { id: 'iata-73-recurrent', prefix: '73r', title: 'Accepting Dangerous Goods Consignments — Recurrent', tuitionCents: 100000 },
+  },
 } as const;
 
 type FunctionCode = keyof typeof COURSES;
+type TrainingType = keyof typeof COURSES['7.1'];
 type Participant = { fullName: string; email: string; jobTitle: string };
 
 const money = (cents: number) => new Intl.NumberFormat('en-CA', {
@@ -38,11 +53,14 @@ const ATTRIBUTION_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_con
 export function TrainingEnrollmentPage() {
   const [params] = useSearchParams();
   const initialFunction = params.get('function') === '7.3' ? '7.3' : '7.1';
-  const [functionCode, setFunctionCode] = useState<FunctionCode>(initialFunction);
-  const course = COURSES[functionCode];
   const suggestedCohort = params.get('cohort');
+  const initialTrainingType: TrainingType = suggestedCohort?.match(/^7[13]r-/) ? 'recurrent' : 'initial';
+  const [functionCode, setFunctionCode] = useState<FunctionCode>(initialFunction);
+  const [trainingType, setTrainingType] = useState<TrainingType>(initialTrainingType);
+  const course = COURSES[functionCode][trainingType];
+  const dates = trainingType === 'initial' ? INITIAL_DATES : RECURRENT_DATES;
   const [dateSuffix, setDateSuffix] = useState(
-    suggestedCohort?.startsWith(`${course.prefix}-`) ? suggestedCohort.replace(`${course.prefix}-`, '') : DATES[0].suffix,
+    suggestedCohort?.startsWith(`${course.prefix}-`) ? suggestedCohort.replace(`${course.prefix}-`, '') : dates[0].suffix,
   );
   const [buyer, setBuyer] = useState({ name: '', email: '', phone: '', company: '', country: 'CA' });
   const [referralCode, setReferralCode] = useState(() => normalizeReferralCode(params.get('ref') ?? ''));
@@ -67,12 +85,17 @@ export function TrainingEnrollmentPage() {
   });
 
   useEffect(() => window.scrollTo(0, 0), []);
-  useEffect(() => setDateSuffix(DATES[0].suffix), [functionCode]);
+  useEffect(() => {
+    const suggestedSuffix = suggestedCohort?.startsWith(`${course.prefix}-`)
+      ? suggestedCohort.replace(`${course.prefix}-`, '')
+      : '';
+    setDateSuffix(dates.some((date) => date.suffix === suggestedSuffix) ? suggestedSuffix : dates[0].suffix);
+  }, [course.prefix, dates, suggestedCohort]);
 
-  const subtotal = participants.length * 120000;
+  const subtotal = participants.length * course.tuitionCents;
   const tax = 0;
   const total = subtotal + tax;
-  const selectedDate = useMemo(() => DATES.find((date) => date.suffix === dateSuffix) ?? DATES[0], [dateSuffix]);
+  const selectedDate = useMemo(() => dates.find((date) => date.suffix === dateSuffix) ?? dates[0], [dateSuffix, dates]);
 
   const updateParticipant = (index: number, field: keyof Participant, value: string) => {
     setParticipants((current) => current.map((participant, position) => position === index ? { ...participant, [field]: value } : participant));
@@ -130,16 +153,22 @@ export function TrainingEnrollmentPage() {
 
             <section className="mb-10">
               <h2 className="text-sm font-black uppercase tracking-[0.14em] mb-5">1. Course selection</h2>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-3 gap-4">
                 <label className="text-xs font-bold text-dark/70">Function
                   <select value={functionCode} onChange={(event) => setFunctionCode(event.target.value as FunctionCode)} className="mt-2 w-full border border-black/10 bg-white px-4 py-3 text-sm text-dark outline-none focus:border-primary">
                     <option value="7.1">Function 7.1 — Preparing consignments</option>
                     <option value="7.3">Function 7.3 — Accepting consignments</option>
                   </select>
                 </label>
+                <label className="text-xs font-bold text-dark/70">Training type
+                  <select value={trainingType} onChange={(event) => setTrainingType(event.target.value as TrainingType)} className="mt-2 w-full border border-black/10 bg-white px-4 py-3 text-sm text-dark outline-none focus:border-primary">
+                    <option value="initial">Initial · 24 hours</option>
+                    <option value="recurrent">Recurrent · 16 hours</option>
+                  </select>
+                </label>
                 <label className="text-xs font-bold text-dark/70">Course date
                   <select value={dateSuffix} onChange={(event) => setDateSuffix(event.target.value)} className="mt-2 w-full border border-black/10 bg-white px-4 py-3 text-sm text-dark outline-none focus:border-primary">
-                    {DATES.map((date) => <option key={date.suffix} value={date.suffix}>{date.label}</option>)}
+                    {dates.map((date) => <option key={date.suffix} value={date.suffix}>{date.label}</option>)}
                   </select>
                 </label>
               </div>

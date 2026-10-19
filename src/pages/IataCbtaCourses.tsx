@@ -19,6 +19,14 @@ const INITIAL_DATES = [
   { month: 'June', days: '22–24', year: '2027', suffix: '2027-06' },
 ];
 
+const RECURRENT_DATES = [
+  { month: 'January', days: '27–28', year: '2027', suffix: '2027-01' },
+  { month: 'February', days: '24–25', year: '2027', suffix: '2027-02' },
+  { month: 'April', days: '21–22', year: '2027', suffix: '2027-04' },
+  { month: 'May', days: '26–27', year: '2027', suffix: '2027-05' },
+  { month: 'June 30–July', days: '1', year: '2027', suffix: '2027-06' },
+];
+
 const COURSE_DATA = {
   '7.1': {
     label: 'Function 7.1',
@@ -92,7 +100,9 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
   const otherCode: CourseFunction = functionCode === '7.1' ? '7.3' : '7.1';
   const other = COURSE_DATA[otherCode];
   const enrollmentEnabled = import.meta.env.VITE_ENROLLMENT_ENABLED === 'true';
-  const cohortPrefix = functionCode === '7.1' ? '71i' : '73i';
+  const cohortPrefixes = functionCode === '7.1'
+    ? { initial: '71i', recurrent: '71r' }
+    : { initial: '73i', recurrent: '73r' };
   const attributionQuery = useMemo(() => {
     const attribution = new URLSearchParams();
     ATTRIBUTION_PARAMS.forEach((key) => {
@@ -101,10 +111,10 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
     });
     return attribution;
   }, [searchParams]);
-  const enrollmentHref = (dateSuffix: string) => {
+  const enrollmentHref = (trainingType: 'initial' | 'recurrent', dateSuffix: string) => {
     const params = new URLSearchParams(attributionQuery);
     params.set('function', functionCode);
-    params.set('cohort', `${cohortPrefix}-${dateSuffix}`);
+    params.set('cohort', `${cohortPrefixes[trainingType]}-${dateSuffix}`);
     return `/training/enrollment?${params.toString()}`;
   };
   const relatedCourseHref = useMemo(() => {
@@ -210,44 +220,34 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
 
       <section id="dates" className="py-20 lg:py-28 bg-[#f7f8fb] scroll-mt-24">
         <Container>
-          <div className="grid lg:grid-cols-[0.85fr_1.15fr] gap-12 lg:gap-20 items-start">
-            <FadeIn>
-              <Eyebrow>2027 schedule</Eyebrow>
-              <h2 className="text-3xl md:text-4xl font-extrabold mb-5">Initial course dates</h2>
-              <p className="text-secondary leading-relaxed mb-7">Each session runs Tuesday through Thursday from 8:00 a.m. to 4:00 p.m. Eastern Time. Enrollment is limited to 10 participants.</p>
-              <div className="flex items-center gap-3 text-sm font-bold text-dark">
-                <Monitor size={18} className="text-primary" /> Instructor-led live virtual classroom
-              </div>
-            </FadeIn>
-            <FadeIn delay={0.08}>
-              <div className="divide-y divide-black/[0.07] border-y border-black/[0.07]">
-                {INITIAL_DATES.map((date) => (
-                  <div key={date.month} className="grid grid-cols-[1fr_auto] gap-5 items-center py-5">
-                    <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 bg-primary/7 flex items-center justify-center shrink-0"><CalendarDays size={20} className="text-primary" /></div>
-                      <div>
-                        <p className="font-extrabold">{date.month} {date.days}, {date.year}</p>
-                        <p className="text-xs text-secondary mt-1">Tuesday–Thursday · Eastern Time</p>
-                      </div>
-                    </div>
-                    {enrollmentEnabled ? (
-                      <Link to={enrollmentHref(date.suffix)} className="inline-flex px-4 py-2 bg-primary text-white text-[9px] uppercase tracking-[0.16em] font-black">Enroll</Link>
-                    ) : (
-                      <span className="hidden sm:inline-flex px-3 py-1 bg-[#f1f3f8] text-[9px] uppercase tracking-[0.16em] font-black text-dark/55">10 seats</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-              {enrollmentEnabled ? (
-                <Link to={enrollmentHref(INITIAL_DATES[0].suffix)} className="mt-7 w-full inline-flex justify-center bg-primary text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black">
-                  Start secure enrollment
-                </Link>
-              ) : (
-                <button type="button" disabled className="mt-7 w-full bg-primary/35 text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black cursor-not-allowed">
-                  Online enrollment opening soon
-                </button>
-              )}
-            </FadeIn>
+          <FadeIn className="max-w-3xl mb-12">
+            <Eyebrow>2027 schedule</Eyebrow>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-5">Initial and recurrent course dates</h2>
+            <p className="text-secondary leading-relaxed mb-7">All sessions run from 8:00 a.m. to 4:00 p.m. Eastern Time in an instructor-led live virtual classroom. Enrollment is limited to 10 participants.</p>
+            <div className="flex items-center gap-3 text-sm font-bold text-dark">
+              <Monitor size={18} className="text-primary" /> Select the training option that matches your current qualification
+            </div>
+          </FadeIn>
+          <div className="grid xl:grid-cols-2 gap-7 items-start">
+            <CourseDatePanel
+              title="Initial training"
+              detail="24 hours · Tuesday–Thursday"
+              dates={INITIAL_DATES}
+              weekdayLabel="Tuesday–Thursday · Eastern Time"
+              enrollmentEnabled={enrollmentEnabled}
+              enrollmentHref={(suffix) => enrollmentHref('initial', suffix)}
+            />
+            <div id="recurrent-dates" className="scroll-mt-24">
+              <CourseDatePanel
+                title="Recurrent training"
+                detail="16 hours · Wednesday–Thursday"
+                dates={RECURRENT_DATES}
+                weekdayLabel="Wednesday–Thursday · Eastern Time"
+                enrollmentEnabled={enrollmentEnabled}
+                enrollmentHref={(suffix) => enrollmentHref('recurrent', suffix)}
+                dark
+              />
+            </div>
           </div>
         </Container>
       </section>
@@ -294,9 +294,9 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
                   <Detail icon={CalendarDays} label="Schedule" value="2 consecutive days" dark />
                 </div>
                 <p className="text-sm text-white/48 leading-relaxed mb-7">Valid prior training for the corresponding function is required. Recommended level: Intermediate.</p>
-                <Link to="/training-proposal" className="mt-auto inline-flex justify-center items-center gap-2 border border-white/15 text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black hover:border-white/35 transition-colors">
-                  Request on-demand dates <ArrowRight size={15} />
-                </Link>
+                <a href="#recurrent-dates" className="mt-auto inline-flex justify-center items-center gap-2 border border-white/15 text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black hover:border-white/35 transition-colors">
+                  Review recurrent dates <ArrowRight size={15} />
+                </a>
               </article>
             </FadeIn>
           </div>
@@ -348,6 +348,69 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
         </Container>
       </section>
     </main>
+  );
+}
+
+type CourseDate = { month: string; days: string; year: string; suffix: string };
+
+function CourseDatePanel({
+  title,
+  detail,
+  dates,
+  weekdayLabel,
+  enrollmentEnabled,
+  enrollmentHref,
+  dark = false,
+}: {
+  title: string;
+  detail: string;
+  dates: readonly CourseDate[];
+  weekdayLabel: string;
+  enrollmentEnabled: boolean;
+  enrollmentHref: (suffix: string) => string;
+  dark?: boolean;
+}) {
+  return (
+    <FadeIn>
+      <article className={dark ? 'bg-[#07101f] text-white p-6 md:p-8' : 'bg-white border border-black/[0.07] p-6 md:p-8'}>
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
+          <div>
+            <p className={dark ? 'text-[10px] uppercase tracking-[0.18em] text-[#d6b850] font-black mb-2' : 'text-[10px] uppercase tracking-[0.18em] text-primary font-black mb-2'}>{detail}</p>
+            <h3 className="text-2xl font-extrabold">{title}</h3>
+          </div>
+          <span className={dark ? 'text-[9px] uppercase tracking-[0.16em] font-black text-white/40' : 'text-[9px] uppercase tracking-[0.16em] font-black text-secondary'}>Maximum 10</span>
+        </div>
+        <div className={dark ? 'divide-y divide-white/10 border-y border-white/10' : 'divide-y divide-black/[0.07] border-y border-black/[0.07]'}>
+          {dates.map((date) => (
+            <div key={date.suffix} className="grid grid-cols-[1fr_auto] gap-4 items-center py-4">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className={dark ? 'w-10 h-10 bg-white/[0.06] flex items-center justify-center shrink-0' : 'w-10 h-10 bg-primary/7 flex items-center justify-center shrink-0'}>
+                  <CalendarDays size={18} className={dark ? 'text-[#d6b850]' : 'text-primary'} />
+                </div>
+                <div>
+                  <p className="font-extrabold text-sm md:text-base">{date.month} {date.days}, {date.year}</p>
+                  <p className={dark ? 'text-xs text-white/38 mt-1' : 'text-xs text-secondary mt-1'}>{weekdayLabel}</p>
+                </div>
+              </div>
+              {enrollmentEnabled ? (
+                <Link to={enrollmentHref(date.suffix)} className={dark ? 'inline-flex px-4 py-2 bg-[#d6b850] text-[#07101f] text-[9px] uppercase tracking-[0.16em] font-black' : 'inline-flex px-4 py-2 bg-primary text-white text-[9px] uppercase tracking-[0.16em] font-black'}>Enroll</Link>
+              ) : (
+                <span className={dark ? 'hidden sm:inline-flex px-3 py-1 bg-white/[0.06] text-[9px] uppercase tracking-[0.16em] font-black text-white/45' : 'hidden sm:inline-flex px-3 py-1 bg-[#f1f3f8] text-[9px] uppercase tracking-[0.16em] font-black text-dark/55'}>10 seats</span>
+              )}
+            </div>
+          ))}
+        </div>
+        {enrollmentEnabled ? (
+          <Link to={enrollmentHref(dates[0].suffix)} className={dark ? 'mt-6 w-full inline-flex justify-center bg-[#d6b850] text-[#07101f] px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black' : 'mt-6 w-full inline-flex justify-center bg-primary text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black'}>
+            Start secure enrollment
+          </Link>
+        ) : (
+          <button type="button" disabled className={dark ? 'mt-6 w-full bg-white/10 text-white/45 px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black cursor-not-allowed' : 'mt-6 w-full bg-primary/35 text-white px-6 py-4 text-[11px] uppercase tracking-[0.16em] font-black cursor-not-allowed'}>
+            Online enrollment opening soon
+          </button>
+        )}
+      </article>
+    </FadeIn>
   );
 }
 
