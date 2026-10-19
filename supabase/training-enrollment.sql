@@ -255,12 +255,12 @@ values
   ('71r-2027-02', 'iata-71-recurrent', '2027-02-24', '2027-02-25', 10, 'open'),
   ('71r-2027-04', 'iata-71-recurrent', '2027-04-21', '2027-04-22', 10, 'open'),
   ('71r-2027-05', 'iata-71-recurrent', '2027-05-26', '2027-05-27', 10, 'open'),
-  ('71r-2027-06', 'iata-71-recurrent', '2027-06-30', '2027-07-01', 10, 'open'),
+  ('71r-2027-06', 'iata-71-recurrent', '2027-07-07', '2027-07-08', 10, 'open'),
   ('73r-2027-01', 'iata-73-recurrent', '2027-01-27', '2027-01-28', 10, 'open'),
   ('73r-2027-02', 'iata-73-recurrent', '2027-02-24', '2027-02-25', 10, 'open'),
   ('73r-2027-04', 'iata-73-recurrent', '2027-04-21', '2027-04-22', 10, 'open'),
   ('73r-2027-05', 'iata-73-recurrent', '2027-05-26', '2027-05-27', 10, 'open'),
-  ('73r-2027-06', 'iata-73-recurrent', '2027-06-30', '2027-07-01', 10, 'open')
+  ('73r-2027-06', 'iata-73-recurrent', '2027-07-07', '2027-07-08', 10, 'open')
 on conflict (code) do update set
   start_date = excluded.start_date,
   end_date = excluded.end_date,

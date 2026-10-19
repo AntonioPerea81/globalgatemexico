@@ -21,7 +21,7 @@ const RECURRENT_DATES = [
   { suffix: '2027-02', label: 'February 24–25, 2027' },
   { suffix: '2027-04', label: 'April 21–22, 2027' },
   { suffix: '2027-05', label: 'May 26–27, 2027' },
-  { suffix: '2027-06', label: 'June 30–July 1, 2027' },
+  { suffix: '2027-06', label: 'July 7–8, 2027' },
 ];
 
 const COURSES = {

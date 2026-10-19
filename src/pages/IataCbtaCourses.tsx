@@ -24,7 +24,7 @@ const RECURRENT_DATES = [
   { month: 'February', days: '24–25', year: '2027', suffix: '2027-02' },
   { month: 'April', days: '21–22', year: '2027', suffix: '2027-04' },
   { month: 'May', days: '26–27', year: '2027', suffix: '2027-05' },
-  { month: 'June 30–July', days: '1', year: '2027', suffix: '2027-06' },
+  { month: 'July', days: '7–8', year: '2027', suffix: '2027-06' },
 ];
 
 const COURSE_DATA = {
