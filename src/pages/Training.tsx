@@ -127,8 +127,8 @@ const PROGRAMS = [
     desc: 'Full IATA DGR compliance training for shippers, freight forwarders, and airline personnel. Initial and recurrent courses aligned with the current IATA edition.',
     audience: 'Shippers · Forwarders · Airlines',
     links: [
-      { label: 'Function 7.1', href: '/training/iata-cbta-7-1' },
-      { label: 'Function 7.3', href: '/training/iata-cbta-7-3' },
+      { label: 'Preparing Dangerous Goods Consignments', href: '/training/iata-cbta-7-1' },
+      { label: 'Accepting Dangerous Goods Consignments', href: '/training/iata-cbta-7-3' },
     ],
   },
   {

@@ -12,19 +12,19 @@ import { usePageMeta } from '../hooks/usePageMeta';
 type CourseFunction = '7.1' | '7.3';
 
 const INITIAL_DATES = [
-  { month: 'January', days: '19–21', year: '2027', suffix: '2027-01' },
-  { month: 'February', days: '16–18', year: '2027', suffix: '2027-02' },
-  { month: 'April', days: '13–15', year: '2027', suffix: '2027-04' },
-  { month: 'May', days: '18–20', year: '2027', suffix: '2027-05' },
-  { month: 'June', days: '22–24', year: '2027', suffix: '2027-06' },
+  { month: 'January', days: '19–21', year: '2027', suffix: '2027-01', startDate: '2027-01-19', endDate: '2027-01-21' },
+  { month: 'February', days: '16–18', year: '2027', suffix: '2027-02', startDate: '2027-02-16', endDate: '2027-02-18' },
+  { month: 'April', days: '13–15', year: '2027', suffix: '2027-04', startDate: '2027-04-13', endDate: '2027-04-15' },
+  { month: 'May', days: '18–20', year: '2027', suffix: '2027-05', startDate: '2027-05-18', endDate: '2027-05-20' },
+  { month: 'June', days: '22–24', year: '2027', suffix: '2027-06', startDate: '2027-06-22', endDate: '2027-06-24' },
 ];
 
 const RECURRENT_DATES = [
-  { month: 'January', days: '27–28', year: '2027', suffix: '2027-01' },
-  { month: 'February', days: '24–25', year: '2027', suffix: '2027-02' },
-  { month: 'April', days: '21–22', year: '2027', suffix: '2027-04' },
-  { month: 'May', days: '26–27', year: '2027', suffix: '2027-05' },
-  { month: 'July', days: '7–8', year: '2027', suffix: '2027-06' },
+  { month: 'January', days: '27–28', year: '2027', suffix: '2027-01', startDate: '2027-01-27', endDate: '2027-01-28' },
+  { month: 'February', days: '24–25', year: '2027', suffix: '2027-02', startDate: '2027-02-24', endDate: '2027-02-25' },
+  { month: 'April', days: '21–22', year: '2027', suffix: '2027-04', startDate: '2027-04-21', endDate: '2027-04-22' },
+  { month: 'May', days: '26–27', year: '2027', suffix: '2027-05', startDate: '2027-05-26', endDate: '2027-05-27' },
+  { month: 'July', days: '7–8', year: '2027', suffix: '2027-06', startDate: '2027-07-07', endDate: '2027-07-08' },
 ];
 
 const COURSE_DATA = {
@@ -32,6 +32,9 @@ const COURSE_DATA = {
     label: 'Function 7.1',
     title: 'Preparing Dangerous Goods Consignments',
     description: 'Live virtual IATA DGR competency-based training for personnel responsible for preparing dangerous goods consignments for air transport.',
+    seoTitle: 'Preparing Dangerous Goods Course | IATA DGR Canada | GGM',
+    metaDescription: 'Live online IATA DGR course for preparing dangerous goods consignments. Instructor-led initial and recurrent training for professionals across Canada.',
+    searchIntro: 'This live online, instructor-led IATA dangerous goods course helps shippers and cargo personnel across Canada prepare compliant air transport consignments. Complete initial or recurrent training and demonstrate competency in classification, packing, marking, labelling and documentation.',
     audience: [
       'Shippers and packing personnel',
       'Manufacturers and exporters of dangerous goods',
@@ -56,12 +59,16 @@ const COURSE_DATA = {
     ],
     recurrentFocus: 'Recurrent training refreshes these competencies and incorporates significant changes and amendments from the latest IATA DGR edition.',
     scopeNote: 'This function course does not include the preparation of Class 7 radioactive material consignments.',
+    roleName: 'personnel preparing dangerous goods consignments',
     path: 'iata-cbta-7-1',
   },
   '7.3': {
     label: 'Function 7.3',
     title: 'Accepting Dangerous Goods Consignments',
     description: 'Live virtual IATA DGR competency-based training for personnel responsible for accepting dangerous goods consignments for air transport.',
+    seoTitle: 'Accepting Dangerous Goods Course | IATA DGR Canada | GGM',
+    metaDescription: 'Live online IATA DGR course for accepting dangerous goods consignments. Instructor-led initial and recurrent training for cargo teams across Canada.',
+    searchIntro: 'This live online, instructor-led IATA dangerous goods course helps cargo agents, operators and ground handlers across Canada accept air transport consignments safely. Complete initial or recurrent training and demonstrate competency in documentation, package, marking, labelling and acceptance checks.',
     audience: [
       'Freight forwarders and cargo agents',
       'Airline and cargo-terminal acceptance personnel',
@@ -86,6 +93,7 @@ const COURSE_DATA = {
     ],
     recurrentFocus: 'Recurrent training reinforces the acceptance process and addresses significant changes and amendments from the latest IATA DGR edition.',
     scopeNote: 'Practical exercises use simulated shipment and documentation scenarios to support operational decision-making.',
+    roleName: 'personnel accepting dangerous goods consignments',
     path: 'iata-cbta-7-3',
   },
 } as const;
@@ -122,12 +130,115 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
     return `/training/${other.path}${query ? `?${query}` : ''}`;
   }, [attributionQuery, other.path]);
 
+  const canonical = `https://globalgatemexico.com/training/${course.path}`;
+  const faqItems = [
+    {
+      question: `Is the ${course.title} course delivered online?`,
+      answer: 'Yes. Every session is delivered live online in English by an instructor, from 8:00 a.m. to 4:00 p.m. Eastern Time.',
+    },
+    {
+      question: 'Who should take initial training versus recurrent training?',
+      answer: 'Initial training is intended for participants who do not hold valid prior training for the assigned function. Recurrent training is for personnel who already hold valid training for the same function and need to renew their competency.',
+    },
+    {
+      question: 'How long is the IATA dangerous goods course?',
+      answer: 'Initial training lasts 24 hours over three consecutive days. Recurrent training lasts 16 hours over two consecutive days.',
+    },
+    {
+      question: 'Will I receive a certificate after the course?',
+      answer: 'Participants must achieve a final result of 80% or higher. Eligible certificates are normally valid for 24 months.',
+    },
+    {
+      question: 'Can participants join from anywhere in Canada?',
+      answer: 'Yes. The course is delivered in a live virtual classroom and is available to participants across Canada. Sessions follow Eastern Time.',
+    },
+  ];
+
+  const structuredData = useMemo(() => ({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Course',
+        '@id': `${canonical}#course`,
+        name: course.title,
+        alternateName: `IATA CBTA ${course.label}`,
+        description: course.metaDescription,
+        url: canonical,
+        inLanguage: 'en',
+        provider: {
+          '@type': 'Organization',
+          '@id': 'https://globalgatemexico.com/#organization',
+          name: 'Global Gate México',
+          url: 'https://globalgatemexico.com',
+        },
+        audience: {
+          '@type': 'Audience',
+          audienceType: course.roleName,
+          geographicArea: { '@type': 'Country', name: 'Canada' },
+        },
+        educationalCredentialAwarded: 'Certificate of completion upon achieving the required assessment result',
+        hasCourseInstance: [
+          ...INITIAL_DATES.map((date) => ({
+            '@type': 'CourseInstance',
+            name: `${course.title} — Initial`,
+            courseMode: 'Online',
+            courseWorkload: 'PT24H',
+            startDate: date.startDate,
+            endDate: date.endDate,
+            location: { '@type': 'VirtualLocation', url: canonical },
+            offers: { '@type': 'Offer', price: '1200', priceCurrency: 'CAD', availability: 'https://schema.org/InStock', url: `${canonical}#dates` },
+          })),
+          ...RECURRENT_DATES.map((date) => ({
+            '@type': 'CourseInstance',
+            name: `${course.title} — Recurrent`,
+            courseMode: 'Online',
+            courseWorkload: 'PT16H',
+            startDate: date.startDate,
+            endDate: date.endDate,
+            location: { '@type': 'VirtualLocation', url: canonical },
+            offers: { '@type': 'Offer', price: '1000', priceCurrency: 'CAD', availability: 'https://schema.org/InStock', url: `${canonical}#recurrent-dates` },
+          })),
+        ],
+      },
+      {
+        '@type': 'FAQPage',
+        '@id': `${canonical}#faq`,
+        mainEntity: faqItems.map((item) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: { '@type': 'Answer', text: item.answer },
+        })),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://globalgatemexico.com/' },
+          { '@type': 'ListItem', position: 2, name: 'Training', item: 'https://globalgatemexico.com/training' },
+          { '@type': 'ListItem', position: 3, name: course.title, item: canonical },
+        ],
+      },
+    ],
+  }), [canonical, course]);
+
   usePageMeta({
-    title: `${course.label} ${course.title} | Live Virtual IATA DGR Training | GGM`,
-    description: `${course.description} Initial and recurrent courses delivered in English by Global Gate México.`,
-    canonical: `https://globalgatemexico.com/training/${course.path}`,
+    title: course.seoTitle,
+    description: course.metaDescription,
+    canonical,
     lang: 'en',
   });
+
+  useEffect(() => {
+    const id = 'course-structured-data';
+    let script = document.getElementById(id) as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement('script');
+      script.id = id;
+      script.type = 'application/ld+json';
+      document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify(structuredData);
+    return () => script?.remove();
+  }, [structuredData]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -183,6 +294,14 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
               </aside>
             </FadeIn>
           </div>
+        </Container>
+      </section>
+
+      <section className="py-12 bg-[#f7f8fb] border-b border-black/[0.05]">
+        <Container>
+          <p className="max-w-4xl text-base md:text-lg leading-relaxed text-dark/72">
+            {course.searchIntro}
+          </p>
         </Container>
       </section>
 
@@ -347,11 +466,31 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
           </FadeIn>
         </Container>
       </section>
+
+      <section className="py-20 lg:py-24 bg-[#f7f8fb]" aria-labelledby="course-faq-title">
+        <Container>
+          <FadeIn className="max-w-3xl mb-10">
+            <Eyebrow>Course FAQ</Eyebrow>
+            <h2 id="course-faq-title" className="text-3xl md:text-4xl font-extrabold mb-4">Frequently asked questions</h2>
+            <p className="text-secondary leading-relaxed">Key details about this live online IATA dangerous goods course for participants in Canada.</p>
+          </FadeIn>
+          <div className="max-w-4xl divide-y divide-black/[0.08] border-y border-black/[0.08]">
+            {faqItems.map((item) => (
+              <FadeIn key={item.question}>
+                <article className="py-7 md:grid md:grid-cols-[0.8fr_1.2fr] md:gap-10">
+                  <h3 className="text-base font-extrabold mb-3 md:mb-0">{item.question}</h3>
+                  <p className="text-sm text-secondary leading-relaxed">{item.answer}</p>
+                </article>
+              </FadeIn>
+            ))}
+          </div>
+        </Container>
+      </section>
     </main>
   );
 }
 
-type CourseDate = { month: string; days: string; year: string; suffix: string };
+type CourseDate = { month: string; days: string; year: string; suffix: string; startDate: string; endDate: string };
 
 function CourseDatePanel({
   title,
