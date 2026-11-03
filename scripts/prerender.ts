@@ -20,6 +20,11 @@ const routes = [...sitemap.matchAll(/<loc>https:\/\/www\.globalgatemexico\.com([
 const serverEntry = pathToFileURL(path.join(root, '.prerender', 'server', 'entry-server.js')).href;
 const { render } = await import(serverEntry) as { render: (url: string) => { html: string; meta: PageMeta } };
 
+// Keep a neutral client-rendered shell for operational routes that are not
+// indexable (enrollment, payment completion, tracking embeds, etc.).
+const spaShell = template.replace('<head>', '<head>\n    <meta name="robots" content="noindex,follow" />');
+await writeFile(path.join(dist, 'spa.html'), spaShell);
+
 function escapeHtml(value: string) {
   return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
