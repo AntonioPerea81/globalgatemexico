@@ -49,12 +49,12 @@ export function TerminosDeServicioPage() {
   usePageMeta({
     title: 'Términos y Condiciones de Uso | Global Gate México',
     description: 'Términos y Condiciones de Uso del sitio web y servicios de Global Gate México. Servicios de logística de mercancías peligrosas, consultoría y capacitación.',
-    canonical: 'https://globalgatemexico.com/terminos-de-servicio',
+    canonical: 'https://www.globalgatemexico.com/terminos-de-servicio',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/terminos-de-servicio' },
-      { lang: 'en', href: 'https://globalgatemexico.com/terms-of-service' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/terminos-de-servicio' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/terminos-de-servicio' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/terms-of-service' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/terminos-de-servicio' },
     ],
   });
 

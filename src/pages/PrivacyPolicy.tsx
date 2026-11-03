@@ -55,7 +55,7 @@ export function PrivacyPolicyPage() {
   usePageMeta({
     title: 'Privacy Policy | Global Gate México',
     description: 'Privacy Policy for Global Gate México — how we collect, use, and protect your personal data in compliance with applicable data protection regulations.',
-    canonical: 'https://globalgatemexico.com/privacy-policy',
+    canonical: 'https://www.globalgatemexico.com/privacy-policy',
     lang: 'en',
   });
 

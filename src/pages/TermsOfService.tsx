@@ -49,7 +49,7 @@ export function TermsOfServicePage() {
   usePageMeta({
     title: 'Terms of Service | Global Gate México',
     description: 'Terms of Service for Global Gate México — conditions governing the use of our website and professional dangerous goods logistics and compliance services.',
-    canonical: 'https://globalgatemexico.com/terms-of-service',
+    canonical: 'https://www.globalgatemexico.com/terms-of-service',
     lang: 'en',
   });
 

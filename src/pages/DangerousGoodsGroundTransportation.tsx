@@ -143,12 +143,12 @@ export function DangerousGoodsGroundTransportationPage() {
   usePageMeta({
     title: 'Dangerous Goods Ground Transportation in Mexico | Global Gate México',
     description: 'Specialized dangerous goods ground transportation in Mexico: flammable liquids, gases, corrosives, lithium batteries, and hazardous waste. SICT and SEMARNAT authorized.',
-    canonical: 'https://globalgatemexico.com/dangerous-goods-ground-transportation',
+    canonical: 'https://www.globalgatemexico.com/dangerous-goods-ground-transportation',
     lang: 'en',
     hreflang: [
-      { lang: 'en', href: 'https://globalgatemexico.com/dangerous-goods-ground-transportation' },
-      { lang: 'es', href: 'https://globalgatemexico.com/transporte-terrestre-mercancias-peligrosas' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dangerous-goods-ground-transportation' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dangerous-goods-ground-transportation' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/transporte-terrestre-mercancias-peligrosas' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dangerous-goods-ground-transportation' },
     ],
   });
 

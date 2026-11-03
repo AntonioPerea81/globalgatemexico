@@ -108,12 +108,12 @@ export const LogisticaMaterialRadiacticoPage = () => {
   usePageMeta({
     title: 'Logística de Material Radiactivo en México | Global Gate México',
     description: 'Logística especializada de material radiactivo Clase 7 — embalaje, almacenamiento controlado y transporte multimodal conforme a OIEA SSR-6, IATA DGR, CNSNS, SCT e IMDG en México y Norteamérica.',
-    canonical: 'https://globalgatemexico.com/logistica-material-radiactivo',
+    canonical: 'https://www.globalgatemexico.com/logistica-material-radiactivo',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/logistica-material-radiactivo' },
-      { lang: 'en', href: 'https://globalgatemexico.com/radioactive-material-logistics' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/radioactive-material-logistics' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/logistica-material-radiactivo' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/radioactive-material-logistics' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/radioactive-material-logistics' },
     ],
   });
 

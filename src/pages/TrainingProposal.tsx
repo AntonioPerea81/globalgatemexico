@@ -328,7 +328,7 @@ export function TrainingProposalPage() {
   usePageMeta({
     title: 'Request Training Proposal | DG Training Programs | Global Gate México',
     description: 'Request a customized dangerous goods training proposal from Global Gate México. IATA CBTA certified, STPS registered. Corporate DG training across all transport modes.',
-    canonical: 'https://globalgatemexico.com/training-proposal',
+    canonical: 'https://www.globalgatemexico.com/training-proposal',
     lang: 'en',
   });
 

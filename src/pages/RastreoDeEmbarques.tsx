@@ -18,7 +18,7 @@ import { usePageMeta } from '../hooks/usePageMeta';
 // Los siguientes orígenes deben agregarse en el dashboard de Shipsgo
 // bajo Configuración → Embed → Orígenes Permitidos (Allowed Origins):
 //
-//   https://globalgatemexico.com
+//   https://www.globalgatemexico.com
 //   https://www.globalgatemexico.com
 //
 // Para desarrollo local:
@@ -42,12 +42,12 @@ export function RastreoDeEmbarquesPage() {
     title: 'Rastrea tu Embarque | Global Gate México',
     description:
       'Visibilidad en tiempo real para embarques aéreos y marítimos gestionados por Global Gate México. Rastrea por guía aérea AWB, número de contenedor o conocimiento de embarque.',
-    canonical: 'https://globalgatemexico.com/rastreo-de-embarques',
+    canonical: 'https://www.globalgatemexico.com/rastreo-de-embarques',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/rastreo-de-embarques' },
-      { lang: 'en', href: 'https://globalgatemexico.com/shipment-tracking' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/shipment-tracking' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/rastreo-de-embarques' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/shipment-tracking' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/shipment-tracking' },
     ],
   });
 

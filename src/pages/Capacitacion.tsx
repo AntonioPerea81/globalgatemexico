@@ -300,7 +300,7 @@ export function CapacitacionPage() {
   usePageMeta({
     title: 'Capacitación en Mercancías Peligrosas | Proveedor CBTA IATA | Global Gate México',
     description: 'Programas de capacitación en mercancías peligrosas autorizados por IATA CBTA para transporte aéreo, terrestre, marítimo y materiales radiactivos. Instructores certificados internacionalmente con experiencia operativa real.',
-    canonical: 'https://globalgatemexico.com/es/capacitacion',
+    canonical: 'https://www.globalgatemexico.com/es/capacitacion',
     lang: 'es',
   });
 

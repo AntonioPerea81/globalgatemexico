@@ -143,12 +143,12 @@ export function TransporteTerrestreMercanciasPeligrosasPage() {
   usePageMeta({
     title: 'Transporte Terrestre de Mercancías Peligrosas en México | Global Gate México',
     description: 'Transporte terrestre especializado de mercancías peligrosas en México: líquidos inflamables, gases, corrosivos, baterías de litio y residuos peligrosos. Autorizado por SICT y SEMARNAT.',
-    canonical: 'https://globalgatemexico.com/transporte-terrestre-mercancias-peligrosas',
+    canonical: 'https://www.globalgatemexico.com/transporte-terrestre-mercancias-peligrosas',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/transporte-terrestre-mercancias-peligrosas' },
-      { lang: 'en', href: 'https://globalgatemexico.com/dangerous-goods-ground-transportation' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/transporte-terrestre-mercancias-peligrosas' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/transporte-terrestre-mercancias-peligrosas' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dangerous-goods-ground-transportation' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/transporte-terrestre-mercancias-peligrosas' },
     ],
   });
 

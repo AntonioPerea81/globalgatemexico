@@ -63,12 +63,12 @@ export function StandardTradeConditionsPage() {
   usePageMeta({
     title: 'Standard Trade Conditions | Global Gate México',
     description: 'Standard Trade Conditions governing freight forwarding, multimodal transportation, dangerous goods logistics, and international supply chain services provided by Global Gate México.',
-    canonical: 'https://globalgatemexico.com/standard-trade-conditions',
+    canonical: 'https://www.globalgatemexico.com/standard-trade-conditions',
     lang: 'en',
     hreflang: [
-      { lang: 'en', href: 'https://globalgatemexico.com/standard-trade-conditions' },
-      { lang: 'es', href: 'https://globalgatemexico.com/condiciones-estandar-de-comercio' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/standard-trade-conditions' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/standard-trade-conditions' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/condiciones-estandar-de-comercio' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/standard-trade-conditions' },
     ],
   });
 

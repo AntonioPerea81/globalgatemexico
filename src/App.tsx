@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { ServicesPage, AboutPage, AcercaPage } from './pages/Internal';
 import { TrainingPage } from './pages/Training';
@@ -59,13 +59,14 @@ import { TrainingEnrollmentCompletePage, TrainingEnrollmentPage } from './pages/
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
+import { RouteSeo } from './components/RouteSeo';
 
-export default function App() {
+export function AppRoutes() {
   return (
     <LanguageProvider>
-      <Router>
-        <Layout>
-          <Routes>
+      <RouteSeo />
+      <Layout>
+        <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dangerous-goods-transportation" element={<DangerousGoodsTransportationPage />} />
             <Route path="/es/transporte-mercancias-peligrosas" element={<TransporteMercanciasPeligrosasPage />} />
@@ -125,10 +126,17 @@ export default function App() {
             <Route path="/shipment-tracking"     element={<ShipmentTrackingPage />} />
             <Route path="/rastreo-de-embarques" element={<RastreoDeEmbarquesPage />} />
             <Route path="*"         element={<Home />} />
-          </Routes>
-        </Layout>
-        <CookieConsent />
-      </Router>
+        </Routes>
+      </Layout>
+      <CookieConsent />
     </LanguageProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
   );
 }

@@ -49,12 +49,12 @@ export function PoliticaDePrivacidadPage() {
   usePageMeta({
     title: 'Política de Privacidad | Global Gate México',
     description: 'Política de Privacidad de Global Gate México conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP) y lineamientos del INAI.',
-    canonical: 'https://globalgatemexico.com/politica-de-privacidad',
+    canonical: 'https://www.globalgatemexico.com/politica-de-privacidad',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/politica-de-privacidad' },
-      { lang: 'en', href: 'https://globalgatemexico.com/privacy-policy' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/politica-de-privacidad' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/politica-de-privacidad' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/privacy-policy' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/politica-de-privacidad' },
     ],
   });
 

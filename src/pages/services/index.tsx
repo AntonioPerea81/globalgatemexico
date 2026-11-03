@@ -142,12 +142,12 @@ export function AirTransportationPage() {
   usePageMeta({
     title: 'Dangerous Goods Air Transportation | IATA DGR | Global Gate México',
     description: 'IATA DGR-compliant air freight for Class 1–9 dangerous goods across Mexico and worldwide. Packing, documentation, and airline coordination by certified specialists.',
-    canonical: 'https://globalgatemexico.com/dangerous-goods-transportation/air-transportation',
+    canonical: 'https://www.globalgatemexico.com/dangerous-goods-transportation/air-transportation',
     lang: 'en',
     hreflang: [
-      { lang: 'en', href: 'https://globalgatemexico.com/dangerous-goods-transportation/air-transportation' },
-      { lang: 'es', href: 'https://globalgatemexico.com/es/transporte-mercancias-peligrosas/transporte-aereo' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dangerous-goods-transportation/air-transportation' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation/air-transportation' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/es/transporte-mercancias-peligrosas/transporte-aereo' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation/air-transportation' },
     ],
   });
   return <ServicePageTemplate data={airData} />;
@@ -286,12 +286,12 @@ export function GroundTransportationPage() {
   usePageMeta({
     title: 'Dangerous Goods Ground Transportation | SCT NOM | Global Gate México',
     description: 'SCT-certified road transport of hazardous materials across Mexico and cross-border to the US and Canada. Certified drivers, dedicated DG fleet, real-time tracking.',
-    canonical: 'https://globalgatemexico.com/dangerous-goods-transportation/ground-transportation',
+    canonical: 'https://www.globalgatemexico.com/dangerous-goods-transportation/ground-transportation',
     lang: 'en',
     hreflang: [
-      { lang: 'en', href: 'https://globalgatemexico.com/dangerous-goods-transportation/ground-transportation' },
-      { lang: 'es', href: 'https://globalgatemexico.com/es/transporte-mercancias-peligrosas/transporte-terrestre' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dangerous-goods-transportation/ground-transportation' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation/ground-transportation' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/es/transporte-mercancias-peligrosas/transporte-terrestre' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation/ground-transportation' },
     ],
   });
   return <ServicePageTemplate data={groundData} />;
@@ -431,12 +431,12 @@ export function OceanFreightPage() {
   usePageMeta({
     title: 'Hazardous Cargo Ocean Freight | IMDG Code | Global Gate México',
     description: 'Full IMDG Code compliance for containerized and bulk sea shipments of dangerous goods through Mexico\'s major ports. FCL & LCL options, DG Manifest preparation.',
-    canonical: 'https://globalgatemexico.com/dangerous-goods-transportation/ocean-freight',
+    canonical: 'https://www.globalgatemexico.com/dangerous-goods-transportation/ocean-freight',
     lang: 'en',
     hreflang: [
-      { lang: 'en', href: 'https://globalgatemexico.com/dangerous-goods-transportation/ocean-freight' },
-      { lang: 'es', href: 'https://globalgatemexico.com/es/transporte-mercancias-peligrosas/transporte-maritimo' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dangerous-goods-transportation/ocean-freight' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation/ocean-freight' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/es/transporte-mercancias-peligrosas/transporte-maritimo' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation/ocean-freight' },
     ],
   });
   return <ServicePageTemplate data={oceanData} />;
@@ -575,12 +575,12 @@ export function DGPackagingPage() {
   usePageMeta({
     title: 'UN-Certified Dangerous Goods Packaging | All Hazard Classes | Global Gate México',
     description: 'In-house UN-certified packaging for all nine DG hazard classes across air, sea, and ground transport modes. IATA, IMDG, ADR, and SCT compliant.',
-    canonical: 'https://globalgatemexico.com/dangerous-goods-transportation/dg-packaging',
+    canonical: 'https://www.globalgatemexico.com/dangerous-goods-transportation/dg-packaging',
     lang: 'en',
     hreflang: [
-      { lang: 'en', href: 'https://globalgatemexico.com/dangerous-goods-transportation/dg-packaging' },
-      { lang: 'es', href: 'https://globalgatemexico.com/es/transporte-mercancias-peligrosas/embalaje-dg' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dangerous-goods-transportation/dg-packaging' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation/dg-packaging' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/es/transporte-mercancias-peligrosas/embalaje-dg' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation/dg-packaging' },
     ],
   });
   return <ServicePageTemplate data={packagingData} />;
@@ -719,12 +719,12 @@ export function DocumentationServicesPage() {
   usePageMeta({
     title: 'Dangerous Goods Documentation Services | IATA · IMDG · SCT | Global Gate México',
     description: 'Professional preparation of DG Declarations, Safety Data Sheets, shipper certifications, and all hazmat regulatory paperwork across all transport modes in Spanish and English.',
-    canonical: 'https://globalgatemexico.com/dangerous-goods-transportation/documentation-services',
+    canonical: 'https://www.globalgatemexico.com/dangerous-goods-transportation/documentation-services',
     lang: 'en',
     hreflang: [
-      { lang: 'en', href: 'https://globalgatemexico.com/dangerous-goods-transportation/documentation-services' },
-      { lang: 'es', href: 'https://globalgatemexico.com/es/transporte-mercancias-peligrosas/servicios-documentacion' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dangerous-goods-transportation/documentation-services' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation/documentation-services' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/es/transporte-mercancias-peligrosas/servicios-documentacion' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation/documentation-services' },
     ],
   });
   return <ServicePageTemplate data={documentationData} />;

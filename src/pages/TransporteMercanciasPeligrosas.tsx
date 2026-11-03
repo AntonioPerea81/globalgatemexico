@@ -136,12 +136,12 @@ export const TransporteMercanciasPeligrosasPage = () => {
   usePageMeta({
     title: 'Transporte de Mercancías Peligrosas en México | Global Gate México',
     description: 'Transporte seguro y conforme de mercancías peligrosas por vía aérea, terrestre y marítima. Especialistas certificados IATA, IMDG y SCT en México y Norteamérica.',
-    canonical: 'https://globalgatemexico.com/es/transporte-mercancias-peligrosas',
+    canonical: 'https://www.globalgatemexico.com/es/transporte-mercancias-peligrosas',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/es/transporte-mercancias-peligrosas' },
-      { lang: 'en', href: 'https://globalgatemexico.com/dangerous-goods-transportation' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dangerous-goods-transportation' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/es/transporte-mercancias-peligrosas' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation' },
     ],
   });
 

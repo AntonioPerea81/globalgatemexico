@@ -49,12 +49,12 @@ export function AvisoLegalPage() {
   usePageMeta({
     title: 'Aviso Legal | Global Gate México',
     description: 'Aviso Legal de Global Gate México — identificación del responsable del sitio, propiedad intelectual, acreditaciones vigentes y condiciones de uso del contenido.',
-    canonical: 'https://globalgatemexico.com/aviso-legal',
+    canonical: 'https://www.globalgatemexico.com/aviso-legal',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/aviso-legal' },
-      { lang: 'en', href: 'https://globalgatemexico.com/legal-notice' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/aviso-legal' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/aviso-legal' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/legal-notice' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/aviso-legal' },
     ],
   });
 
@@ -116,7 +116,7 @@ export function AvisoLegalPage() {
                   <strong>Teléfono:</strong>{' '}
                   <a href="tel:+528121654040" style={{ color: '#2563eb', textDecoration: 'none' }}>+52 812 165 4040</a><br />
                   <strong>Sitio web:</strong>{' '}
-                  <a href="https://globalgatemexico.com" style={{ color: '#2563eb', textDecoration: 'none' }}>globalgatemexico.com</a>
+                  <a href="https://www.globalgatemexico.com" style={{ color: '#2563eb', textDecoration: 'none' }}>globalgatemexico.com</a>
                 </p>
               </div>
             </Section>

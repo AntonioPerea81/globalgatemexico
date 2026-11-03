@@ -63,12 +63,12 @@ export function CondicionesEstandarDeComercioPage() {
   usePageMeta({
     title: 'Condiciones Estándar de Comercio | Global Gate México',
     description: 'Condiciones Estándar de Comercio de Global Gate México — régimen contractual para agenciamiento de carga, transporte multimodal, mercancías peligrosas y logística internacional.',
-    canonical: 'https://globalgatemexico.com/condiciones-estandar-de-comercio',
+    canonical: 'https://www.globalgatemexico.com/condiciones-estandar-de-comercio',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/condiciones-estandar-de-comercio' },
-      { lang: 'en', href: 'https://globalgatemexico.com/standard-trade-conditions' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/condiciones-estandar-de-comercio' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/condiciones-estandar-de-comercio' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/standard-trade-conditions' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/condiciones-estandar-de-comercio' },
     ],
   });
 

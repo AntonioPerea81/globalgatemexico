@@ -303,7 +303,7 @@ export function TrainingPage() {
   usePageMeta({
     title: 'Dangerous Goods Training & Certifications | IATA CBTA Provider | Global Gate México',
     description: 'IATA CBTA-authorized dangerous goods training programs for air, ground, maritime, and radioactive materials. Corporate training, international certifications, onsite and remote delivery.',
-    canonical: 'https://globalgatemexico.com/training',
+    canonical: 'https://www.globalgatemexico.com/training',
     lang: 'en',
   });
 

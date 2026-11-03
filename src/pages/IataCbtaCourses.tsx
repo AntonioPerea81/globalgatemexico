@@ -130,7 +130,7 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
     return `/training/${other.path}${query ? `?${query}` : ''}`;
   }, [attributionQuery, other.path]);
 
-  const canonical = `https://globalgatemexico.com/training/${course.path}`;
+  const canonical = `https://www.globalgatemexico.com/training/${course.path}`;
   const faqItems = [
     {
       question: `Is the ${course.title} course delivered online?`,
@@ -167,9 +167,9 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
         inLanguage: 'en',
         provider: {
           '@type': 'Organization',
-          '@id': 'https://globalgatemexico.com/#organization',
+          '@id': 'https://www.globalgatemexico.com/#organization',
           name: 'Global Gate México',
-          url: 'https://globalgatemexico.com',
+          url: 'https://www.globalgatemexico.com',
         },
         audience: {
           '@type': 'Audience',
@@ -212,8 +212,8 @@ function CoursePage({ functionCode }: { functionCode: CourseFunction }) {
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://globalgatemexico.com/' },
-          { '@type': 'ListItem', position: 2, name: 'Training', item: 'https://globalgatemexico.com/training' },
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.globalgatemexico.com/' },
+          { '@type': 'ListItem', position: 2, name: 'Training', item: 'https://www.globalgatemexico.com/training' },
           { '@type': 'ListItem', position: 3, name: course.title, item: canonical },
         ],
       },

@@ -18,7 +18,7 @@ import { usePageMeta } from '../hooks/usePageMeta';
 // The following origins must be added to the Shipsgo dashboard
 // under Settings → Embed → Allowed Origins:
 //
-//   https://globalgatemexico.com
+//   https://www.globalgatemexico.com
 //   https://www.globalgatemexico.com
 //
 // For local development:
@@ -42,11 +42,11 @@ export function ShipmentTrackingPage() {
     title: 'Track Your Shipment | Global Gate México',
     description:
       'Real-time shipment tracking for air cargo and ocean freight handled by Global Gate México. Track by AWB number, container number, or bill of lading.',
-    canonical: 'https://globalgatemexico.com/shipment-tracking',
+    canonical: 'https://www.globalgatemexico.com/shipment-tracking',
     lang: 'en',
     hreflang: [
-      { lang: 'en', href: 'https://globalgatemexico.com/shipment-tracking' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/shipment-tracking' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/shipment-tracking' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/shipment-tracking' },
     ],
   });
 

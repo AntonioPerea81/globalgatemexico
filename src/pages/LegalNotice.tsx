@@ -49,7 +49,7 @@ export function LegalNoticePage() {
   usePageMeta({
     title: 'Legal Notice | Global Gate México',
     description: 'Legal Notice for Global Gate México — company identification, regulatory compliance, and intellectual property information.',
-    canonical: 'https://globalgatemexico.com/legal-notice',
+    canonical: 'https://www.globalgatemexico.com/legal-notice',
     lang: 'en',
   });
 
@@ -118,7 +118,7 @@ export function LegalNoticePage() {
                     +52 812 165 4040
                   </a><br />
                   <strong>Website:</strong>{' '}
-                  <a href="https://globalgatemexico.com" style={{ color: '#2563eb', textDecoration: 'none' }}>
+                  <a href="https://www.globalgatemexico.com" style={{ color: '#2563eb', textDecoration: 'none' }}>
                     globalgatemexico.com
                   </a>
                 </p>

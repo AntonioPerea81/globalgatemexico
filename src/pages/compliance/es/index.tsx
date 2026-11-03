@@ -519,12 +519,12 @@ export function CumplimientoDGPage() {
   usePageMeta({
     title: 'Cumplimiento DG | Clasificación y Documentación | Global Gate México',
     description: 'Ciclo completo de cumplimiento para mercancías peligrosas: clasificación, validación de embalaje y declaración DG preparada por especialistas certificados IATA e IMDG.',
-    canonical: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/cumplimiento-dg',
+    canonical: 'https://www.globalgatemexico.com/es/consultoria-cumplimiento-dg/cumplimiento-dg',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/cumplimiento-dg' },
-      { lang: 'en', href: 'https://globalgatemexico.com/dg-compliance/dg-compliance' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dg-compliance/dg-compliance' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/es/consultoria-cumplimiento-dg/cumplimiento-dg' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dg-compliance/dg-compliance' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dg-compliance/dg-compliance' },
     ],
   });
   return <CompliancePageTemplate data={cumplimientoDGData} lang="ES" />;
@@ -536,12 +536,12 @@ export function ConsultoriaRegulatoriaPage() {
   usePageMeta({
     title: 'Consultoría Regulatoria DG | IATA · IMDG · SCT · DOT | Global Gate México',
     description: 'Consultoría especializada en normativa de mercancías peligrosas: IATA DGR, Código IMDG, DOT 49 CFR y SCT NOM. Orientación de cumplimiento en la edición vigente para sus productos y rutas.',
-    canonical: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/consultoria-regulatoria',
+    canonical: 'https://www.globalgatemexico.com/es/consultoria-cumplimiento-dg/consultoria-regulatoria',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/consultoria-regulatoria' },
-      { lang: 'en', href: 'https://globalgatemexico.com/dg-compliance/regulatory-consulting' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dg-compliance/regulatory-consulting' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/es/consultoria-cumplimiento-dg/consultoria-regulatoria' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dg-compliance/regulatory-consulting' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dg-compliance/regulatory-consulting' },
     ],
   });
   return <CompliancePageTemplate data={consultoriaRegulatoriaData} lang="ES" />;
@@ -553,12 +553,12 @@ export function AuditoriasCumplimientoPage() {
   usePageMeta({
     title: 'Auditorías de Cumplimiento DG | Internas y Pre-Inspección | Global Gate México',
     description: 'Auditorías estructuradas de cumplimiento DG para documentación, clasificación, embalaje y registros de capacitación. Reportes de brechas con planes de acción priorizados.',
-    canonical: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/auditorias-cumplimiento',
+    canonical: 'https://www.globalgatemexico.com/es/consultoria-cumplimiento-dg/auditorias-cumplimiento',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/auditorias-cumplimiento' },
-      { lang: 'en', href: 'https://globalgatemexico.com/dg-compliance/compliance-audits' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dg-compliance/compliance-audits' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/es/consultoria-cumplimiento-dg/auditorias-cumplimiento' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dg-compliance/compliance-audits' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dg-compliance/compliance-audits' },
     ],
   });
   return <CompliancePageTemplate data={auditoriasData} lang="ES" />;
@@ -570,12 +570,12 @@ export function RevisionHDSPage() {
   usePageMeta({
     title: 'Revisión de HDS | Clasificación de Transporte Sección 14 | Global Gate México',
     description: 'Datos de transporte de la Sección 14 verificados contra IATA DGR e IMDG vigentes. Reporte escrito de corrección para errores identificados en su biblioteca de HDS.',
-    canonical: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/revision-hds',
+    canonical: 'https://www.globalgatemexico.com/es/consultoria-cumplimiento-dg/revision-hds',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/revision-hds' },
-      { lang: 'en', href: 'https://globalgatemexico.com/dg-compliance/sds-review' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dg-compliance/sds-review' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/es/consultoria-cumplimiento-dg/revision-hds' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dg-compliance/sds-review' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dg-compliance/sds-review' },
     ],
   });
   return <CompliancePageTemplate data={revisionHDSData} lang="ES" />;
@@ -587,12 +587,12 @@ export function CumplimientoTransfronterizoPage() {
   usePageMeta({
     title: 'Cumplimiento DG Transfronterizo | México–EUA | SCT y DOT | Global Gate México',
     description: 'Cumplimiento DG para embarques transfronterizos México–EUA bajo SCT y DOT 49 CFR simultáneamente. Revisión de documentación, embalaje y coordinación para cruce fronterizo.',
-    canonical: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo',
+    canonical: 'https://www.globalgatemexico.com/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo',
     lang: 'es',
     hreflang: [
-      { lang: 'es', href: 'https://globalgatemexico.com/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo' },
-      { lang: 'en', href: 'https://globalgatemexico.com/dg-compliance/cross-border-dg-compliance' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dg-compliance/cross-border-dg-compliance' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/es/consultoria-cumplimiento-dg/cumplimiento-dg-transfronterizo' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dg-compliance/cross-border-dg-compliance' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dg-compliance/cross-border-dg-compliance' },
     ],
   });
   return <CompliancePageTemplate data={cumplimientoTransfronterizoData} lang="ES" />;

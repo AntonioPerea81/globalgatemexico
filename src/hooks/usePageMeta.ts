@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
+import { collectServerPageMeta } from '../lib/serverPageMeta';
 
-interface HreflangEntry { lang: string; href: string; }
+export interface HreflangEntry { lang: string; href: string; }
 
-interface PageMetaOptions {
-  title: string;
-  description: string;
-  canonical: string;
+export interface PageMetaOptions {
+  title?: string;
+  description?: string;
+  canonical?: string;
   hreflang?: HreflangEntry[];
   lang?: string;
 }
@@ -34,14 +35,23 @@ function setLinkTag(rel: string, href: string, extra?: Record<string, string>) {
 }
 
 export function usePageMeta({ title, description, canonical, hreflang, lang }: PageMetaOptions) {
+  if (typeof document === 'undefined') {
+    collectServerPageMeta({ title, description, canonical, hreflang, lang });
+  }
+
   useEffect(() => {
-    document.title = title;
+    if (title) document.title = title;
     document.documentElement.lang = lang ?? 'en';
 
-    setMetaTag('name', 'description', description);
-    setMetaTag('property', 'og:title', title);
-    setMetaTag('property', 'og:description', description);
-    setLinkTag('canonical', canonical);
+    if (description) {
+      setMetaTag('name', 'description', description);
+      setMetaTag('property', 'og:description', description);
+    }
+    if (title) setMetaTag('property', 'og:title', title);
+    if (canonical) {
+      setLinkTag('canonical', canonical);
+      setMetaTag('property', 'og:url', canonical);
+    }
 
     // Remove existing hreflang alternates then re-add
     document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove());
@@ -58,7 +68,7 @@ export function usePageMeta({ title, description, canonical, hreflang, lang }: P
       document.documentElement.lang = 'en';
       document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove());
       const canonical = document.querySelector('link[rel="canonical"]');
-      if (canonical) canonical.setAttribute('href', 'https://globalgatemexico.com');
+      if (canonical) canonical.setAttribute('href', 'https://www.globalgatemexico.com');
     };
-  }, [title, description, canonical]);
+  }, [title, description, canonical, hreflang, lang]);
 }

@@ -135,12 +135,12 @@ export const DangerousGoodsTransportationPage = () => {
   usePageMeta({
     title: 'Dangerous Goods Transportation in Mexico | Global Gate México',
     description: 'Safe and compliant dangerous goods transportation by air, ground, and ocean. IATA, IMDG, and SCT certified specialists across Mexico and North America.',
-    canonical: 'https://globalgatemexico.com/dangerous-goods-transportation',
+    canonical: 'https://www.globalgatemexico.com/dangerous-goods-transportation',
     lang: 'en',
     hreflang: [
-      { lang: 'en', href: 'https://globalgatemexico.com/dangerous-goods-transportation' },
-      { lang: 'es', href: 'https://globalgatemexico.com/es/transporte-mercancias-peligrosas' },
-      { lang: 'x-default', href: 'https://globalgatemexico.com/dangerous-goods-transportation' },
+      { lang: 'en', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/es/transporte-mercancias-peligrosas' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dangerous-goods-transportation' },
     ],
   });
 

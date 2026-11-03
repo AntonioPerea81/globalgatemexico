@@ -57,7 +57,7 @@ export function OnlineAcademyPage() {
   usePageMeta({
     title: 'GGM Academy | Online Training | Global Gate México',
     description: 'Professional dangerous goods online training by GGM. Asynchronous courses covering Mexican DG regulations, NOMs, and compliance requirements. Launching soon.',
-    canonical: 'https://globalgatemexico.com/training/online-academy',
+    canonical: 'https://www.globalgatemexico.com/training/online-academy',
     lang: 'en',
   });
 

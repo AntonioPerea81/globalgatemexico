@@ -80,7 +80,7 @@ export function TrainingEnrollmentPage() {
   usePageMeta({
     title: 'Secure Course Enrollment | Global Gate México',
     description: 'Enroll in GGM live virtual IATA CBTA training and pay securely through PayPal.',
-    canonical: 'https://globalgatemexico.com/training/enrollment',
+    canonical: 'https://www.globalgatemexico.com/training/enrollment',
     lang: 'en',
   });
 
@@ -265,7 +265,7 @@ export function TrainingEnrollmentCompletePage() {
   usePageMeta({
     title: 'Enrollment Confirmation | Global Gate México',
     description: 'GGM course enrollment confirmation.',
-    canonical: 'https://globalgatemexico.com/training/enrollment/complete',
+    canonical: 'https://www.globalgatemexico.com/training/enrollment/complete',
     lang: 'en',
   });
 
