@@ -129,6 +129,7 @@ const PROGRAMS = [
     links: [
       { label: 'Preparing Dangerous Goods Consignments', href: '/training/iata-cbta-7-1' },
       { label: 'Accepting Dangerous Goods Consignments', href: '/training/iata-cbta-7-3' },
+      { label: 'Self-Paced Online Academy', href: '/training/online-academy' },
     ],
   },
   {

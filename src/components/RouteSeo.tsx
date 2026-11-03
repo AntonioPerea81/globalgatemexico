@@ -4,7 +4,6 @@ import { usePageMeta, type HreflangEntry } from '../hooks/usePageMeta';
 const SITE_URL = 'https://www.globalgatemexico.com';
 
 const languagePairs: Array<[string, string]> = [
-  ['/', '/'],
   ['/dangerous-goods-transportation', '/es/transporte-mercancias-peligrosas'],
   ['/dangerous-goods-transportation/air-transportation', '/es/transporte-mercancias-peligrosas/transporte-aereo'],
   ['/dangerous-goods-transportation/ground-transportation', '/es/transporte-mercancias-peligrosas/transporte-terrestre'],

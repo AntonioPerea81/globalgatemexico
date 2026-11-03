@@ -148,7 +148,7 @@ export function TransporteTerrestreMercanciasPeligrosasPage() {
     hreflang: [
       { lang: 'es', href: 'https://www.globalgatemexico.com/transporte-terrestre-mercancias-peligrosas' },
       { lang: 'en', href: 'https://www.globalgatemexico.com/dangerous-goods-ground-transportation' },
-      { lang: 'x-default', href: 'https://www.globalgatemexico.com/transporte-terrestre-mercancias-peligrosas' },
+      { lang: 'x-default', href: 'https://www.globalgatemexico.com/dangerous-goods-ground-transportation' },
     ],
   });
 

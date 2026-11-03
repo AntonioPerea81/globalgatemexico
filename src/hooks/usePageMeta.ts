@@ -46,8 +46,19 @@ export function usePageMeta({ title, description, canonical, hreflang, lang }: P
     if (description) {
       setMetaTag('name', 'description', description);
       setMetaTag('property', 'og:description', description);
+      setMetaTag('name', 'twitter:description', description);
     }
-    if (title) setMetaTag('property', 'og:title', title);
+    if (title) {
+      setMetaTag('property', 'og:title', title);
+      setMetaTag('name', 'twitter:title', title);
+    }
+    setMetaTag('property', 'og:type', 'website');
+    setMetaTag('property', 'og:site_name', 'Global Gate Mexico');
+    setMetaTag('property', 'og:locale', (lang ?? 'en') === 'es' ? 'es_MX' : 'en_US');
+    setMetaTag('property', 'og:image', 'https://www.globalgatemexico.com/images/dg-transport/dg-hero-main.jpg');
+    setMetaTag('property', 'og:image:alt', 'Global Gate Mexico dangerous goods logistics and training');
+    setMetaTag('name', 'twitter:card', 'summary_large_image');
+    setMetaTag('name', 'twitter:image', 'https://www.globalgatemexico.com/images/dg-transport/dg-hero-main.jpg');
     if (canonical) {
       setLinkTag('canonical', canonical);
       setMetaTag('property', 'og:url', canonical);

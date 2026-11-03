@@ -41,6 +41,9 @@ function renderHead(html: string, meta: PageMeta) {
     `    <meta property="og:title" content="${escapeHtml(title)}" />`,
     `    <meta property="og:description" content="${escapeHtml(description)}" />`,
     `    <meta property="og:url" content="${escapeHtml(canonical)}" />`,
+    `    <meta property="og:locale" content="${meta.lang === 'es' ? 'es_MX' : 'en_US'}" />`,
+    `    <meta name="twitter:title" content="${escapeHtml(title)}" />`,
+    `    <meta name="twitter:description" content="${escapeHtml(description)}" />`,
     `    <link rel="canonical" href="${escapeHtml(canonical)}" />`,
     alternates,
     `    <title>${escapeHtml(title)}</title>`,
@@ -51,6 +54,9 @@ function renderHead(html: string, meta: PageMeta) {
     .replace(/\s*<meta name="description"[^>]*>/, '')
     .replace(/\s*<meta property="og:title"[^>]*>/, '')
     .replace(/\s*<meta property="og:description"[^>]*>/, '')
+    .replace(/\s*<meta property="og:locale"[^>]*>/, '')
+    .replace(/\s*<meta name="twitter:title"[^>]*>/, '')
+    .replace(/\s*<meta name="twitter:description"[^>]*>/, '')
     .replace(/\s*<title>[\s\S]*?<\/title>/, '')
     .replace('    <meta property="og:type" content="website" />', `    <meta property="og:type" content="website" />\n${tags}`);
 }

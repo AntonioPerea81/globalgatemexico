@@ -112,6 +112,7 @@ export const RadioactiveMaterialLogisticsPage = () => {
     lang: 'en',
     hreflang: [
       { lang: 'en', href: 'https://www.globalgatemexico.com/radioactive-material-logistics' },
+      { lang: 'es', href: 'https://www.globalgatemexico.com/logistica-material-radiactivo' },
       { lang: 'x-default', href: 'https://www.globalgatemexico.com/radioactive-material-logistics' },
     ],
   });
