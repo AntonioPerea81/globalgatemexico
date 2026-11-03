@@ -45,6 +45,7 @@ function renderHead(html: string, meta: PageMeta) {
     `    <meta name="twitter:title" content="${escapeHtml(title)}" />`,
     `    <meta name="twitter:description" content="${escapeHtml(description)}" />`,
     `    <link rel="canonical" href="${escapeHtml(canonical)}" />`,
+    `    <script src="https://analytics.ahrefs.com/analytics.js" data-key="fZis1kYF463+GFh5JW4cWg" async></script>`,
     alternates,
     `    <title>${escapeHtml(title)}</title>`,
   ].filter(Boolean).join('\n');

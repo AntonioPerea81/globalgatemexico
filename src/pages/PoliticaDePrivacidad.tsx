@@ -211,6 +211,9 @@ export function PoliticaDePrivacidadPage() {
                 El presente sitio web utiliza cookies y tecnologías de rastreo similares con el fin de mejorar la funcionalidad, analizar el tráfico y medir la atribución publicitaria. Con su consentimiento, estas herramientas pueden incluir Google Analytics, Microsoft Clarity y LinkedIn Insight Tag. No habilitamos la coincidencia mejorada de LinkedIn ni enviamos datos de contacto o pago de los participantes mediante dicho tag. Al ingresar al sitio, se le informará sobre el uso de estas tecnologías mediante un aviso de consentimiento. Las cookies esenciales para el funcionamiento del sitio no pueden desactivarse.
               </P>
               <P>
+                También utilizamos Ahrefs Web Analytics en las páginas públicas informativas para conocer tendencias agregadas de tráfico. Este servicio funciona sin cookies ni identificadores persistentes entre días y no almacena direcciones IP sin procesar. No se carga en las rutas de inscripción, pago o confirmación de pago.
+              </P>
+              <P>
                 Usted puede configurar su navegador para bloquear o eliminar cookies; sin embargo, esto podría afectar la funcionalidad de determinadas secciones del sitio.
               </P>
             </Section>
