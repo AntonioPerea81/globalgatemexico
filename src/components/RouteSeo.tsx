@@ -44,7 +44,15 @@ export function RouteSeo() {
     '/rastreo-de-embarques',
   ].includes(pathname);
 
+  const isDgConsulting = normalizedPath === '/dg-consulting-compliance';
+
   usePageMeta({
+    title: isDgConsulting
+      ? 'Dangerous Goods Compliance Consulting in Mexico | GGM'
+      : 'Global Gate Mexico | Dangerous Goods Logistics & Compliance',
+    description: isDgConsulting
+      ? 'Get dangerous goods compliance support in Mexico. GGM provides regulatory consulting, compliance audits, SDS reviews and cross-border guidance. Book a consultation.'
+      : 'Global Gate Mexico — premium dangerous goods logistics, ADN/IATA/IMDG compliance consulting, and regulatory training across Mexico and North America.',
     canonical: `${SITE_URL}${normalizedPath}`,
     hreflang: alternatesFor(pathname),
     lang: isSpanish ? 'es' : 'en',
