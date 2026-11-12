@@ -91,7 +91,7 @@ serve(async (req) => {
   }).join('')
 
   const html = `
-    <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;">
+    <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;"><!-- ignore-value overused-font Arial -->
       <div style="background:#991b1b;padding:24px 32px;">
         <p style="color:#fff;font-size:16px;font-weight:800;margin:0;">⚠ ALERTA DE SLA — DG Pre-Check</p>
         <p style="color:rgba(255,255,255,0.7);font-size:12px;margin:4px 0 0;">${staleOrders.length} orden(es) en docs_received por más de ${SLA_MINUTES} minutos</p>
