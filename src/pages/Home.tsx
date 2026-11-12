@@ -452,6 +452,35 @@ export const Home = () => {
         </div>
       </div>
 
+      {/* DG PRE-CHECK FEATURED SECTION */}
+      <div style={{ background: '#060e1c', padding: '56px 0', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '2px solid #2563eb' }}>
+        <Container>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '28px' }}>
+            <div style={{ flex: '1 1 400px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', flexWrap: 'wrap' }}>
+                <span style={{ background: '#2563eb', color: '#fff', fontSize: '10px', fontWeight: 800, padding: '3px 10px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>NEW SERVICE</span>
+                <span style={{ color: 'rgba(96,165,250,0.6)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 700 }}>Air Freight · DG Compliance</span>
+              </div>
+              <h2 style={{ fontSize: 'clamp(22px, 3vw, 36px)', fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '12px' }}>
+                DG Pre-Check — Verify Before You Ship
+              </h2>
+              <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, marginBottom: '0', maxWidth: '480px' }}>
+                Your DGD reviewed by certified DG professionals before it reaches the airline. Report delivered in 2 business hours.
+              </p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ display: 'block', fontSize: '36px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>$80</span>
+                <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>USD + taxes</span>
+              </div>
+              <a href="/dg-pre-check" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#2563eb', color: '#fff', padding: '14px 24px', fontSize: '12px', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+                Submit Your DGD →
+              </a>
+            </div>
+          </div>
+        </Container>
+      </div>
+
       {/* NEW: EMPATHY (PROBLEM) SECTION */}
       <div className="bg-dark/5 py-24 relative overflow-hidden">
         <Container>
