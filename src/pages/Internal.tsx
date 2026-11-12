@@ -54,7 +54,7 @@ export const AboutPage = () => {
   useEffect(() => { setLanguage('EN'); }, []);
 
   const METRICS = [
-    { value: '19+',                  label: 'Years Specialized' },
+    { value: '20+',                  label: 'Years Specialized' },
     { value: '4',                    label: 'Strategic Locations' },
     { value: 'IATA',                 label: 'Certified Training Organization' },
     { value: 'CNSNS',                label: 'Radioactive Transport Authorization' },
@@ -228,7 +228,7 @@ export const AcercaPage = () => {
   useEffect(() => { setLanguage('ES'); }, []);
 
   const METRICAS = [
-    { value: '19+',                        label: 'Años de Especialización'              },
+    { value: '20+',                        label: 'Años de Especialización'              },
     { value: '4',                          label: 'Ubicaciones Estratégicas'             },
     { value: 'IATA',                       label: 'Organización de Capacitación Cert.'  },
     { value: 'CNSNS',                      label: 'Autorización Transporte Radiactivo'  },

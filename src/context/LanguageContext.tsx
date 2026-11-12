@@ -57,6 +57,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Stats
     'stats.experience': 'Years of Experience',
     'stats.companies': 'Companies Served',
+    'stats.acceptance': 'Shipment Acceptance Rate',
     'stats.countries': 'Countries Reached',
     'stats.training': 'Training Sessions',
     'stats.shipments': 'Specialized Shipments',
@@ -264,6 +265,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Stats
     'stats.experience': 'Años de Experiencia',
     'stats.companies': 'Empresas Atendidas',
+    'stats.acceptance': 'Tasa de aceptación de embarques',
     'stats.countries': 'Países Alcanzados',
     'stats.training': 'Sesiones de Capacitación',
     'stats.shipments': 'Envíos Especializados',

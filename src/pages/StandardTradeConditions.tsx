@@ -147,7 +147,7 @@ export function StandardTradeConditionsPage() {
                 These <strong>Standard Trade Conditions</strong> ("Conditions") of <strong>Global Gate México, S. de R.L. de C.V.</strong> ("GGM") establish the contractual framework governing all freight forwarding, multimodal transportation, dangerous goods logistics, and related services, unless otherwise agreed in writing between the parties.
               </P>
               <P>
-                These Conditions are based on internationally recognized freight forwarding commercial practices, aligned with the principles of the <strong>International Federation of Freight Forwarders Associations (FIATA)</strong> and the guidelines of <strong>AMACARGA</strong> (Asociación Mexicana de Agentes Navieros, Consignatarios y Agentes de Carga), adapted to the legal framework of the United Mexican States.
+                These Conditions are based on internationally recognized freight forwarding commercial practices, aligned with the principles of the <strong>International Federation of Freight Forwarders Associations (FIATA)</strong>, adapted to the legal framework of the United Mexican States.
               </P>
               <P>
                 Requesting a quotation, accepting a proposal, or engaging any GGM service constitutes acceptance of these Conditions.

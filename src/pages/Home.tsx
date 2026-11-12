@@ -285,13 +285,10 @@ export const Home = () => {
   const logos = [
     "iata-cargo-agent.png",
     "ANIQ__1_.png",
-    "Logo_AMACARGA_firma.png",
     "Distintivo.png",
     "COSTHA_NewLogoCMYK_Sm.png",
     "FIATA_Logo.png",
     "TIACA_OFFICIAL_LOGO-Blue-2024_24__46__68__94__96_.png",
-    "aws.png",
-    "WCA DGs.png",
   ];
 
   return (
@@ -418,7 +415,7 @@ export const Home = () => {
           </p>
         </div>
 
-        {/* Marquee — doubled set for seamless loop; 9 logos × 2 is wide enough at all viewports */}
+        {/* Marquee — tripled set for seamless loop with 6 logos */}
         <div
           className="relative flex overflow-x-hidden"
           style={{
@@ -436,7 +433,7 @@ export const Home = () => {
               ease: 'linear',
             }}
           >
-            {[...logos, ...logos].map((logo, idx) => (
+            {[...logos, ...logos, ...logos].map((logo, idx) => (
               <div
                 key={`${logo}-${idx}`}
                 className="group flex shrink-0 items-center justify-center px-10 lg:px-14"
@@ -444,7 +441,7 @@ export const Home = () => {
                 <img
                   src={logoSrc(logo)}
                   alt={logo.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ')}
-                  className="h-[72px] w-auto max-w-none object-contain opacity-85 group-hover:opacity-100 group-hover:scale-[1.04] transition-all duration-300 ease-in-out"
+                  className="w-[140px] h-[72px] object-contain opacity-70 group-hover:opacity-100 group-hover:scale-[1.04] transition-all duration-300 ease-in-out"
                   loading="lazy"
                   decoding="async"
                   draggable={false}

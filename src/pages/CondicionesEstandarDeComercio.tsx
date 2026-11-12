@@ -147,7 +147,7 @@ export function CondicionesEstandarDeComercioPage() {
                 Las presentes <strong>Condiciones Estándar de Comercio</strong> ("Condiciones") de <strong>Global Gate México, S. de R.L. de C.V.</strong> ("GGM") establecen el marco contractual que regula la prestación de todos los servicios de agenciamiento de carga, transporte multimodal, logística de mercancías peligrosas y servicios conexos, salvo acuerdo escrito en contrario suscrito entre las partes.
               </P>
               <P>
-                Estas Condiciones se fundamentan en las prácticas comerciales reconocidas internacionalmente para el agenciamiento de carga, alineadas con los principios de la <strong>Federación Internacional de Asociaciones de Transitarios y Afines (FIATA)</strong> y los criterios de la <strong>Asociación Mexicana de Agentes Navieros, Consignatarios y Agentes de Carga (AMACARGA)</strong>, adaptadas al marco jurídico de los Estados Unidos Mexicanos.
+                Estas Condiciones se fundamentan en las prácticas comerciales reconocidas internacionalmente para el agenciamiento de carga, alineadas con los principios de la <strong>Federación Internacional de Asociaciones de Transitarios y Afines (FIATA)</strong>, adaptadas al marco jurídico de los Estados Unidos Mexicanos.
               </P>
               <P>
                 La solicitud de cotización, la aceptación de una propuesta o la contratación de cualquier servicio de GGM implica la aceptación plena de las presentes Condiciones por parte del cliente.
