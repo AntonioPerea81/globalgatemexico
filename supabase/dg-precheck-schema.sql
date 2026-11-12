@@ -52,11 +52,19 @@ CREATE TABLE public.dg_precheck_orders (
   report_sent_at          TIMESTAMPTZ,
   internal_notes          TEXT,
 
+  -- Document lifecycle
+  -- Set by purge-precheck-docs when Storage files are deleted. Order row is kept
+  -- for fiscal/payment record retention; only files and dg_precheck_files are removed.
+  files_purged_at         TIMESTAMPTZ,
+
   -- Attribution
   utm_source              TEXT,
   utm_medium              TEXT,
   utm_campaign            TEXT
 );
+
+-- If adding to an existing database, run this ALTER instead:
+-- ALTER TABLE public.dg_precheck_orders ADD COLUMN files_purged_at TIMESTAMPTZ;
 
 -- DG Pre-Check Files
 CREATE TABLE public.dg_precheck_files (
@@ -105,19 +113,32 @@ CREATE POLICY "service_all_precheck_orders"
 CREATE POLICY "service_all_precheck_files"
   ON public.dg_precheck_files FOR ALL TO service_role USING (true) WITH CHECK (true);
 
--- Storage bucket (run in Supabase dashboard or via Supabase CLI):
--- supabase storage create precheck-docs --private
--- Or via SQL:
--- INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
---   VALUES ('precheck-docs', 'precheck-docs', false, 20971520,
---     ARRAY['application/pdf','image/jpeg','image/jpg','image/png','image/webp']);
+-- ── Storage bucket (REQUIRED — run before deploying Edge Functions) ────────
+-- Private bucket with 20 MB limit and allowed MIME types.
+-- Run via Supabase Dashboard > Storage > New bucket, OR via SQL:
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+  VALUES (
+    'precheck-docs',
+    'precheck-docs',
+    false,
+    20971520,
+    ARRAY['application/pdf','image/jpeg','image/jpg','image/png','image/webp']
+  );
 
--- Storage RLS policies (after creating bucket):
--- No anon upload policy. Clients receive signed upload URLs from the
+-- Storage RLS: no anon upload. Clients receive signed upload URLs from the
 -- create-precheck-upload-urls Edge Function, which validates paid status first.
--- CREATE POLICY "service_all_precheck_docs"
---   ON storage.objects FOR ALL TO service_role
---   USING (bucket_id = 'precheck-docs') WITH CHECK (bucket_id = 'precheck-docs');
+CREATE POLICY "service_all_precheck_docs"
+  ON storage.objects FOR ALL TO service_role
+  USING (bucket_id = 'precheck-docs') WITH CHECK (bucket_id = 'precheck-docs');
 
--- Document retention: files older than 90 days after report_sent_at can be purged via scheduled job.
--- Files not yet in report_sent status are retained indefinitely until processed.
+-- ── Document retention ─────────────────────────────────────────────────────
+-- purge-precheck-docs deletes Storage objects and dg_precheck_files records
+-- and marks orders with files_purged_at. Order rows are NEVER deleted (fiscal
+-- and payment data are retained per accountant guidance).
+-- Eligible for purge after 90 days:
+--   report_sent  → counted from report_sent_at
+--   cancelled    → counted from updated_at
+--   refunded     → counted from updated_at
+--   paid/docs_received/in_review → counted from created_at (stale without report)
+-- Incomplete checkouts (pending_payment) are hard-deleted after 7 days.
+-- Webhook event log (paypal_precheck_webhook_events) is purged after 90 days.

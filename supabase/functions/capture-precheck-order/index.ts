@@ -25,6 +25,15 @@ function json(data: unknown, status = 200) {
   })
 }
 
+function esc(value: unknown): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+}
+
 async function paypalToken(): Promise<string> {
   const creds = btoa(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`)
   const res   = await fetch(`${PAYPAL_BASE}/v1/oauth2/token`, {
@@ -33,7 +42,10 @@ async function paypalToken(): Promise<string> {
     body:    'grant_type=client_credentials',
   })
   const data = await res.json()
-  if (!res.ok) throw new Error(`PayPal auth failed`)
+  if (!res.ok) {
+    console.error('[capture-precheck-order] PayPal auth error:', data)
+    throw new Error('Error de autenticación con procesador de pago')
+  }
   return data.access_token
 }
 
@@ -78,10 +90,13 @@ serve(async (req) => {
     })
 
     const captureData = await captureRes.json()
-    if (!captureRes.ok) throw new Error(`PayPal capture failed: ${JSON.stringify(captureData)}`)
+    if (!captureRes.ok) {
+      console.error('[capture-precheck-order] PayPal capture failed:', captureData)
+      throw new Error('Error al procesar el pago con PayPal')
+    }
 
     // Verify capture integrity: status, amount, and currency must match the order on record.
-    const capture        = captureData.purchase_units?.[0]?.payments?.captures?.[0]
+    const capture         = captureData.purchase_units?.[0]?.payments?.captures?.[0]
     const capturedStatus  = capture?.status
     const capturedAmount  = capture?.amount?.value
     const capturedCurrency = capture?.amount?.currency_code
@@ -89,7 +104,7 @@ serve(async (req) => {
 
     if (capturedStatus !== 'COMPLETED') {
       console.error('[capture-precheck-order] Unexpected capture status:', capturedStatus)
-      return json({ error: `Captura PayPal no completada (estado: ${capturedStatus})` }, 402)
+      return json({ error: 'El pago no fue completado. Contacte soporte con su folio.' }, 402)
     }
 
     const expectedAmount = Number(order.total_usd).toFixed(2)
@@ -103,7 +118,8 @@ serve(async (req) => {
       return json({ error: 'Moneda incorrecta en la captura' }, 402)
     }
 
-    await supabase
+    // ── Update DB first; only send email if update succeeds ──────────────
+    const { error: updateErr } = await supabase
       .from('dg_precheck_orders')
       .update({
         status:            'paid',
@@ -112,7 +128,12 @@ serve(async (req) => {
       })
       .eq('id', order.id)
 
-    // Confirmation email to client
+    if (updateErr) {
+      console.error('[capture-precheck-order] DB update error:', updateErr)
+      return json({ error: 'Error al registrar el pago. Contacte soporte con su folio.' }, 500)
+    }
+
+    // Confirmation email to client (non-blocking — failure does not roll back the capture)
     const isMX = order.billing_country === 'MX'
     await fetch('https://api.resend.com/emails', {
       method:  'POST',
@@ -121,32 +142,32 @@ serve(async (req) => {
         from:    'GGM Pre-Check <noreply@globalgatemexico.com>',
         to:      [order.buyer_email],
         subject: isMX
-          ? `✓ Pago recibido — Folio ${order.reference} | GGM DG Pre-Check`
-          : `✓ Payment received — Reference ${order.reference} | GGM DG Pre-Check`,
+          ? `✓ Pago recibido — Folio ${esc(order.reference as string)} | GGM DG Pre-Check`
+          : `✓ Payment received — Reference ${esc(order.reference as string)} | GGM DG Pre-Check`,
         html: isMX ? `
-          <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;"> <!-- ignore-value overused-font Arial -->
+          <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
             <div style="background:#060e1c;padding:32px;text-align:center;">
               <img src="https://www.globalgatemexico.com/GGM-SM.png" alt="GGM" style="height:48px;" />
             </div>
             <div style="padding:32px;">
               <h2 style="color:#060e1c;">Pago confirmado</h2>
-              <p>Hola ${order.buyer_name},</p>
+              <p>Hola ${esc(order.buyer_name as string)},</p>
               <p>Recibimos su pago de <strong>USD ${Number(order.total_usd).toFixed(2)}</strong> para la revisión de DGD.</p>
-              <p><strong>Folio:</strong> ${order.reference}</p>
+              <p><strong>Folio:</strong> ${esc(order.reference as string)}</p>
               <p style="color:#374151;font-size:14px;">El siguiente paso es cargar su DGD y las fotografías del embarque. Use el enlace que aparece en la página de confirmación para acceder al formulario de carga.</p>
               <p style="color:#374151;font-size:14px;">Si cerró esa página, escríbanos a <a href="mailto:ggm@globalgatemexico.com">ggm@globalgatemexico.com</a> indicando su folio y le enviaremos el acceso.</p>
               <p style="color:#6b7280;font-size:12px;margin-top:32px;">Global Gate México · +52 812 165 4040</p>
             </div>
           </div>` : `
-          <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;"> <!-- ignore-value overused-font Arial -->
+          <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
             <div style="background:#060e1c;padding:32px;text-align:center;">
               <img src="https://www.globalgatemexico.com/GGM-SM.png" alt="GGM" style="height:48px;" />
             </div>
             <div style="padding:32px;">
               <h2 style="color:#060e1c;">Payment confirmed</h2>
-              <p>Hi ${order.buyer_name},</p>
+              <p>Hi ${esc(order.buyer_name as string)},</p>
               <p>We received your payment of <strong>USD ${Number(order.total_usd).toFixed(2)}</strong> for the DGD review.</p>
-              <p><strong>Reference:</strong> ${order.reference}</p>
+              <p><strong>Reference:</strong> ${esc(order.reference as string)}</p>
               <p style="color:#374151;font-size:14px;">The next step is to upload your DGD and shipment photos. Use the link on the confirmation page to access the upload form.</p>
               <p style="color:#374151;font-size:14px;">If you closed that page, email us at <a href="mailto:ggm@globalgatemexico.com">ggm@globalgatemexico.com</a> with your reference number and we will send you a new link.</p>
               <p style="color:#6b7280;font-size:12px;margin-top:32px;">Global Gate México · +52 812 165 4040</p>
@@ -158,6 +179,6 @@ serve(async (req) => {
     return json({ success: true, reference: order.reference, orderId: order.id })
   } catch (err) {
     console.error('[capture-precheck-order]', err)
-    return json({ error: err instanceof Error ? err.message : 'Error interno' }, 500)
+    return json({ error: 'Error al procesar la solicitud. Intente de nuevo.' }, 500)
   }
 })

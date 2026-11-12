@@ -10,17 +10,34 @@ const PAYPAL_BASE          = PAYPAL_ENV === 'live'
   : 'https://api-m.sandbox.paypal.com'
 const SUPABASE_URL         = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+// FAIL CLOSED: must be explicitly configured — no bypass when missing.
+// For local dev or staging use Cloudflare's official test secret:
+//   1x0000000000000000000000000000000AA  (always passes)
+//   2x0000000000000000000000000000000AB  (always fails — use to test rejection)
+// Matching site keys:
+//   1x00000000000000000000AA  (always passes)
+//   2x00000000000000000000AB  (always fails)
 const TURNSTILE_SECRET_KEY = Deno.env.get('TURNSTILE_SECRET_KEY') ?? ''
 
 const BASE_USD = 80.00
 const MX_VAT   = 0.16
 
 // Return/cancel URLs are built from the request Origin. Only allow our own domains.
+// Extend with PRECHECK_EXTRA_ORIGINS (comma-separated, no wildcards).
+const _extraOriginsRaw = Deno.env.get('PRECHECK_EXTRA_ORIGINS') ?? ''
+const _extraOrigins    = _extraOriginsRaw
+  .split(',')
+  .map(o => o.trim())
+  .filter(o => o && !o.includes('*'))  // wildcards are never accepted
+
 const ALLOWED_ORIGINS = new Set([
   'https://www.globalgatemexico.com',
   'https://globalgatemexico.com',
   'https://staging.globalgatemexico.com',
+  ..._extraOrigins,
 ])
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -43,7 +60,10 @@ async function paypalToken(): Promise<string> {
     body:    'grant_type=client_credentials',
   })
   const data = await res.json()
-  if (!res.ok) throw new Error(`PayPal auth failed: ${JSON.stringify(data)}`)
+  if (!res.ok) {
+    console.error('[create-precheck-order] PayPal auth error:', data)
+    throw new Error('Error de autenticación con procesador de pago')
+  }
   return data.access_token
 }
 
@@ -74,6 +94,20 @@ serve(async (req) => {
       return json({ error: 'País de facturación no válido' }, 400)
     }
 
+    // ── 1b. Format and length validation ───────────────────────────────────
+    if (!EMAIL_RE.test(buyer_email)) {
+      return json({ error: 'Correo electrónico no válido' }, 400)
+    }
+    if (String(buyer_name).length  > 200) return json({ error: 'Nombre demasiado largo' }, 400)
+    if (String(buyer_email).length > 254) return json({ error: 'Correo demasiado largo' }, 400)
+    if (String(company_name).length > 200) return json({ error: 'Empresa demasiado larga' }, 400)
+    if (buyer_phone && String(buyer_phone).length > 50) return json({ error: 'Teléfono demasiado largo' }, 400)
+    if (String(origin).length      > 200) return json({ error: 'Origen demasiado largo' }, 400)
+    if (String(destination).length > 200) return json({ error: 'Destino demasiado largo' }, 400)
+    if (cargo_description && String(cargo_description).length > 2000) {
+      return json({ error: 'Descripción demasiado larga' }, 400)
+    }
+
     const pkgs = Number(num_packages)
     const dges = Number(num_dg_entries)
     if (!Number.isInteger(pkgs) || pkgs < 1 || pkgs > 5) {
@@ -83,21 +117,24 @@ serve(async (req) => {
       return json({ error: 'Número de entradas DG fuera del límite del servicio', code: 'EXCEEDS_LIMITS' }, 400)
     }
 
-    // ── 2. Cloudflare Turnstile anti-spam ───────────────────────────────────
-    if (TURNSTILE_SECRET_KEY) {
-      if (!turnstile_token) {
-        return json({ error: 'Verificación de seguridad requerida' }, 400)
-      }
-      const tsRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body:    new URLSearchParams({ secret: TURNSTILE_SECRET_KEY, response: turnstile_token }),
-      })
-      const tsData = await tsRes.json() as { success: boolean }
-      if (!tsData.success) {
-        console.error('[create-precheck-order] Turnstile failed')
-        return json({ error: 'Verificación de seguridad fallida. Recarga la página e intenta de nuevo.' }, 403)
-      }
+    // ── 2. Cloudflare Turnstile anti-spam (FAIL CLOSED) ────────────────────
+    // TURNSTILE_SECRET_KEY must be set — requests are rejected if it is missing.
+    if (!TURNSTILE_SECRET_KEY) {
+      console.error('[create-precheck-order] TURNSTILE_SECRET_KEY not configured — rejecting')
+      return json({ error: 'Servicio no disponible temporalmente. Contacte soporte.' }, 503)
+    }
+    if (!turnstile_token) {
+      return json({ error: 'Verificación de seguridad requerida' }, 400)
+    }
+    const tsRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:    new URLSearchParams({ secret: TURNSTILE_SECRET_KEY, response: turnstile_token }),
+    })
+    const tsData = await tsRes.json() as { success: boolean }
+    if (!tsData.success) {
+      console.error('[create-precheck-order] Turnstile failed')
+      return json({ error: 'Verificación de seguridad fallida. Recarga la página e intenta de nuevo.' }, 403)
     }
 
     // ── 3. Origin validation for return/cancel URLs ─────────────────────────
@@ -206,7 +243,10 @@ serve(async (req) => {
     })
 
     const ppData = await ppRes.json()
-    if (!ppRes.ok) throw new Error(`PayPal order error: ${JSON.stringify(ppData)}`)
+    if (!ppRes.ok) {
+      console.error('[create-precheck-order] PayPal order creation error:', ppData)
+      throw new Error('Error al crear la orden de pago. Intente de nuevo.')
+    }
 
     await supabase
       .from('dg_precheck_orders')
@@ -219,6 +259,7 @@ serve(async (req) => {
     return json({ approvalUrl, reference, orderId: order.id })
   } catch (err) {
     console.error('[create-precheck-order]', err)
-    return json({ error: err instanceof Error ? err.message : 'Error interno' }, 500)
+    // Never expose internal/PayPal details to the client
+    return json({ error: 'Error al procesar la solicitud. Intente de nuevo.' }, 500)
   }
 })
