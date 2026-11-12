@@ -1,17 +1,26 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const PAYPAL_CLIENT_ID     = Deno.env.get('PAYPAL_CLIENT_ID')!
-const PAYPAL_CLIENT_SECRET = Deno.env.get('PAYPAL_CLIENT_SECRET')!
-const PAYPAL_ENV           = Deno.env.get('PAYPAL_ENV') ?? 'sandbox'
+// Pre-Check has its own PayPal credentials, isolated from the training service.
+const PAYPAL_CLIENT_ID     = Deno.env.get('PRECHECK_PAYPAL_CLIENT_ID')!
+const PAYPAL_CLIENT_SECRET = Deno.env.get('PRECHECK_PAYPAL_CLIENT_SECRET')!
+const PAYPAL_ENV           = Deno.env.get('PRECHECK_PAYPAL_ENV') ?? 'sandbox'
 const PAYPAL_BASE          = PAYPAL_ENV === 'live'
   ? 'https://api-m.paypal.com'
   : 'https://api-m.sandbox.paypal.com'
 const SUPABASE_URL         = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+const TURNSTILE_SECRET_KEY = Deno.env.get('TURNSTILE_SECRET_KEY') ?? ''
 
-const BASE_USD  = 80.00
-const MX_VAT    = 0.16
+const BASE_USD = 80.00
+const MX_VAT   = 0.16
+
+// Return/cancel URLs are built from the request Origin. Only allow our own domains.
+const ALLOWED_ORIGINS = new Set([
+  'https://www.globalgatemexico.com',
+  'https://globalgatemexico.com',
+  'https://staging.globalgatemexico.com',
+])
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -54,8 +63,10 @@ serve(async (req) => {
       rfc, razon_social, regimen_fiscal, codigo_postal_fiscal, uso_cfdi,
       origin, destination, num_packages, num_dg_entries, cargo_description,
       utm_source, utm_medium, utm_campaign,
+      turnstile_token,
     } = body
 
+    // ── 1. Required fields ──────────────────────────────────────────────────
     if (!buyer_name || !buyer_email || !company_name || !origin || !destination) {
       return json({ error: 'Faltan campos requeridos' }, 400)
     }
@@ -72,6 +83,39 @@ serve(async (req) => {
       return json({ error: 'Número de entradas DG fuera del límite del servicio', code: 'EXCEEDS_LIMITS' }, 400)
     }
 
+    // ── 2. Cloudflare Turnstile anti-spam ───────────────────────────────────
+    if (TURNSTILE_SECRET_KEY) {
+      if (!turnstile_token) {
+        return json({ error: 'Verificación de seguridad requerida' }, 400)
+      }
+      const tsRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:    new URLSearchParams({ secret: TURNSTILE_SECRET_KEY, response: turnstile_token }),
+      })
+      const tsData = await tsRes.json() as { success: boolean }
+      if (!tsData.success) {
+        console.error('[create-precheck-order] Turnstile failed')
+        return json({ error: 'Verificación de seguridad fallida. Recarga la página e intenta de nuevo.' }, 403)
+      }
+    }
+
+    // ── 3. Origin validation for return/cancel URLs ─────────────────────────
+    const reqOrigin = req.headers.get('origin') ?? ''
+    // Allow localhost for local dev; in production only allowed origins are accepted.
+    const isAllowedOrigin = ALLOWED_ORIGINS.has(reqOrigin) ||
+      reqOrigin.startsWith('http://localhost:') ||
+      reqOrigin.startsWith('http://127.0.0.1:')
+
+    if (reqOrigin && !isAllowedOrigin) {
+      console.error('[create-precheck-order] Rejected origin:', reqOrigin)
+      return json({ error: 'Origin no permitido' }, 403)
+    }
+
+    // Fall back to production URL only when no origin header (e.g. server-to-server tests)
+    const baseUrl = isAllowedOrigin ? reqOrigin : 'https://www.globalgatemexico.com'
+
+    // ── 4. Tax calculation (server-side only) ───────────────────────────────
     const taxApplies  = billing_country === 'MX' || !!has_mx_establishment
     const taxRate     = taxApplies ? MX_VAT : 0
     const taxAmount   = Math.round(BASE_USD * taxRate * 100) / 100
@@ -79,7 +123,7 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
-    // Unique reference
+    // ── 5. Unique reference ────────────────────────────────────────────────
     let reference = ''
     for (let i = 0; i < 10; i++) {
       const candidate = genRef()
@@ -112,16 +156,16 @@ serve(async (req) => {
 
     if (insertErr) throw insertErr
 
+    // ── 6. Create PayPal order ─────────────────────────────────────────────
     const accessToken = await paypalToken()
-    const reqOrigin   = req.headers.get('origin') ?? 'https://globalgatemexico.com'
-    const returnUrl   = `${reqOrigin}/dg-pre-check/complete?session=${order.checkout_session_token}`
-    const cancelUrl   = `${reqOrigin}/dg-pre-check?cancelled=true`
+    const returnUrl   = `${baseUrl}/dg-pre-check/complete?session=${order.checkout_session_token}`
+    const cancelUrl   = `${baseUrl}/dg-pre-check?cancelled=true`
 
     const ppRes = await fetch(`${PAYPAL_BASE}/v2/checkout/orders`, {
       method: 'POST',
       headers: {
-        Authorization:    `Bearer ${accessToken}`,
-        'Content-Type':   'application/json',
+        Authorization:       `Bearer ${accessToken}`,
+        'Content-Type':      'application/json',
         'PayPal-Request-Id': order.id,
       },
       body: JSON.stringify({

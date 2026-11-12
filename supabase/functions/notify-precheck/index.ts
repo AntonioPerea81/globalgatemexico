@@ -8,6 +8,15 @@ const NOTIFY_EMAIL         = Deno.env.get('PRECHECK_NOTIFY_EMAIL') ?? 'antonio.p
 
 const SIGNED_URL_EXPIRY = 60 * 60 * 48  // 48 hours in seconds
 
+function esc(value: unknown): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+}
+
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -78,48 +87,48 @@ serve(async (req) => {
     const hasFiscal = !!(order.rfc || order.razon_social)
     const fiscalHtml = hasFiscal ? `
       <tr><td colspan="2" style="padding:12px 0 4px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:#6b7280;border-top:1px solid #e5e7eb;">Datos Fiscales (CFDI)</td></tr>
-      ${order.rfc          ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;width:160px;">RFC</td><td style="font-size:13px;font-weight:600;">${order.rfc}</td></tr>` : ''}
-      ${order.razon_social ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Razón Social</td><td style="font-size:13px;font-weight:600;">${order.razon_social}</td></tr>` : ''}
-      ${order.regimen_fiscal        ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Régimen</td><td style="font-size:13px;">${order.regimen_fiscal}</td></tr>` : ''}
-      ${order.codigo_postal_fiscal  ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">CP Fiscal</td><td style="font-size:13px;">${order.codigo_postal_fiscal}</td></tr>` : ''}
-      ${order.uso_cfdi              ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Uso CFDI</td><td style="font-size:13px;">${order.uso_cfdi}</td></tr>` : ''}
+      ${order.rfc          ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;width:160px;">RFC</td><td style="font-size:13px;font-weight:600;">${esc(order.rfc)}</td></tr>` : ''}
+      ${order.razon_social ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Razón Social</td><td style="font-size:13px;font-weight:600;">${esc(order.razon_social)}</td></tr>` : ''}
+      ${order.regimen_fiscal        ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Régimen</td><td style="font-size:13px;">${esc(order.regimen_fiscal)}</td></tr>` : ''}
+      ${order.codigo_postal_fiscal  ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">CP Fiscal</td><td style="font-size:13px;">${esc(order.codigo_postal_fiscal)}</td></tr>` : ''}
+      ${order.uso_cfdi              ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Uso CFDI</td><td style="font-size:13px;">${esc(order.uso_cfdi)}</td></tr>` : ''}
     ` : ''
 
     const filesHtml = signedLinks.map(l =>
-      `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;width:120px;">${l.label}</td><td><a href="${l.url}" style="color:#2563eb;font-size:13px;">Descargar (48h)</a></td></tr>`
+      `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;width:120px;">${esc(l.label)}</td><td><a href="${esc(l.url)}" style="color:#2563eb;font-size:13px;">Descargar (48h)</a></td></tr>`
     ).join('')
 
     const html = `
-      <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;">
+      <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;"> <!-- ignore-value overused-font Arial -->
         <div style="background:#060e1c;padding:24px 32px;border-bottom:2px solid #2563eb;">
           <img src="https://www.globalgatemexico.com/GGM-SM.png" alt="GGM" style="height:44px;" />
           <p style="color:rgba(255,255,255,0.4);font-size:11px;text-transform:uppercase;letter-spacing:0.2em;margin:8px 0 0;">Nueva solicitud de DG Pre-Check</p>
         </div>
         <div style="padding:32px;background:#fff;">
           <div style="background:#f4f6f9;border-left:3px solid #2563eb;padding:14px 18px;margin-bottom:28px;">
-            <p style="margin:0;font-size:14px;"><strong>Folio:</strong> ${order.reference}</p>
+            <p style="margin:0;font-size:14px;"><strong>Folio:</strong> ${esc(order.reference)}</p>
             <p style="margin:4px 0 0;font-size:12px;color:#6b7280;">Recibido: ${new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' })} hora CDMX</p>
           </div>
           <table style="width:100%;border-collapse:collapse;">
             <tr><td colspan="2" style="padding:0 0 4px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:#6b7280;">Cliente</td></tr>
-            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;width:160px;">Nombre</td><td style="font-size:13px;font-weight:600;">${order.buyer_name}</td></tr>
-            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Empresa</td><td style="font-size:13px;font-weight:600;">${order.company_name}</td></tr>
-            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Email</td><td><a href="mailto:${order.buyer_email}" style="color:#2563eb;font-size:13px;">${order.buyer_email}</a></td></tr>
-            ${order.buyer_phone ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Teléfono</td><td style="font-size:13px;">${order.buyer_phone}</td></tr>` : ''}
-            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">País Facturación</td><td style="font-size:13px;">${order.billing_country}${order.has_mx_establishment ? ' — con establecimiento en MX' : ''}</td></tr>
+            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;width:160px;">Nombre</td><td style="font-size:13px;font-weight:600;">${esc(order.buyer_name)}</td></tr>
+            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Empresa</td><td style="font-size:13px;font-weight:600;">${esc(order.company_name)}</td></tr>
+            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Email</td><td><a href="mailto:${esc(order.buyer_email)}" style="color:#2563eb;font-size:13px;">${esc(order.buyer_email)}</a></td></tr>
+            ${order.buyer_phone ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Teléfono</td><td style="font-size:13px;">${esc(order.buyer_phone)}</td></tr>` : ''}
+            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">País Facturación</td><td style="font-size:13px;">${esc(order.billing_country)}${order.has_mx_establishment ? ' — con establecimiento en MX' : ''}</td></tr>
 
             <tr><td colspan="2" style="padding:12px 0 4px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:#6b7280;border-top:1px solid #e5e7eb;">Embarque</td></tr>
-            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Origen</td><td style="font-size:13px;">${order.origin}</td></tr>
-            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Destino</td><td style="font-size:13px;">${order.destination}</td></tr>
-            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Bultos</td><td style="font-size:13px;">${order.num_packages}</td></tr>
-            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Entradas DG</td><td style="font-size:13px;">${order.num_dg_entries}</td></tr>
-            ${order.cargo_description ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Descripción</td><td style="font-size:13px;">${order.cargo_description}</td></tr>` : ''}
+            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Origen</td><td style="font-size:13px;">${esc(order.origin)}</td></tr>
+            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Destino</td><td style="font-size:13px;">${esc(order.destination)}</td></tr>
+            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Bultos</td><td style="font-size:13px;">${esc(order.num_packages)}</td></tr>
+            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Entradas DG</td><td style="font-size:13px;">${esc(order.num_dg_entries)}</td></tr>
+            ${order.cargo_description ? `<tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Descripción</td><td style="font-size:13px;">${esc(order.cargo_description)}</td></tr>` : ''}
 
             <tr><td colspan="2" style="padding:12px 0 4px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:#6b7280;border-top:1px solid #e5e7eb;">Pago</td></tr>
-            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Monto Base</td><td style="font-size:13px;">USD ${order.amount_usd.toFixed(2)}</td></tr>
-            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">IVA (${(order.tax_rate * 100).toFixed(0)}%)</td><td style="font-size:13px;">USD ${order.tax_amount_usd.toFixed(2)}</td></tr>
-            <tr><td style="color:#060e1c;font-size:14px;font-weight:800;padding:4px 0;">Total Cobrado</td><td style="font-size:14px;font-weight:800;color:#060e1c;">USD ${order.total_usd.toFixed(2)}</td></tr>
-            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">PayPal Capture ID</td><td style="font-size:12px;color:#6b7280;">${order.paypal_capture_id ?? '—'}</td></tr>
+            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">Monto Base</td><td style="font-size:13px;">USD ${Number(order.amount_usd).toFixed(2)}</td></tr>
+            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">IVA (${(Number(order.tax_rate) * 100).toFixed(0)}%)</td><td style="font-size:13px;">USD ${Number(order.tax_amount_usd).toFixed(2)}</td></tr>
+            <tr><td style="color:#060e1c;font-size:14px;font-weight:800;padding:4px 0;">Total Cobrado</td><td style="font-size:14px;font-weight:800;color:#060e1c;">USD ${Number(order.total_usd).toFixed(2)}</td></tr>
+            <tr><td style="color:#6b7280;font-size:13px;padding:3px 0;">PayPal Capture ID</td><td style="font-size:12px;color:#6b7280;">${esc(order.paypal_capture_id ?? '—')}</td></tr>
 
             ${fiscalHtml}
 

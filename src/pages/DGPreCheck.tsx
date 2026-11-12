@@ -1,10 +1,18 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { CheckCircle, AlertTriangle, Upload, FileText, Camera, ArrowRight, ChevronDown } from 'lucide-react';
+import { CheckCircle, AlertTriangle, Upload, FileText, Camera, ChevronDown } from 'lucide-react';
 import { Container } from '../components/UI';
 import { useLanguage } from '../context/LanguageContext';
 import { usePageMeta } from '../hooks/usePageMeta';
-import { supabase } from '../lib/supabase';
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: HTMLElement, opts: Record<string, unknown>) => string;
+      remove: (id: string) => void;
+    };
+  }
+}
 
 // ── Constants ──────────────────────────────────────────────────────────────
 const SUPABASE_FUNCTIONS_URL = import.meta.env.VITE_SUPABASE_URL?.replace('.supabase.co', '.supabase.co/functions/v1') ?? '';
@@ -78,8 +86,46 @@ function DGPreCheckContent({ lang }: { lang: 'EN' | 'ES' }) {
   const [exceedsLimit, setExceedsLimit] = useState(false);
   const [isLoading,    setIsLoading]    = useState(false);
   const [formError,    setFormError]    = useState('');
+  const [turnstileToken, setTurnstileToken] = useState('');
 
-  const formRef = useRef<HTMLDivElement>(null);
+  const formRef              = useRef<HTMLDivElement>(null);
+  const turnstileContainerRef = useRef<HTMLDivElement>(null);
+  const turnstileWidgetId    = useRef<string | undefined>(undefined);
+  const turnstileSiteKey: string | undefined = import.meta.env.VITE_TURNSTILE_SITE_KEY || undefined;
+
+  useEffect(() => {
+    if (formStep !== 2 || !turnstileSiteKey) return;
+    const SCRIPT_ID = 'cf-turnstile-script';
+    const mount = () => {
+      if (!window.turnstile || !turnstileContainerRef.current) return;
+      if (turnstileWidgetId.current) {
+        try { window.turnstile.remove(turnstileWidgetId.current); } catch { /* noop */ }
+        turnstileWidgetId.current = undefined;
+      }
+      turnstileWidgetId.current = window.turnstile.render(turnstileContainerRef.current, {
+        sitekey:            turnstileSiteKey,
+        theme:              'light',
+        callback:           (token: string) => setTurnstileToken(token),
+        'expired-callback': () => setTurnstileToken(''),
+      });
+    };
+    if (!document.getElementById(SCRIPT_ID)) {
+      const script    = document.createElement('script');
+      script.id       = SCRIPT_ID;
+      script.src      = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async    = true;
+      script.onload   = mount;
+      document.head.appendChild(script);
+    } else if (window.turnstile) {
+      mount();
+    }
+    return () => {
+      if (window.turnstile && turnstileWidgetId.current) {
+        try { window.turnstile.remove(turnstileWidgetId.current); } catch { /* noop */ }
+        turnstileWidgetId.current = undefined;
+      }
+    };
+  }, [formStep, turnstileSiteKey]);
 
   const needsFiscal = billingCtry === 'MX' || hasMxEst;
   const totalSteps  = needsFiscal ? 3 : 2;
@@ -147,6 +193,7 @@ function DGPreCheckContent({ lang }: { lang: 'EN' | 'ES' }) {
         num_packages:         Number(shipData.num_packages),
         num_dg_entries:       Number(shipData.num_dg_entries),
         cargo_description:    shipData.cargo_description,
+        turnstile_token:      turnstileToken || undefined,
       };
 
       const fnUrl = `${SUPABASE_FUNCTIONS_URL}/create-precheck-order`;
@@ -540,6 +587,13 @@ function DGPreCheckContent({ lang }: { lang: 'EN' | 'ES' }) {
                     </label>
                   </div>
                 ) : null}
+                {/* Turnstile anti-spam */}
+                {turnstileSiteKey ? (
+                  <div style={{ marginBottom: '16px' }}>
+                    <div ref={turnstileContainerRef} />
+                  </div>
+                ) : null}
+
                 <div style={{ background: '#f4f6f9', border: '1px solid #e5e7eb', padding: '14px', marginBottom: '20px', borderRadius: '3px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: '#6b7280', marginBottom: '4px' }}>
                     <span>{EN ? 'Service fee' : 'Tarifa del servicio'}</span>
@@ -560,8 +614,10 @@ function DGPreCheckContent({ lang }: { lang: 'EN' | 'ES' }) {
                   <button type="button" onClick={() => setFormStep(1)} style={{ background: 'none', border: '1px solid #d1d5db', padding: '14px 20px', fontSize: '12px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', cursor: 'pointer', borderRadius: '2px', color: '#6b7280' }}>
                     ← {EN ? 'Back' : 'Atrás'}
                   </button>
-                  <button type="submit" style={{ flex: 1, background: '#2563eb', color: '#fff', border: 'none', padding: '14px', fontSize: '12px', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: '2px' }}>
-                    {needsFiscal ? (EN ? 'Continue →' : 'Continuar →') : (EN ? `Pay USD ${displayTotal.toFixed(2)} via PayPal →` : `Pagar USD ${displayTotal.toFixed(2)} vía PayPal →`)}
+                  <button type="submit" disabled={isLoading || (!!turnstileSiteKey && !needsFiscal && !turnstileToken)} style={{ flex: 1, background: (isLoading || (!!turnstileSiteKey && !needsFiscal && !turnstileToken)) ? '#93c5fd' : '#2563eb', color: '#fff', border: 'none', padding: '14px', fontSize: '12px', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: (isLoading || (!!turnstileSiteKey && !needsFiscal && !turnstileToken)) ? 'not-allowed' : 'pointer', borderRadius: '2px' }}>
+                    {isLoading
+                      ? (EN ? 'Processing…' : 'Procesando…')
+                      : needsFiscal ? (EN ? 'Continue →' : 'Continuar →') : (EN ? `Pay USD ${displayTotal.toFixed(2)} via PayPal →` : `Pagar USD ${displayTotal.toFixed(2)} vía PayPal →`)}
                   </button>
                 </div>
               </form>
@@ -685,25 +741,42 @@ function DGPreCheckCompleteContent({ lang }: { lang: 'EN' | 'ES' }) {
     setUploadPct(0);
 
     try {
+      // ── 1. Request signed upload URLs from the Edge Function ──────────────
+      const fieldNames = ['dgd', ...photoFiles.map((_, i) => `photo_${i + 1}`)];
+      const urlsRes = await fetch(`${fnBase}/create-precheck-upload-urls`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', apikey: anonKey },
+        body:    JSON.stringify({ sessionToken, fields: fieldNames }),
+      });
+      const urlsData = await urlsRes.json();
+      if (!urlsRes.ok) throw new Error(urlsData.error ?? 'No se pudieron obtener URLs de carga');
+
+      const signedUrls: Record<string, { signedUrl: string; path: string }> = urlsData.urls;
+
+      // ── 2. Upload each file via signed URL (PUT) ───────────────────────────
       const uploadedFiles: Array<{ fieldName: string; filePath: string; fileName: string; fileSize: number; mimeType: string }> = [];
-      const totalFiles = 1 + photoFiles.length;
+      const allFiles: Array<{ fieldName: string; file: File }> = [
+        { fieldName: 'dgd', file: dgdFile },
+        ...photoFiles.map((f, i) => ({ fieldName: `photo_${i + 1}`, file: f })),
+      ];
+      const total = allFiles.length;
       let done = 0;
 
-      const uploadFile = async (fieldName: string, file: File) => {
-        const ext  = file.name.split('.').pop() ?? 'bin';
-        const path = `${orderId}/${fieldName}.${ext}`;
-        const { error } = await supabase.storage.from('precheck-docs').upload(path, file, { upsert: true });
-        if (error) throw new Error(`Upload failed for ${fieldName}: ${error.message}`);
-        uploadedFiles.push({ fieldName, filePath: path, fileName: file.name, fileSize: file.size, mimeType: file.type });
+      for (const { fieldName, file } of allFiles) {
+        const entry = signedUrls[fieldName];
+        if (!entry) throw new Error(`No URL for field: ${fieldName}`);
+        const putRes = await fetch(entry.signedUrl, {
+          method:  'PUT',
+          headers: { 'Content-Type': file.type || 'application/octet-stream' },
+          body:    file,
+        });
+        if (!putRes.ok) throw new Error(`Upload failed for ${fieldName}: ${putRes.status}`);
+        uploadedFiles.push({ fieldName, filePath: entry.path, fileName: file.name, fileSize: file.size, mimeType: file.type });
         done++;
-        setUploadPct(Math.round((done / totalFiles) * 80));
-      };
-
-      await uploadFile('dgd', dgdFile);
-      for (let i = 0; i < photoFiles.length; i++) {
-        await uploadFile(`photo_${i + 1}`, photoFiles[i]);
+        setUploadPct(Math.round((done / total) * 80));
       }
 
+      // ── 3. Notify GGM ──────────────────────────────────────────────────────
       setUploadPct(85);
       const notifyRes = await fetch(`${fnBase}/notify-precheck`, {
         method:  'POST',

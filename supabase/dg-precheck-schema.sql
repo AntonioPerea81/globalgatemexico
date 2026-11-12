@@ -70,6 +70,18 @@ CREATE TABLE public.dg_precheck_files (
   mime_type   TEXT
 );
 
+-- Webhook event log for paypal-webhook-precheck (deduplication)
+CREATE TABLE public.paypal_precheck_webhook_events (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  event_id    TEXT NOT NULL UNIQUE,  -- PayPal event id — prevents duplicate processing
+  event_type  TEXT NOT NULL,
+  payload     JSONB
+);
+ALTER TABLE public.paypal_precheck_webhook_events ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "service_all_precheck_webhook_events"
+  ON public.paypal_precheck_webhook_events FOR ALL TO service_role USING (true) WITH CHECK (true);
+
 -- Auto-update updated_at
 CREATE OR REPLACE FUNCTION public.set_updated_at()
 RETURNS TRIGGER AS $$
@@ -84,11 +96,8 @@ CREATE TRIGGER trg_dg_precheck_orders_updated_at
 ALTER TABLE public.dg_precheck_orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.dg_precheck_files  ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "anon_insert_precheck_orders"
-  ON public.dg_precheck_orders FOR INSERT TO anon WITH CHECK (true);
-
-CREATE POLICY "anon_insert_precheck_files"
-  ON public.dg_precheck_files FOR INSERT TO anon WITH CHECK (true);
+-- No anon policies: all writes go through service_role Edge Functions only.
+-- Clients never write directly to these tables.
 
 CREATE POLICY "service_all_precheck_orders"
   ON public.dg_precheck_orders FOR ALL TO service_role USING (true) WITH CHECK (true);
@@ -104,9 +113,8 @@ CREATE POLICY "service_all_precheck_files"
 --     ARRAY['application/pdf','image/jpeg','image/jpg','image/png','image/webp']);
 
 -- Storage RLS policies (after creating bucket):
--- CREATE POLICY "anon_insert_precheck_docs"
---   ON storage.objects FOR INSERT TO anon
---   WITH CHECK (bucket_id = 'precheck-docs');
+-- No anon upload policy. Clients receive signed upload URLs from the
+-- create-precheck-upload-urls Edge Function, which validates paid status first.
 -- CREATE POLICY "service_all_precheck_docs"
 --   ON storage.objects FOR ALL TO service_role
 --   USING (bucket_id = 'precheck-docs') WITH CHECK (bucket_id = 'precheck-docs');
