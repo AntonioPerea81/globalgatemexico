@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "arial",
+        "files": [
+          "supabase/functions/capture-precheck-order/index.ts"
+        ],
+        "createdAt": "2026-11-12T20:19:47.684Z",
+        "reason": "HTML email template — Arial is the safe-font standard for email clients that do not support web fonts"
+      },
+      {
+        "rule": "overused-font",
+        "value": "arial",
+        "files": [
+          "supabase/functions/notify-precheck/index.ts"
+        ],
+        "createdAt": "2026-11-12T20:19:52.319Z",
+        "reason": "HTML email template — Arial is the safe-font standard for email clients that do not support web fonts"
+      }
+    ]
+  }
+}
