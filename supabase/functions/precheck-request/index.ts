@@ -157,6 +157,60 @@ serve(async (req: Request) => {
     });
   }
 
+  // ── §1 Strict runtime type validation (before any use) ─────────────────
+  const raw = payload as Record<string, unknown>;
+  const stringFields = [
+    'referenceId', 'contact_name', 'company_name', 'contact_email',
+    'contact_phone', 'billing_country', 'language', 'paypal_transaction_id',
+    'turnstile_token',
+  ] as const;
+  for (const field of stringFields) {
+    if (typeof raw[field] !== 'string') {
+      return new Response(JSON.stringify({ error: `Campo inválido: ${field} debe ser string` }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+  }
+  if (raw.comments !== undefined && raw.comments !== null && typeof raw.comments !== 'string') {
+    return new Response(JSON.stringify({ error: 'comments debe ser string o null' }), {
+      status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+  if (typeof raw.accepted_terms !== 'boolean') {
+    return new Response(JSON.stringify({ error: 'accepted_terms debe ser boolean' }), {
+      status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+  if (!Array.isArray(raw.entries)) {
+    return new Response(JSON.stringify({ error: 'entries debe ser array' }), {
+      status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+  for (let i = 0; i < (raw.entries as unknown[]).length; i++) {
+    const e = (raw.entries as unknown[])[i];
+    if (typeof e !== 'object' || e === null) {
+      return new Response(JSON.stringify({ error: `entries[${i}] debe ser objeto` }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const ee = e as Record<string, unknown>;
+    if (typeof ee.un_number !== 'string') {
+      return new Response(JSON.stringify({ error: `entries[${i}].un_number debe ser string` }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    if (!Number.isInteger(ee.packages)) {
+      return new Response(JSON.stringify({ error: `entries[${i}].packages debe ser integer` }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    if (ee.psn !== undefined && ee.psn !== null && typeof ee.psn !== 'string') {
+      return new Response(JSON.stringify({ error: `entries[${i}].psn debe ser string o null` }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+  }
+
   const {
     referenceId, language = 'EN',
     contact_name, company_name, contact_email, contact_phone, billing_country,
@@ -300,13 +354,13 @@ serve(async (req: Request) => {
     const mimeOk = ACCEPTED_MIMES.has(realMime);
     const ext    = '.' + doc.path.split('.').pop()!.toLowerCase();
     const extOk  = ACCEPTED_EXTS.has(ext);
-    if (!mimeOk && !extOk) {
+    if (!mimeOk || !extOk) {
       return new Response(JSON.stringify({ error: `Tipo de archivo no aceptado: ${doc.name}` }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const isPdf = realMime === 'application/pdf' || ext === '.pdf';
+    const isPdf = realMime ? (realMime === 'application/pdf') : (ext === '.pdf');
     if (isPdf) verifiedPdf++;
     else verifiedImg++;
   }

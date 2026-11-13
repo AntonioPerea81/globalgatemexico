@@ -4,7 +4,8 @@ import {
   CheckCircle2, ArrowRight, Upload, FileText,
   X, Plus, Trash2, AlertTriangle,
 } from 'lucide-react';
-import { Container } from '../components/UI';
+import { motion } from 'motion/react';
+import { Container, FadeIn } from '../components/UI';
 import { supabase } from '../lib/supabase';
 import { usePageMeta } from '../hooks/usePageMeta';
 
@@ -23,7 +24,7 @@ const BG          = '#e8eaed';
 const HEADER_BG   = '#0d1729';
 const CARD        = '#ffffff';
 const BORDER      = '#d1d9e0';
-const ACCENT      = '#2563eb';
+const ACCENT      = '#0738df';
 const ACCENT_PALE = '#eff6ff';
 const ACCENT_RING = '#bfdbfe';
 const TEXT        = '#0f172a';
@@ -259,7 +260,7 @@ const T = {
   },
   overLimitLink: { en: 'request a freight quote', es: 'solicite una cotización de flete' },
   overLimitOr:  { en: ' or book a ', es: ' o reserve una ' },
-  addEntry: { en: '+ Add UN number', es: '+ Agregar número ONU' },
+  addEntry: { en: 'Add UN number', es: 'Agregar número ONU' },
   txIdSection: { en: 'PayPal Transaction ID', es: 'ID de Transacción PayPal' },
   txIdLabel: {
     en: 'Transaction ID (from PayPal confirmation email)',
@@ -323,12 +324,12 @@ const T = {
   faqs: {
     en: [
       {
-        q: 'What file formats are accepted?',
-        a: 'The DGD and SDS must be PDF. Photos must be JPEG or PNG: minimum 4, clearly showing the marks and labels on the package. Maximum 20 MB per file.',
+        q: 'How does the review work?',
+        a: 'Your DGD and package photos go through AI-assisted checks and are verified by a certified dangerous goods expert, who sends you a technical PDF report.',
       },
       {
-        q: 'When does the 2-hour review start?',
-        a: 'When GGM verifies your payment and the documentation is complete.',
+        q: 'What file formats are accepted?',
+        a: 'The DGD and SDS must be PDF. Photos must be JPEG or PNG: minimum 4, clearly showing the marks and labels on the package. Maximum 20 MB per file.',
       },
       {
         q: 'What if I need a refund?',
@@ -341,12 +342,12 @@ const T = {
     ],
     es: [
       {
-        q: '¿Qué formatos de archivo se aceptan?',
-        a: 'La DGD y las SDS deben ser PDF. Las fotografías deben ser JPEG o PNG: mínimo 4, en las que se aprecien bien y sean legibles las marcas y etiquetas del bulto. Máximo 20 MB por archivo.',
+        q: '¿Cómo funciona la revisión?',
+        a: 'Su DGD y las fotos del bulto pasan por controles asistidos por IA y son verificados por un experto certificado en mercancías peligrosas, que le envía un reporte técnico en PDF.',
       },
       {
-        q: '¿Cuándo empiezan a contar las 2 horas?',
-        a: 'Cuando GGM verifica su pago y la documentación está completa.',
+        q: '¿Qué formatos de archivo se aceptan?',
+        a: 'La DGD y las SDS deben ser PDF. Las fotografías deben ser JPEG o PNG: mínimo 4, en las que se aprecien bien y sean legibles las marcas y etiquetas del bulto. Máximo 20 MB por archivo.',
       },
       {
         q: '¿Puedo solicitar un reembolso?',
@@ -388,11 +389,11 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
 
   usePageMeta({
     title: isES
-      ? 'Revisión Previa DG — Global Gate Mexico'
-      : 'DG Pre-Check — Global Gate Mexico',
+      ? 'Revisión Previa DG — Verifique antes de embarcar | Global Gate Mexico'
+      : 'DG Pre-Check — Verify Before You Ship | Global Gate Mexico',
     description: isES
-      ? 'Revisión previa de su embarque de mercancías peligrosas aéreo. Envíe su DGD y fotos; reciba su reporte PDF en 2 horas hábiles.'
-      : 'Expert pre-check review of your dangerous goods air shipment. Submit your DGD and photos; receive your PDF report in 2 business hours.',
+      ? 'Análisis asistido por IA y expertos DG certificados revisan su DGD y las fotos del bulto y entregan un reporte en PDF antes de que su embarque aéreo llegue a la aerolínea.'
+      : 'AI-assisted checks and certified DG experts review your DGD and package photos and deliver a PDF report before your air shipment reaches the airline.',
     canonical: isES
       ? 'https://www.globalgatemexico.com/revision-previa-dg'
       : 'https://www.globalgatemexico.com/dg-pre-check',
@@ -771,36 +772,98 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
   return (
     <div style={{ backgroundColor: BG, minHeight: '100vh' }}>
 
-      {/* ── Header ──────────────────────────────────────────────────────── */}
-      <div style={{ backgroundColor: HEADER_BG, paddingTop: '88px' }}>
-        <div style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '36px 0 32px' }}>
-          <Container>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px',
-              marginBottom: '16px', fontSize: '10px', fontWeight: 600,
-              textTransform: 'uppercase', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.3)' }}>
-              <span>Global Gate Mexico</span>
-              <ArrowRight size={10} />
-              <span style={{ color: 'rgba(255,255,255,0.55)' }}>{t('breadcrumb', lang)}</span>
-            </div>
-            <h1 style={{ fontSize: 'clamp(24px, 3.5vw, 36px)', fontWeight: 800,
-              color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.15, marginBottom: '10px' }}>
-              {t('heroTitle', lang)}
-            </h1>
-            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '14px',
-              maxWidth: '560px', lineHeight: 1.65 }}>
-              {t('heroSub', lang)}
-            </p>
-            <div style={{ marginTop: '16px' }}>
-              <span style={{
-                display: 'inline-block', fontSize: '22px', fontWeight: 900, color: '#fff',
-                letterSpacing: '-0.02em',
-              }}>
-                {t('price', lang)}
-              </span>
-            </div>
-          </Container>
+      {/* ── Hero ────────────────────────────────────────────────────────── */}
+      <section className="relative min-h-screen flex items-end overflow-hidden bg-[#060e1c] pt-[106px]">
+        {/* Background image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/images/dg-transport/dg-documentation-services.webp"
+            alt=""
+            className="w-full h-full object-cover opacity-25 grayscale"
+          />
         </div>
-      </div>
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#060e1c]/98 via-[#060e1c]/85 to-[#060e1c]/60" />
+        {/* Dot grid */}
+        <div
+          className="absolute inset-0 z-10"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 1.5px 1.5px, rgba(255,255,255,0.08) 1px, transparent 0)',
+            backgroundSize: '36px 36px',
+          }}
+        />
+        {/* Accent line */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary z-20" />
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white to-transparent z-10" />
+
+        <Container className="relative z-20 pb-20 pt-16">
+          <div className="grid lg:grid-cols-2 gap-16 xl:gap-24 items-center">
+
+            {/* Left column */}
+            <motion.div
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
+            >
+              <p className="text-[10px] text-accent/80 uppercase tracking-[0.28em] mb-5 font-black">
+                {isES
+                  ? 'REVISIÓN PREVIA DG · VERIFIQUE ANTES DE EMBARCAR'
+                  : 'DG PRE-CHECK · VERIFY BEFORE YOU SHIP'}
+              </p>
+              <h1 className="text-3xl md:text-4xl xl:text-5xl font-extrabold text-white leading-[1.1] tracking-tight mb-6">
+                {isES ? 'Detecte los errores' : 'Catch the errors'}
+                <span className="block text-primary mt-1">
+                  {isES ? 'antes que la aerolínea.' : 'before the airline does.'}
+                </span>
+              </h1>
+              <p className="text-white/65 text-[15px] leading-relaxed mb-4">
+                {isES
+                  ? 'Análisis asistido por IA y revisión de expertos certificados en mercancías peligrosas. Envíe su DGD y las fotos del bulto terminado y reciba un reporte técnico en PDF antes de que su carga llegue a la aerolínea.'
+                  : 'AI-assisted checks plus review by certified dangerous goods experts. Send your DGD and photos of the finished package and get a technical PDF report before your cargo reaches the airline.'}
+              </p>
+              <p className="text-white/45 text-[13px] leading-relaxed mb-8">
+                {isES
+                  ? 'Un embarque rechazado cuesta tiempo, espacio en el vuelo y dinero. Pre-Check encuentra los problemas cuando aún es fácil corregirlos.'
+                  : 'A rejected shipment costs time, flight space and money. Pre-Check finds the problems while they are still easy to fix.'}
+              </p>
+              <a
+                href="#step-1"
+                onClick={e => {
+                  e.preventDefault();
+                  document.getElementById('step-1')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="inline-block px-8 py-3.5 text-[11px] font-black uppercase tracking-[0.15em] bg-primary text-white hover:bg-primary/85 hover:shadow-[0_0_24px_rgba(7,56,223,0.5)] transition-all duration-200 mb-8"
+              >
+                {isES ? 'Iniciar mi Revisión Previa' : 'Start your Pre-Check'}
+              </a>
+              {/* Chips */}
+              <div className="flex flex-wrap gap-x-6 gap-y-3 pt-6 border-t border-white/10">
+                {(isES
+                  ? ['Análisis asistido por IA', 'Expertos DG certificados', 'Solo carga aérea', 'Reporte técnico en PDF']
+                  : ['AI-assisted analysis', 'Certified DG experts', 'Air freight only', 'Technical PDF report']
+                ).map(label => (
+                  <div key={label} className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-accent/20 border border-accent/50 flex items-center justify-center shrink-0">
+                      <span className="text-accent font-black" style={{ fontSize: '8px' }}>✓</span>
+                    </div>
+                    <span className="text-[11px] text-white/65 font-medium tracking-wide">{label}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Right column (decorative balance) */}
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="hidden lg:block"
+            />
+
+          </div>
+        </Container>
+      </section>
 
       {/* ── Body ────────────────────────────────────────────────────────── */}
       <div style={{ padding: '32px 0 80px' }}>
@@ -830,6 +893,7 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
             {/* ══════════════════════════════════════════════════════════
                 STEP 1 — PAYMENT
             ══════════════════════════════════════════════════════════ */}
+            <div id="step-1">
             <SectionCard number="01" title={t('step1Title', lang)}>
               <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '20px' }}>
 
@@ -902,6 +966,7 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
                 </p>
               </div>
             </SectionCard>
+            </div>
 
             {/* ══════════════════════════════════════════════════════════
                 STEP 2 — SUBMISSION FORM
@@ -1354,6 +1419,7 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
             </form>
 
             {/* ── How it works ─────────────────────────────────────────── */}
+            <FadeIn>
             <div style={{ marginTop: '48px' }}>
               <h2 style={{ fontSize: '14px', fontWeight: 800, textTransform: 'uppercase',
                 letterSpacing: '0.12em', color: MUTED, marginBottom: '20px', textAlign: 'center' }}>
@@ -1379,8 +1445,10 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
                 ))}
               </div>
             </div>
+            </FadeIn>
 
             {/* ── FAQ ──────────────────────────────────────────────────── */}
+            <FadeIn delay={0.1}>
             <div style={{ marginTop: '48px' }}>
               <h2 style={{ fontSize: '14px', fontWeight: 800, textTransform: 'uppercase',
                 letterSpacing: '0.12em', color: MUTED, marginBottom: '20px', textAlign: 'center' }}>
@@ -1409,6 +1477,7 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
                 ))}
               </div>
             </div>
+            </FadeIn>
 
           </div>
         </Container>

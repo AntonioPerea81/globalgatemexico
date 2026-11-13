@@ -453,12 +453,13 @@ export const Home = () => {
       </div>
 
       {/* DG PRE-CHECK FEATURED SECTION */}
-      <div style={{ background: '#060e1c', padding: '56px 0', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '2px solid #2563eb' }}>
+      <Reveal>
+      <div style={{ background: '#060e1c', padding: '56px 0', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '2px solid #0738df' }}>
         <Container>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '28px' }}>
             <div style={{ flex: '1 1 400px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', flexWrap: 'wrap' }}>
-                <span style={{ background: '#2563eb', color: '#fff', fontSize: '10px', fontWeight: 800, padding: '3px 10px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                <span style={{ background: '#0738df', color: '#fff', fontSize: '10px', fontWeight: 800, padding: '3px 10px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
                   {language === 'ES' ? 'NUEVO SERVICIO' : 'NEW SERVICE'}
                 </span>
                 <span style={{ color: 'rgba(96,165,250,0.6)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.2em', fontWeight: 700 }}>
@@ -468,10 +469,15 @@ export const Home = () => {
               <h2 style={{ fontSize: 'clamp(22px, 3vw, 36px)', fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.1, marginBottom: '12px' }}>
                 {language === 'ES' ? 'Revisión Previa DG — Verifique Antes de Embarcar' : 'DG Pre-Check — Verify Before You Ship'}
               </h2>
-              <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, marginBottom: '0', maxWidth: '480px' }}>
+              <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, marginBottom: '8px', maxWidth: '480px' }}>
                 {language === 'ES'
-                  ? 'Su DGD revisada por profesionales certificados antes de llegar a la aerolínea. Reporte entregado en 2 horas hábiles.'
-                  : 'Your DGD reviewed by certified DG professionals before it reaches the airline. Report delivered in 2 business hours.'}
+                  ? 'Análisis asistido por IA y expertos DG certificados. Detecte los errores de su DGD antes que la aerolínea.'
+                  : 'AI-assisted checks plus certified DG experts. Catch DGD errors before the airline does.'}
+              </p>
+              <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', lineHeight: 1.6, marginBottom: '0', maxWidth: '480px', fontStyle: 'italic' }}>
+                {language === 'ES'
+                  ? 'Esta revisión es preventiva: no constituye una aceptación oficial de la aerolínea.'
+                  : 'This is a preventive review: it does not constitute official acceptance by the airline.'}
               </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
@@ -483,7 +489,7 @@ export const Home = () => {
               </div>
               <a
                 href={language === 'ES' ? '/revision-previa-dg' : '/dg-pre-check'}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#2563eb', color: '#fff', padding: '14px 24px', fontSize: '12px', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', whiteSpace: 'nowrap' }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#0738df', color: '#fff', padding: '14px 24px', fontSize: '12px', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', whiteSpace: 'nowrap' }}
               >
                 {language === 'ES' ? 'Enviar su DGD →' : 'Submit Your DGD →'}
               </a>
@@ -491,6 +497,7 @@ export const Home = () => {
           </div>
         </Container>
       </div>
+      </Reveal>
 
       {/* NEW: EMPATHY (PROBLEM) SECTION */}
       <div className="bg-dark/5 py-24 relative overflow-hidden">

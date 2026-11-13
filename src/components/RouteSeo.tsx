@@ -21,6 +21,7 @@ const languagePairs: Array<[string, string]> = [
   ['/contact', '/contacto'],
   ['/request-quote', '/solicitar-cotizacion'],
   ['/dangerous-goods-ground-transportation', '/transporte-terrestre-mercancias-peligrosas'],
+  ['/dg-pre-check', '/revision-previa-dg'],
 ];
 
 function alternatesFor(pathname: string): HreflangEntry[] | undefined {
@@ -41,7 +42,7 @@ export function RouteSeo() {
     '/acerca', '/contacto', '/solicitar-cotizacion', '/logistica-material-radiactivo',
     '/transporte-terrestre-mercancias-peligrosas', '/politica-de-privacidad',
     '/aviso-legal', '/terminos-de-servicio', '/condiciones-estandar-de-comercio',
-    '/rastreo-de-embarques',
+    '/rastreo-de-embarques', '/revision-previa-dg',
   ].includes(pathname);
 
   const isDgConsulting = normalizedPath === '/dg-consulting-compliance';
