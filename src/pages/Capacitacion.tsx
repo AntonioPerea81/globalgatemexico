@@ -123,8 +123,8 @@ const PROGRAMS = [
   {
     Icon: Plane,
     code: 'IATA DGR',
-    title: 'Reglamentación IATA para Mercancías Peligrosas',
-    desc: 'Capacitación en cumplimiento IATA DGR para expedidores, agentes de carga y personal aeronáutico. Cursos iniciales y de actualización conforme a la edición vigente del IATA DGR.',
+    title: 'Cursos IATA CBTA 7.1 y 7.3 para transporte aéreo',
+    desc: 'Capacitación inicial y de actualización conforme a la reglamentación IATA DGR. La función 7.1 está dirigida al personal que prepara envíos de mercancías peligrosas. La función 7.3 está dirigida al personal que acepta esos envíos para transporte aéreo. Solicite una propuesta para consultar opciones para su equipo en México.',
     audience: 'Expedidores · Agentes de Carga · Aerolíneas',
   },
   {
@@ -298,8 +298,8 @@ export function CapacitacionPage() {
   useEffect(() => { setLanguage('ES'); }, []);
 
   usePageMeta({
-    title: 'Capacitación en Mercancías Peligrosas | Proveedor CBTA IATA | Global Gate México',
-    description: 'Programas de capacitación en mercancías peligrosas autorizados por IATA CBTA para transporte aéreo, terrestre, marítimo y materiales radiactivos. Instructores certificados internacionalmente con experiencia operativa real.',
+    title: 'Cursos IATA CBTA 7.1 y 7.3 en México | GGM',
+    description: 'Capacitación IATA CBTA en México para preparar (7.1) y aceptar (7.3) envíos aéreos de mercancías peligrosas. Solicite una propuesta para su equipo.',
     canonical: 'https://www.globalgatemexico.com/es/capacitacion',
     lang: 'es',
   });
