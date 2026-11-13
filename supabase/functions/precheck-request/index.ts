@@ -82,7 +82,7 @@ const headerBand = (title: string, sub: string) =>
 
 const emailWrapper = (headerHtml: string, bodyHtml: string) =>
   `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/></head>
-<body style="margin:0;padding:0;background:#f3f4f6;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;"><!-- ignore-value overused-font Helvetica -->
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:32px 16px;">
   <tr><td align="center">
   <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
