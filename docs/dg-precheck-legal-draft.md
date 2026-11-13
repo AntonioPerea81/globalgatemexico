@@ -8,48 +8,33 @@
 
 ---
 
-## 1. Aviso de Privacidad Simplificado (sección adicional propuesta)
+## 1. Lista de verificación de privacidad (uso interno)
 
-**Servicio: GGM DG Pre-Check (Revisión Previa de Declaración de Mercancías Peligrosas)**
+> Esta sección reemplaza el borrador anterior del Aviso de Privacidad Simplificado. El texto definitivo para publicación en el sitio web deberá ser redactado por el asesor legal.
 
-Global Gate México S.A. de C.V. ("GGM"), con domicilio en [DOMICILIO FISCAL], es responsable del tratamiento de sus datos personales conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares ("LFPDPPP").
+**Datos que se recaban para el servicio DG Pre-Check:**
 
-**Datos que recabamos para este servicio:**
+- [ ] Nombre, empresa, correo, teléfono y país de facturación del solicitante.
+- [ ] Número de bultos y entradas DG (número ONU, clase, nombre de embarque).
+- [ ] Documentos: DGD (PDF, obligatorio), Fichas de Datos de Seguridad — SDS/FDS (PDF, opcionales, hasta 5), y fotografías del embarque (JPG/PNG/WebP, obligatorio al menos 1).
+- [ ] Referencia y capture ID de PayPal. GGM **no** almacena número de tarjeta ni credenciales de pago.
+- [ ] Fecha y versión de aceptación de términos (`accepted_terms_at`, `terms_version`).
 
-- Datos de identificación y contacto: nombre, correo electrónico, teléfono, nombre de empresa y país de facturación.
-- Datos fiscales (para emisión de CFDI en su caso): RFC, Razón Social, Régimen Fiscal, Código Postal Fiscal y Uso de CFDI. Estos datos se capturan únicamente para la facturación interna y no se transmiten a terceros distintos del SAT.
-- Datos de envío: origen, destino, número de bultos, número de entradas de mercancías peligrosas y descripción general de la carga.
-- Documentos: Declaración de Mercancías Peligrosas (DGD) y fotografías del embarque en formato PDF, JPG o PNG.
-- Datos de pago: confirmación de transacción y referencia de captura PayPal. GGM no almacena números de tarjeta ni credenciales de pago; el procesamiento es gestionado íntegramente por PayPal.
+**No se recaban:**
 
-**Finalidades primarias (necesarias para la prestación del servicio):**
+- Datos fiscales (RFC, Razón Social, Régimen Fiscal, CP Fiscal, Uso CFDI) — el área de contabilidad los solicita directamente al cliente para la emisión de CFDI, fuera del formulario web.
+- Origen y destino del embarque — no son campos del formulario; forman parte del DGD que el cliente carga.
 
-1. Verificación técnica de la DGD conforme a la normativa aplicable (IATA DGR, 49 CFR, TC TP 14850, según el trayecto).
-2. Emisión del dictamen de revisión previa y comunicación del resultado al cliente.
-3. Procesamiento del pago y, cuando aplique, generación de CFDI.
-4. Atención de aclaraciones y seguimiento postventa.
+**Retención (referencia para redacción legal):**
 
-**Finalidades secundarias (sujetas a consentimiento):**
+Los archivos (DGD, SDS, fotos) se eliminan del Storage 90 días después del evento de cierre del estado. Los registros de orden y de entradas DG no se eliminan nunca (retención indefinida para auditoría interna). Los registros de webhook de PayPal se eliminan a los 90 días.
 
-- Envío de comunicaciones comerciales sobre otros servicios de GGM.
-  Puede negarse a estas finalidades enviando un correo a privacidad@globalgatemexico.com.
+**Pendientes para el asesor legal:**
 
-**Retención de datos y documentos:**
-
-Los documentos cargados (DGD y fotografías) y los registros de la orden serán eliminados de los sistemas de GGM **90 días naturales** después de la fecha del evento que determine su elegibilidad de purga, según la siguiente tabla:
-
-| Estado final de la orden | Inicio del cómputo de 90 días |
-|--------------------------|-------------------------------|
-| Reporte enviado (`report_sent`) | Fecha de envío del reporte |
-| Cancelada (`cancelled`) | Fecha de cancelación |
-| Reembolsada (`refunded`) | Fecha del reembolso |
-| Pagada sin reporte (caso excepcional) | Fecha de creación de la orden |
-
-Los datos de facturación (RFC, Razón Social, etc.) podrán conservarse por el período que establezca la legislación fiscal aplicable (5 años conforme al Código Fiscal de la Federación).
-
-**Transferencias:** GGM no vende ni cede sus datos personales a terceros con fines comerciales. Los datos de pago son procesados por PayPal Holdings, Inc. conforme a su propia política de privacidad. Los correos transaccionales son enviados mediante un proveedor de envío de correo electrónico (Resend Inc.); dicho proveedor actúa como encargado del tratamiento y no tiene acceso a los documentos cargados.
-
-**Derechos ARCO:** Puede ejercer sus derechos de Acceso, Rectificación, Cancelación u Oposición enviando un correo a privacidad@globalgatemexico.com con asunto "Derechos ARCO — DG Pre-Check".
+- [ ] Redactar aviso completo bajo LFPDPPP con domicilio fiscal de GGM.
+- [ ] Confirmar correo para derechos ARCO.
+- [ ] Determinar si la retención indefinida de registros de orden requiere justificación legal explícita.
+- [ ] Evaluar si se requiere registro ante el INAI.
 
 ---
 
@@ -77,12 +62,14 @@ El pago se realiza mediante PayPal en dólares americanos (USD). La orden se act
 
 ### 2.3 Tiempo de Entrega
 
-GGM se compromete a entregar el dictamen de revisión en un plazo **máximo de 2 (dos) horas hábiles** contadas desde la recepción de todos los documentos requeridos (DGD y fotografías), siempre que la orden se reciba dentro del horario de atención:
+GGM se compromete a entregar el dictamen de revisión en un plazo **máximo de 2 (dos) horas hábiles** contadas desde la recepción de todos los documentos requeridos (Declaración de Mercancías Peligrosas — DGD — y al menos una fotografía del embarque), siempre que la orden se reciba dentro del horario de atención:
 
 - **Horario de atención:** lunes a viernes, de 9:00 a 17:00, hora del Centro de México (CDMX / CST/CDT).
 - Las órdenes recibidas fuera de este horario o en días festivos oficiales de México serán procesadas al inicio del siguiente día hábil.
 
-El cómputo de las 2 horas hábiles inicia en el momento en que GGM recibe la notificación de pago confirmado y la carga completa de los documentos.
+El cómputo de las 2 horas hábiles inicia en el momento en que GGM recibe la notificación simultánea de: (a) pago confirmado y (b) carga completa de los documentos obligatorios. El pago por sí solo no inicia el cómputo.
+
+La factura (CFDI) correspondiente será emitida por el área de contabilidad de GGM y enviada por separado al correo del cliente. La emisión no es automática; el área de contabilidad se pondrá en contacto con el cliente para recabar los datos fiscales necesarios.
 
 ### 2.4 Política de Reembolsos
 
@@ -92,8 +79,9 @@ El cómputo de las 2 horas hábiles inicia en el momento en que GGM recibe la no
 | El cliente solicita cancelación **después** de cargar los documentos pero antes de que GGM inicie la revisión | Reembolso del 50 % del monto cobrado. |
 | GGM inicia la revisión técnica | Sin reembolso, independientemente del resultado del dictamen. |
 | El servicio no es completado en el tiempo prometido por causas imputables a GGM | Reembolso completo del monto cobrado. |
+| El embarque supera los límites del servicio (más de 5 bultos o más de 5 entradas DG) **y el cliente ya realizó el pago** | El monto pagado se **acredita** a la cotización especial correspondiente, previa solicitud formal del cliente. No aplica devolución en efectivo en este supuesto. |
 
-Para solicitar un reembolso, el cliente debe enviar un correo a ggm@globalgatemexico.com indicando el número de folio de la orden (formato `PCK-XXXXXXX`). Los reembolsos se procesan a través de PayPal y pueden tardar de 3 a 5 días hábiles en reflejarse.
+Para solicitar un reembolso o acreditamiento, el cliente debe enviar un correo a ggm@globalgatemexico.com indicando el número de folio de la orden (formato `PCK-XXXXXXX`). Los reembolsos se procesan a través de PayPal y pueden tardar de 3 a 5 días hábiles en reflejarse.
 
 ### 2.5 Limitaciones de Responsabilidad y Alcance del Dictamen
 
@@ -105,9 +93,14 @@ Para solicitar un reembolso, el cliente debe enviar un correo a ggm@globalgateme
 
 ### 2.6 Documentos Aceptados
 
-- **DGD:** únicamente formato PDF. Tamaño máximo: 20 MB.
-- **Fotografías:** formatos JPG, JPEG, PNG o WebP. Tamaño máximo por archivo: 20 MB.
-- El cliente puede cargar hasta 1 DGD y hasta 5 fotografías por orden.
+| Documento | Formato | Obligatoriedad | Límite por orden |
+|-----------|---------|---------------|-----------------|
+| Declaración de Mercancías Peligrosas (DGD) | PDF únicamente | **Obligatorio** | 1 archivo |
+| Fichas de Datos de Seguridad (SDS / FDS) | PDF únicamente | Opcional | Hasta 5 archivos (uno por entrada DG) |
+| Fotografías del embarque | JPG, JPEG, PNG o WebP | **Obligatorio al menos 1** | Hasta 5 archivos |
+
+- Tamaño máximo por archivo: 20 MB.
+- El servicio no se activa (el SLA de 2 horas no inicia) hasta que se reciben la DGD **y** al menos una fotografía.
 - Los archivos cargados serán eliminados conforme a la política de retención descrita en el Aviso de Privacidad (sección [X]).
 
 ### 2.7 Confidencialidad

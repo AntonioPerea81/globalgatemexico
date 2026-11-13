@@ -57,6 +57,7 @@ import { OnlineAcademyPage } from './pages/OnlineAcademy';
 import { IataCbta71Page, IataCbta73Page } from './pages/IataCbtaCourses';
 import { TrainingEnrollmentCompletePage, TrainingEnrollmentPage } from './pages/TrainingEnrollment';
 import { DGPreCheckPage, DGPreCheckCompletePage, RevisionPreviaDGPage, RevisionPreviaDGCompletePage } from './pages/DGPreCheck';
+import { DGPreCheckStaffActionPage } from './pages/DGPreCheckStaffAction';
 import { Layout } from './components/Layout';
 import { LanguageProvider } from './context/LanguageContext';
 import { CookieConsent } from './components/CookieConsent';
@@ -111,6 +112,7 @@ export function AppRoutes() {
             <Route path="/training/enrollment/complete" element={<TrainingEnrollmentCompletePage />} />
             <Route path="/dg-pre-check"                element={<DGPreCheckPage />} />
             <Route path="/dg-pre-check/complete"       element={<DGPreCheckCompletePage />} />
+            <Route path="/dg-pre-check/staff-action"   element={<DGPreCheckStaffActionPage />} />
             <Route path="/revision-previa-dg"          element={<RevisionPreviaDGPage />} />
             <Route path="/revision-previa-dg/completo" element={<RevisionPreviaDGCompletePage />} />
             <Route path="/contact"  element={<ContactPage />} />

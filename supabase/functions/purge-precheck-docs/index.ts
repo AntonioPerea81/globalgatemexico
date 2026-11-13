@@ -3,20 +3,16 @@
  *
  * Deletes Storage objects and dg_precheck_files records for DG Pre-Check orders
  * whose documents are eligible for purge (90-day retention window). Marks each
- * purged order with files_purged_at. Order rows are NEVER deleted; only Storage
- * and file records are removed. Fiscal and payment data are retained per
- * accountant guidance.
+ * purged order with files_purged_at. Order rows and dg_precheck_entries rows
+ * are NEVER deleted; only Storage and dg_precheck_files records are removed.
  *
- * Also hard-deletes pending_payment orders older than 7 days (incomplete checkouts).
+ * Also hard-deletes pending_payment orders older than 30 days (incomplete checkouts).
  * Also purges paypal_precheck_webhook_events rows older than 90 days.
  *
- * NOT deployed/scheduled — invoke manually or via cron (pg_cron / Supabase Scheduled).
- *
- * Eligible for file purge (non-pending_payment):
+ * Eligible for file purge:
  *   - status = 'report_sent'  AND report_sent_at  < now() - 90 days
- *   - status = 'cancelled'    AND updated_at       < now() - 90 days
  *   - status = 'refunded'     AND updated_at       < now() - 90 days
- *   - status IN ('paid','docs_received','in_review') AND created_at < now() - 90 days
+ *   - status IN ('paid','docs_received') AND created_at < now() - 90 days
  *
  * Idempotent: re-running after a partial failure is safe.
  * FAIL CLOSED: PURGE_CRON_SECRET must be configured; missing secret = 503.
@@ -28,7 +24,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 const SUPABASE_URL         = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const RETENTION_DAYS       = 90
-const PENDING_EXPIRY_DAYS  = 7
+const PENDING_EXPIRY_DAYS  = 30
 
 serve(async (req) => {
   // ── FAIL CLOSED: secret must be configured ─────────────────────────────
@@ -48,7 +44,7 @@ serve(async (req) => {
 
   const supabase  = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
   const cutoff90  = new Date(Date.now() - RETENTION_DAYS  * 24 * 60 * 60 * 1000).toISOString()
-  const cutoff7   = new Date(Date.now() - PENDING_EXPIRY_DAYS * 24 * 60 * 60 * 1000).toISOString()
+  const cutoff30  = new Date(Date.now() - PENDING_EXPIRY_DAYS * 24 * 60 * 60 * 1000).toISOString()
   const now       = new Date().toISOString()
 
   const summary = {
@@ -69,9 +65,8 @@ serve(async (req) => {
       .is('files_purged_at', null)
       .or(
         `and(status.eq.report_sent,report_sent_at.lt.${cutoff90}),` +
-        `and(status.eq.cancelled,updated_at.lt.${cutoff90}),` +
         `and(status.eq.refunded,updated_at.lt.${cutoff90}),` +
-        `and(status.in.(paid,docs_received,in_review),created_at.lt.${cutoff90})`
+        `and(status.in.(paid,docs_received),created_at.lt.${cutoff90})`
       )
 
     if (ordersErr) throw ordersErr
@@ -111,6 +106,7 @@ serve(async (req) => {
           summary.storageFilesDeleted += storagePaths.length
 
           // ── 4. Delete dg_precheck_files records (only after Storage success) ──
+          // dg_precheck_entries are NEVER deleted.
           const { data: deletedFiles, error: filesDbErr } = await supabase
             .from('dg_precheck_files')
             .delete()
@@ -141,13 +137,13 @@ serve(async (req) => {
       }
     }
 
-    // ── 6. Hard-delete pending_payment orders older than 7 days ──────────
-    // These are incomplete checkouts; no files or fiscal data to retain.
+    // ── 6. Hard-delete pending_payment orders older than 30 days ─────────
+    // These are incomplete checkouts; no files or entries to retain.
     const { data: deletedPending, error: pendingErr } = await supabase
       .from('dg_precheck_orders')
       .delete()
       .eq('status', 'pending_payment')
-      .lt('created_at', cutoff7)
+      .lt('created_at', cutoff30)
       .select('id')
 
     if (pendingErr) {

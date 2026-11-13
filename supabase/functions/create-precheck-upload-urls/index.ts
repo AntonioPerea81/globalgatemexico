@@ -4,7 +4,11 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 const SUPABASE_URL         = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
-const ALLOWED_FIELDS = ['dgd', 'photo_1', 'photo_2', 'photo_3', 'photo_4', 'photo_5'] as const
+const ALLOWED_FIELDS = [
+  'dgd',
+  'sds_1','sds_2','sds_3','sds_4','sds_5',
+  'photo_1','photo_2','photo_3','photo_4','photo_5',
+] as const
 type FieldName = typeof ALLOWED_FIELDS[number]
 
 // Signed upload URLs expire in 10 minutes — enough to upload, too short to abuse
@@ -57,14 +61,13 @@ serve(async (req) => {
       return json({ error: `La orden no está en estado pagado (estado actual: ${order.status})` }, 403)
     }
 
-    // Generate one signed upload URL per requested field
+    // Generate one signed upload URL per requested field (upsert: true allows re-upload)
     const urls: Record<string, string> = {}
     for (const field of fields as FieldName[]) {
-      // Use a fixed extension placeholder — actual extension handled by notify-precheck
       const path  = `${order.id}/${field}`
       const { data, error } = await supabase.storage
         .from('precheck-docs')
-        .createSignedUploadUrl(path)
+        .createSignedUploadUrl(path, { upsert: true })
 
       if (error || !data?.signedUrl) {
         console.error(`[create-precheck-upload-urls] signed URL error for ${field}:`, error)

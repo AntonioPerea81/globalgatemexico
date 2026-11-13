@@ -17,7 +17,10 @@ Configura todos los siguientes secretos antes de desplegar. Ninguno tiene valor 
 | `PRECHECK_PAYPAL_WEBHOOK_ID` | Webhook ID del evento `PAYMENT.CAPTURE.COMPLETED` registrado en PayPal | `paypal-webhook-precheck` |
 | `TURNSTILE_SECRET_KEY` | Secret key de Cloudflare Turnstile (**FAIL CLOSED**: si no está configurado, rechaza todo) | `create-precheck-order` |
 | `PURGE_CRON_SECRET` | Bearer token para autorizar `purge-precheck-docs` y `precheck-sla-watch` (**FAIL CLOSED** en purge) | `purge-precheck-docs`, `precheck-sla-watch` |
-| `PRECHECK_NOTIFY_EMAIL` | Correo(s) del buzón interno de operaciones, separados por coma | `notify-precheck`, `precheck-sla-watch` |
+| `PRECHECK_NOTIFY_EMAIL` | Correo(s) del buzón interno de operaciones, separados por coma (ej. `antonio.perea@...,cesar.betancourt@...`) | `notify-precheck`, `paypal-webhook-precheck`, `precheck-sla-watch` |
+| `PRECHECK_ACCOUNTING_EMAIL` | Correo(s) de contabilidad para recibir confirmaciones de pago, separados por coma (ej. `yareni@...`) | `capture-precheck-order`, `paypal-webhook-precheck` |
+| `PRECHECK_ACTION_SECRET` | Secreto HMAC-SHA256 para firmar tokens de acción de staff (**FAIL CLOSED**: si no está configurado → 503) | `precheck-order-action`, `notify-precheck`, `precheck-sla-watch` |
+| `PRECHECK_SITE_URL` | URL base del sitio (ej. `https://www.globalgatemexico.com`), usado en enlaces de acción y de carga | `notify-precheck`, `precheck-sla-watch`, `paypal-webhook-precheck` |
 | `PRECHECK_EXTRA_ORIGINS` | (Opcional) Origins adicionales permitidos en `create-precheck-order`, separados por coma, sin wildcards | `create-precheck-order` |
 | `RESEND_API_KEY` | API key de Resend para correos transaccionales | Todas las que envían correo |
 | `SUPABASE_URL` | URL del proyecto Supabase (inyectado automáticamente) | Todas |
@@ -154,6 +157,40 @@ supabase functions deploy <nombre-de-funcion> --project-ref <project-ref>
 - [ ] Verificar que `dg_precheck_files` se borra pero `dg_precheck_orders` permanece
 - [ ] Verificar que `files_purged_at` queda marcado en la orden
 
+### 5.11 RLS — intento de inserción anónima
+- [ ] Con la anon key de Supabase, intentar `INSERT INTO dg_precheck_orders (...)` directamente
+- [ ] Verificar respuesta 403 / error de RLS (política solo permite service_role)
+- [ ] Repetir para `dg_precheck_entries` y `dg_precheck_files`
+
+### 5.12 Class 7 bloqueado en frontend y backend
+- [ ] En el formulario, ingresar UN2915 (Class 7) → debe aparecer alerta inline y deshabilitar el botón Pay
+- [ ] Enviar request directo a `create-precheck-order` con `hazard_class: "Class 7"` → esperar 422 `CLASS7_EXCLUDED`
+
+### 5.13 Reemplazo de archivo (upsert de Storage)
+- [ ] Subir DGD para una orden ya con DGD existente
+- [ ] Verificar que `create-precheck-upload-urls` devuelve URL firmada con `upsert: true`
+- [ ] Verificar que el archivo se sobreescribe, no duplica, en Storage
+
+### 5.14 Rechazo de MIME type inválido
+- [ ] Subir un archivo `.exe` renombrado como `.pdf` para el campo `dgd`
+- [ ] Invocar `notify-precheck` → esperar 400 `INVALID_MIME` (el backend lee el Content-Type desde Storage)
+- [ ] Subir imagen como `dgd` → esperar 400 `INVALID_MIME` (dgd requiere application/pdf)
+
+### 5.15 Token de acción — verificación HMAC
+- [ ] Generar token con `PRECHECK_ACTION_SECRET` correcto → verificar preview exitoso
+- [ ] Modificar 1 carácter del token → esperar 401 `INVALID_TOKEN`
+- [ ] Usar token expirado (exp en el pasado) → esperar 401 `TOKEN_EXPIRED`
+- [ ] Reenviar token ya usado para `report_sent` → esperar success con `alreadyDone: true`
+
+### 5.16 SLA watch — 2 niveles de alerta
+- [ ] Crear orden en `docs_received`, `sla_alert_count = 0`, `created_at = ahora − 61 min`
+  - [ ] Disparar `precheck-sla-watch` → verificar alerta Tier 1, `sla_alert_count` → 1
+- [ ] Dejar la misma orden, `created_at = ahora − 121 min`, `sla_alert_count = 1`
+  - [ ] Disparar `precheck-sla-watch` → verificar alerta Tier 2, `sla_alert_count` → 2
+- [ ] Disparar una vez más → no debe enviarse alerta adicional (`sla_alert_count` ya es 2)
+- [ ] Crear orden en `paid`, `sla_alert_count = 0`, `created_at = ahora − 25 h`
+  - [ ] Disparar `precheck-sla-watch` → verificar alerta Tier 3, `sla_alert_count` → 1
+
 ---
 
 ## 6. Programación del cron (después de validar en sandbox)
@@ -188,7 +225,34 @@ SELECT cron.schedule(
 
 ---
 
-## 7. Notas de seguridad
+## 7. Variables de entorno — Frontend (Vercel)
+
+Configurar en el panel de Vercel antes del primer deploy de producción:
+
+| Variable | Valor | Descripción |
+|----------|-------|-------------|
+| `VITE_SUPABASE_URL` | `https://<project-ref>.supabase.co` | URL del proyecto Supabase |
+| `VITE_SUPABASE_ANON_KEY` | `eyJ...` | Anon key pública de Supabase |
+| `VITE_TURNSTILE_SITE_KEY` | `1x00000...` (sandbox) / clave real (prod) | Site key pública de Cloudflare Turnstile |
+
+> Las claves de producción de Turnstile se obtienen en **Cloudflare Dashboard → Turnstile → Sites**. Las claves de prueba (`1x00000000000000000000AA`) son para desarrollo local únicamente.
+
+---
+
+## 8. Extensiones de Supabase requeridas
+
+Habilitar en **Supabase Dashboard → Database → Extensions** antes de configurar el cron:
+
+| Extensión | Propósito |
+|-----------|-----------|
+| `pg_cron` | Programar las tareas periódicas (purge, sla-watch) |
+| `pg_net` | Realizar llamadas HTTP desde las tareas pg_cron |
+
+> Sin estas extensiones, los comandos `cron.schedule` y `net.http_post` de la sección §6 fallarán con "function not found".
+
+---
+
+## 9. Notas de seguridad
 
 - Las funciones de Pre-Check usan credenciales PayPal propias (`PRECHECK_PAYPAL_*`), completamente aisladas de las funciones de training.
 - `TURNSTILE_SECRET_KEY` y `PURGE_CRON_SECRET` son **fail-closed**: si no están configurados, las funciones rechazan todas las peticiones en lugar de omitir los controles.

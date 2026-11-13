@@ -9,6 +9,7 @@ export interface PageMetaOptions {
   canonical?: string;
   hreflang?: HreflangEntry[];
   lang?: string;
+  noindex?: boolean;
 }
 
 function setMetaTag(attr: 'name' | 'property', key: string, content: string) {
@@ -34,12 +35,13 @@ function setLinkTag(rel: string, href: string, extra?: Record<string, string>) {
   }
 }
 
-export function usePageMeta({ title, description, canonical, hreflang, lang }: PageMetaOptions) {
+export function usePageMeta({ title, description, canonical, hreflang, lang, noindex }: PageMetaOptions) {
   if (typeof document === 'undefined') {
     collectServerPageMeta({ title, description, canonical, hreflang, lang });
   }
 
   useEffect(() => {
+    if (noindex) setMetaTag('name', 'robots', 'noindex,nofollow');
     if (title) document.title = title;
     document.documentElement.lang = lang ?? 'en';
 
