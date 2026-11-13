@@ -53,6 +53,7 @@ import { DangerousGoodsGroundTransportationPage } from './pages/DangerousGoodsGr
 import { TransporteTerrestreMercanciasPeligrosasPage } from './pages/TransporteTerrestreMercanciasPeligrosas';
 import { ShipmentTrackingPage } from './pages/ShipmentTracking';
 import { RastreoDeEmbarquesPage } from './pages/RastreoDeEmbarques';
+import { DGPreCheckPage, RevisionPreviaDGPage } from './pages/DGPreCheck';
 import { OnlineAcademyPage } from './pages/OnlineAcademy';
 import { IataCbta71Page, IataCbta73Page } from './pages/IataCbtaCourses';
 import { TrainingEnrollmentCompletePage, TrainingEnrollmentPage } from './pages/TrainingEnrollment';
@@ -125,6 +126,8 @@ export function AppRoutes() {
             <Route path="/transporte-terrestre-mercancias-peligrosas" element={<TransporteTerrestreMercanciasPeligrosasPage />} />
             <Route path="/shipment-tracking"     element={<ShipmentTrackingPage />} />
             <Route path="/rastreo-de-embarques" element={<RastreoDeEmbarquesPage />} />
+            <Route path="/dg-pre-check"          element={<DGPreCheckPage />} />
+            <Route path="/revision-previa-dg"    element={<RevisionPreviaDGPage />} />
             <Route path="*"         element={<Home />} />
         </Routes>
       </Layout>
