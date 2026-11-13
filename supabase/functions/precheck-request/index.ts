@@ -351,16 +351,26 @@ serve(async (req: Request) => {
       });
     }
 
-    const mimeOk = ACCEPTED_MIMES.has(realMime);
-    const ext    = '.' + doc.path.split('.').pop()!.toLowerCase();
-    const extOk  = ACCEPTED_EXTS.has(ext);
-    if (!mimeOk || !extOk) {
-      return new Response(JSON.stringify({ error: `Tipo de archivo no aceptado: ${doc.name}` }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    const ext = '.' + doc.path.split('.').pop()!.toLowerCase();
+    const extOk = ACCEPTED_EXTS.has(ext);
+    const genericMime = !realMime || realMime === 'application/octet-stream';
+
+    if (genericMime) {
+      if (!extOk) {
+        return new Response(JSON.stringify({ error: `Tipo de archivo no aceptado: ${doc.name}` }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    } else {
+      const mimeOk = ACCEPTED_MIMES.has(realMime);
+      if (!mimeOk || !extOk) {
+        return new Response(JSON.stringify({ error: `Tipo de archivo no aceptado: ${doc.name}` }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
     }
 
-    const isPdf = realMime ? (realMime === 'application/pdf') : (ext === '.pdf');
+    const isPdf = genericMime ? (ext === '.pdf') : (realMime === 'application/pdf');
     if (isPdf) verifiedPdf++;
     else verifiedImg++;
   }

@@ -8,6 +8,7 @@ import { motion } from 'motion/react';
 import { Container, FadeIn } from '../components/UI';
 import { supabase } from '../lib/supabase';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { useLanguage } from '../context/LanguageContext';
 
 declare global {
   interface Window {
@@ -386,6 +387,9 @@ function t(key: keyof typeof T, lang: Lang): string {
 function DGPreCheckInner({ lang }: { lang: Lang }) {
 
   const isES = lang === 'es';
+
+  const { setLanguage } = useLanguage();
+  useEffect(() => { setLanguage(lang === 'es' ? 'ES' : 'EN'); }, []);
 
   usePageMeta({
     title: isES
@@ -774,33 +778,30 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
 
       {/* ── Hero ────────────────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex items-end overflow-hidden bg-[#060e1c] pt-[106px]">
-        {/* Background image */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <img
             src="/images/dg-transport/dg-documentation-services.webp"
             alt=""
             className="w-full h-full object-cover opacity-25 grayscale"
           />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#060e1c]/98 via-[#060e1c]/85 to-[#060e1c]/60" />
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 1.5px 1.5px, rgba(255,255,255,0.08) 1px, transparent 0)',
+              backgroundSize: '36px 36px',
+            }}
+          />
         </div>
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#060e1c]/98 via-[#060e1c]/85 to-[#060e1c]/60" />
-        {/* Dot grid */}
-        <div
-          className="absolute inset-0 z-10"
-          style={{
-            backgroundImage: 'radial-gradient(circle at 1.5px 1.5px, rgba(255,255,255,0.08) 1px, transparent 0)',
-            backgroundSize: '36px 36px',
-          }}
-        />
         {/* Accent line */}
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary z-20" />
         {/* Bottom fade */}
         <div className="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white to-transparent z-10" />
 
-        <Container className="relative z-20 pb-20 pt-16">
+        <Container className="relative z-20 w-full pb-20 lg:pb-28">
           <div className="grid lg:grid-cols-2 gap-16 xl:gap-24 items-center">
 
-            {/* Left column */}
+            {/* Left — headline only */}
             <motion.div
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
@@ -811,12 +812,21 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
                   ? 'REVISIÓN PREVIA DG · VERIFIQUE ANTES DE EMBARCAR'
                   : 'DG PRE-CHECK · VERIFY BEFORE YOU SHIP'}
               </p>
-              <h1 className="text-3xl md:text-4xl xl:text-5xl font-extrabold text-white leading-[1.1] tracking-tight mb-6">
+              <h1 className="text-3xl md:text-4xl xl:text-5xl font-extrabold text-white leading-[1.1] tracking-tight">
                 {isES ? 'Detecte los errores' : 'Catch the errors'}
                 <span className="block text-primary mt-1">
                   {isES ? 'antes que la aerolínea.' : 'before the airline does.'}
                 </span>
               </h1>
+            </motion.div>
+
+            {/* Right — sub + CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="lg:pl-10 lg:border-l lg:border-white/10"
+            >
               <p className="text-white/65 text-[15px] leading-relaxed mb-4">
                 {isES
                   ? 'Análisis asistido por IA y revisión de expertos certificados en mercancías peligrosas. Envíe su DGD y las fotos del bulto terminado y reciba un reporte técnico en PDF antes de que su carga llegue a la aerolínea.'
@@ -853,14 +863,6 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
               </div>
             </motion.div>
 
-            {/* Right column (decorative balance) */}
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="hidden lg:block"
-            />
-
           </div>
         </Container>
       </section>
@@ -893,7 +895,7 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
             {/* ══════════════════════════════════════════════════════════
                 STEP 1 — PAYMENT
             ══════════════════════════════════════════════════════════ */}
-            <div id="step-1">
+            <div id="step-1" style={{ scrollMarginTop: '112px' }}>
             <SectionCard number="01" title={t('step1Title', lang)}>
               <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '20px' }}>
 

@@ -454,7 +454,7 @@ export const Home = () => {
 
       {/* DG PRE-CHECK FEATURED SECTION */}
       <Reveal>
-      <div style={{ background: '#060e1c', padding: '56px 0', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '2px solid #0738df' }}>
+      <div className="bg-dark py-14 border-t border-white/[0.06] border-b-2 border-b-primary">
         <Container>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '28px' }}>
             <div style={{ flex: '1 1 400px' }}>
