@@ -1,7 +1,7 @@
 # Términos y Condiciones — Servicio de Revisión Previa DG (Pre-Check)
 
 **BORRADOR — No publicar sin revisión legal**
-**Versión:** 2025-11
+**Versión:** 2026-11-draft
 **Aplica a:** Servicio DG Pre-Check (Revisión Previa de Mercancías Peligrosas Aéreas)
 
 ---
@@ -10,12 +10,18 @@
 
 Este servicio cubre la revisión técnico-regulatoria de una Declaración de Mercancías Peligrosas (DGD) elaborada bajo los Reglamentos de la IATA para transporte aéreo, exclusivamente para embarques en modalidad aérea.
 
-**No se acepta:** material Clase 7 (radiactivo) ni mercancías que por normativa requieran permisos especiales fuera del alcance de los Reglamentos IATA para cargadores.
+Cobertura geográfica: México, Canadá y Estados Unidos.
+
+Horario de atención: lunes a viernes, 9:00–17:00 (hora de Ciudad de México).
 
 Límites operativos por solicitud:
 - 1 (una) DGD
 - Máximo 5 bultos en total
 - Máximo 5 entradas (números ONU)
+
+**No se acepta** material que por normativa requiera permisos especiales fuera del alcance de los Reglamentos IATA para cargadores.
+
+**Nota preventiva:** Esta revisión es preventiva. No constituye una aceptación oficial de la aerolínea ni sustituye su inspección.
 
 ## 2. Precio y Moneda
 
@@ -44,15 +50,19 @@ Para que la solicitud sea procesable, el cliente debe adjuntar:
 
 El plazo de revisión es de **2 horas hábiles** contadas a partir del momento en que Global Gate México (GGM) verifica el pago en PayPal y la documentación está completa y cumple con los requisitos mínimos.
 
+El servicio opera de lunes a viernes, 9:00–17:00 (hora de Ciudad de México). Las solicitudes recibidas fuera de este horario o en días no hábiles se atienden el siguiente día hábil.
+
+Cobertura: embarques aéreos con origen o destino en México, Canadá o Estados Unidos.
+
 El resultado de la revisión se entrega como reporte PDF al correo electrónico del contacto registrado en la solicitud.
 
 ## 5. Política de Reembolsos
 
-| Situación | Política |
-|-----------|----------|
-| Cancelación antes de enviar documentos | Reembolso completo. Envíe correo a ggm@globalgatemexico.com con el folio y el ID de transacción PayPal. |
-| Cancelación después de enviar documentos | Sin reembolso. |
-| Embarque fuera del alcance de este servicio (p. ej. >5 bultos) | Se aplica un crédito del monto pagado hacia una nueva cotización de flete. |
+Si el cliente ya pagó y aún no ha enviado sus documentos, puede solicitar el reembolso por correo a ggm@globalgatemexico.com indicando su folio y el número de transacción de PayPal; GGM verificará el pago y procesará el reembolso.
+
+Una vez enviados los documentos no hay reembolso.
+
+Si la revisión requiere más tiempo o información, GGM cotizará el servicio de forma independiente y el monto ya pagado se acreditará, de modo que solo se cobre la diferencia. Si el cliente no acepta la cotización, GGM reembolsará el monto pagado.
 
 ## 6. Responsabilidad
 
@@ -65,9 +75,9 @@ El reporte emitido por GGM refleja la conformidad documental de la DGD con los R
 
 GGM trata la información y documentación del cliente como confidencial. Los archivos se almacenan durante el tiempo necesario para la prestación del servicio y el cumplimiento de obligaciones fiscales aplicables.
 
-## 8. CFDI / Facturación
+## 8. Facturación
 
-Para México: el equipo de contabilidad de GGM contactará al cliente para emitir el Comprobante Fiscal Digital por Internet (CFDI) correspondiente. El cliente debe proporcionar sus datos fiscales cuando lo solicite el equipo de contabilidad.
+El equipo de contabilidad de GGM se pondrá en contacto con el cliente para su factura. El cliente debe proporcionar sus datos fiscales cuando lo solicite el equipo de contabilidad.
 
 ## 9. Aceptación
 

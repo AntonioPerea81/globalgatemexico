@@ -53,6 +53,12 @@ Also deploy to Vercel via your normal CI/CD pipeline (`git push` to master after
 - `pg_cron` and `pg_net` extensions are **not** required for this feature (no webhooks, no scheduled jobs).
 - The `quote-documents` bucket public INSERT policy has no path restriction, so the `precheck/` prefix is permitted without policy changes.
 
+## 6a. Pre-Send Checklist (ops, before first real submission)
+
+- [ ] Confirm `quote-documents` bucket INSERT policy still has no path restriction (do **not** change the policy).
+- [ ] Confirm `PRECHECK_NOTIFY_EMAIL` and `PRECHECK_ACCOUNTING_EMAIL` secrets are set.
+- [ ] Confirm `VITE_PAYPAL_PRECHECK_LINK_MX` and `VITE_PAYPAL_PRECHECK_LINK_INTL` are set in Vercel production.
+
 ## 7. Operational Procedure
 
 After a submission arrives:
@@ -97,10 +103,23 @@ After a submission arrives:
 
 ### UI / UX
 - [ ] **TC-21** Mobile viewport (375px): form is usable, no horizontal scroll
-- [ ] **TC-22** UN number normalisation: type `3480` → blurs to `UN3480`; type `un 3480` → `UN3480`
+- [ ] **TC-22** UN number normalisation: type `3480` → blurs to `UN3480`; type `un 3480` → `UN3480`; type `UN34` → stays as `UN34`, error shown on submit
 - [ ] **TC-23** Comments counter: shows `X/1000` and stops at 1000 chars
 
 ### Email recipients
 - [ ] **TC-24** Team email arrives at both `antonio.perea@` and `cesar.betancourt@`
 - [ ] **TC-25** Accounting email arrives at `yareni@`
 - [ ] **TC-26** Client confirmation email arrives at address entered in form, reply-to = `ggm@`
+
+### Round 2 — New test cases (§6)
+- [ ] **TC-27** Retry with same folio after server error: same files are not re-uploaded (check network tab — no second upload request for already-uploaded files); Turnstile resets and user can retry
+- [ ] **TC-28** UN number < 4 digits (e.g. `UN34` or `123`): submit blocked, field-level error "El número UN debe tener 4 dígitos" / "The UN number must have 4 digits" shown next to that row
+- [ ] **TC-29** Required fields empty on submit: each empty field shows an individual error message; general error "Corrija los campos marcados…" appears
+- [ ] **TC-30** Language switch from `/dg-pre-check` → goes to `/revision-previa-dg` (and back); verify ROUTE_EQUIVALENTS works in Navbar
+- [ ] **TC-31** Home page featured section: visible in both EN and ES, button links to correct language path (`/dg-pre-check` EN, `/revision-previa-dg` ES)
+- [ ] **TC-32** Terms link in ES (`/revision-previa-dg`): terms checkbox link opens `/terminos-de-servicio` (not Home via wildcard)
+- [ ] **TC-33** File declared but not uploaded: Edge Function returns 400 "Archivo no encontrado"; client shows the error message and allows retry
+- [ ] **TC-34** Airline disclaimer visible: shown before terms checkbox, on success screen, and in client email
+- [ ] **TC-35** Conditions strip visible in Step 1 near price: shows coverage (MX/CA/US), hours (Mon–Fri 9–17 CDMX), limits (1 DGD / 5 pkgs / 5 entries)
+- [ ] **TC-36** Billing country read-only in Step 2: shows country selected in Step 1; if no country selected, amber note says to select in Step 1
+- [ ] **TC-37** Edge Function path injection: path with `..` (e.g. `precheck/PCK-XXXXXXXX/../other`) returns 400

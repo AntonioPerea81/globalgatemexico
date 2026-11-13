@@ -230,57 +230,84 @@ serve(async (req: Request) => {
     });
   }
 
-  // ── File path prefix validation ──────────────────────────────────────────
-  const expectedPrefix = `precheck/${referenceId}/`;
+  // ── document_paths strict type validation (§4a) ──────────────────────────
+  if (!Array.isArray(document_paths) || document_paths.length < 5 || document_paths.length > 16) {
+    return new Response(JSON.stringify({ error: 'Se requieren entre 5 y 16 archivos' }), {
+      status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+  const PATH_RE = /^precheck\/[A-Z0-9-]+\/[A-Za-z0-9._-]+$/;
   for (const doc of document_paths) {
-    if (!doc.path.startsWith(expectedPrefix)) {
+    if (
+      typeof doc !== 'object' || doc === null ||
+      typeof doc.path !== 'string' || doc.path.length > 300 ||
+      typeof doc.name !== 'string' || doc.name.length === 0 || doc.name.length > 200 ||
+      typeof doc.size !== 'number'
+    ) {
+      return new Response(JSON.stringify({ error: 'document_paths tiene formato inválido' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    if (!PATH_RE.test(doc.path) || !doc.path.startsWith(`precheck/${referenceId}/`)) {
       return new Response(JSON.stringify({ error: `Ruta de archivo inválida: ${doc.path}` }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
   }
 
-  // ── Storage file verification ────────────────────────────────────────────
-  if (document_paths.length < 5 || document_paths.length > 16) {
-    return new Response(JSON.stringify({ error: 'Se requieren entre 5 y 16 archivos' }), {
-      status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE);
+
+  // ── Storage file verification using real metadata (§4b) ──────────────────
+  const ACCEPTED_MIMES = new Set(['application/pdf', 'image/jpeg', 'image/jpg', 'image/png']);
+  const ACCEPTED_EXTS  = new Set(['.pdf', '.jpg', '.jpeg', '.png']);
+  const MAX_SIZE = 20 * 1024 * 1024;
+
+  const { data: fileList, error: listError } = await supabaseClient.storage
+    .from('quote-documents')
+    .list(`precheck/${referenceId}`);
+
+  if (listError) {
+    console.error('[precheck-request] Storage list error:', listError.message);
+    return new Response(JSON.stringify({ error: 'Error verificando archivos' }), {
+      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 
-  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE);
-
-  const ACCEPTED_EXTS = new Set(['.pdf', '.jpg', '.jpeg', '.png']);
-  const MAX_SIZE = 20 * 1024 * 1024;
+  const fileMap = new Map((fileList ?? []).map((f: { name: string; metadata?: Record<string, unknown> }) => [f.name, f]));
 
   let verifiedPdf = 0;
   let verifiedImg = 0;
 
   for (const doc of document_paths) {
-    // Verify file exists and get metadata
-    const { data: fileData, error: fileError } = await supabaseClient.storage
-      .from('quote-documents')
-      .list(`precheck/${referenceId}`, { search: doc.path.split('/').pop() });
+    const filename = doc.path.split('/').pop()!;
+    const fileObj  = fileMap.get(filename);
 
-    if (fileError || !fileData || fileData.length === 0) {
-      console.warn('[precheck-request] File not found in storage:', doc.path);
-    }
-
-    // Check extension for type
-    const ext = '.' + doc.path.split('.').pop()!.toLowerCase();
-    if (!ACCEPTED_EXTS.has(ext)) {
-      return new Response(JSON.stringify({ error: `Tipo de archivo no aceptado: ${doc.name}` }), {
+    if (!fileObj) {
+      return new Response(JSON.stringify({ error: `Archivo no encontrado: ${doc.name}` }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Check size from client-provided value (server metadata check above is best-effort)
-    if (doc.size > MAX_SIZE) {
+    const realSize: number = (fileObj.metadata?.size as number) ?? 0;
+    const realMime: string = (fileObj.metadata?.mimetype as string) ?? '';
+
+    if (realSize > MAX_SIZE) {
       return new Response(JSON.stringify({ error: `Archivo demasiado grande (máx 20 MB): ${doc.name}` }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    if (ext === '.pdf') verifiedPdf++;
+    const mimeOk = ACCEPTED_MIMES.has(realMime);
+    const ext    = '.' + doc.path.split('.').pop()!.toLowerCase();
+    const extOk  = ACCEPTED_EXTS.has(ext);
+    if (!mimeOk && !extOk) {
+      return new Response(JSON.stringify({ error: `Tipo de archivo no aceptado: ${doc.name}` }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const isPdf = realMime === 'application/pdf' || ext === '.pdf';
+    if (isPdf) verifiedPdf++;
     else verifiedImg++;
   }
 
@@ -318,6 +345,9 @@ serve(async (req: Request) => {
       return { name: doc.name, url: data?.signedUrl ?? null };
     })
   );
+
+  // ── Strip CR/LF from company_name for email subject safety (§4c) ─────────
+  const safeCompanyName = company_name.replace(/[\r\n]/g, ' ').trim();
 
   // ── Build team notification email ─────────────────────────────────────────
   const countryLabel: Record<string, string> = { MX: 'México', US: 'United States', CA: 'Canada' };
@@ -386,7 +416,7 @@ serve(async (req: Request) => {
   const teamOk = await sendEmail({
     from: 'GGM Notificaciones <noreply@globalgatemexico.com>',
     to:   teamRecipients,
-    subject: `[PRE-CHECK] Nueva solicitud — ${referenceId} — ${company_name}`,
+    subject: `[PRE-CHECK] Nueva solicitud — ${referenceId} — ${safeCompanyName}`,
     html:    teamHtml,
   });
 
@@ -413,7 +443,7 @@ serve(async (req: Request) => {
       comments:               comments?.trim() || null,
       document_paths:         document_paths,
       accepted_terms_at:      new Date().toISOString(),
-      terms_version:          '2025-11',
+      terms_version:          '2026-11-draft',
     });
   if (insertError) {
     console.error('[precheck-request] DB insert error (non-fatal):', insertError.message);
@@ -461,7 +491,12 @@ serve(async (req: Request) => {
       row('3', isES ? 'Recibirá su reporte PDF por correo electrónico.' : 'You will receive your PDF report by email.'),
     ].join(''))}
     <p style="font-size:12px;color:#9ca3af;margin:20px 0 0;">
-      ${isES ? 'Nuestro equipo de contabilidad se pondrá en contacto para emitir su CFDI.' : 'Our accounting team will contact you to issue the CFDI receipt.'}
+      ${isES ? 'Nuestro equipo de contabilidad se pondrá en contacto con usted para su factura.' : 'Our accounting team will contact you regarding your invoice.'}
+    </p>
+    <p style="font-size:11px;color:#9ca3af;margin:12px 0 0;font-style:italic;">
+      ${isES
+        ? 'Esta revisión es preventiva: no constituye una aceptación oficial de la aerolínea ni sustituye su inspección.'
+        : 'This is a preventive review: it does not constitute official acceptance by the airline or replace its inspection.'}
     </p>`
   );
 

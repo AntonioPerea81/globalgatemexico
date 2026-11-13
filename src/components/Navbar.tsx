@@ -53,6 +53,11 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
+    id: 'precheck',
+    label: { EN: 'DG Pre-Check', ES: 'Revisión Previa DG' },
+    href: { EN: '/dg-pre-check', ES: '/revision-previa-dg' },
+  },
+  {
     id: 'radioactive',
     label: { EN: 'Class 7 Logistics', ES: 'Logística Clase 7' },
     href: { EN: '/radioactive-material-logistics', ES: '/logistica-material-radiactivo' },
@@ -123,6 +128,8 @@ const ROUTE_EQUIVALENTS: Record<string, { EN: string; ES: string }> = {
   '/training/online-academy':                     { EN: '/training/online-academy', ES: '/training/online-academy' },
   '/training/iata-cbta-7-1':                      { EN: '/training/iata-cbta-7-1', ES: '/training/iata-cbta-7-1' },
   '/training/iata-cbta-7-3':                      { EN: '/training/iata-cbta-7-3', ES: '/training/iata-cbta-7-3' },
+  '/dg-pre-check':                                { EN: '/dg-pre-check',           ES: '/revision-previa-dg' },
+  '/revision-previa-dg':                          { EN: '/dg-pre-check',           ES: '/revision-previa-dg' },
 };
 
 export const Navbar = () => {

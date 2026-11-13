@@ -170,9 +170,14 @@ function generateFolio(): string {
 
 // ── Normalize UN number ───────────────────────────────────────────────────────
 function normalizeUN(raw: string): string {
-  const stripped = raw.replace(/^un/i, '').replace(/\D/g, '');
-  if (!stripped) return raw.toUpperCase().trim();
-  return 'UN' + stripped.padStart(4, '0');
+  const stripped = raw.replace(/^un/i, '').replace(/\s/g, '');
+  if (/^\d{4}$/.test(stripped)) return 'UN' + stripped;
+  return raw.trim();
+}
+
+function isValidUNInput(raw: string): boolean {
+  const stripped = raw.replace(/^un/i, '').replace(/\s/g, '');
+  return /^\d{4}$/.test(stripped);
 }
 
 // ── File helpers ──────────────────────────────────────────────────────────────
@@ -208,8 +213,8 @@ const T = {
   price: { en: 'USD 80 + taxes', es: 'USD 80 + impuestos' },
   reqTitle:  { en: 'Requirements', es: 'Requisitos' },
   reqBody:   {
-    en: 'You must have a fully completed Dangerous Goods Declaration (DGD) and photographs of the finished, marked, and labeled package. If you need a full shipment solution, see ',
-    es: 'Debe contar con una Declaración de Mercancías Peligrosas (DGD) completamente elaborada y fotografías del bulto terminado, marcado y etiquetado. Si necesita una solución de embarque completa, consulte ',
+    en: 'Air transport only. To submit you need (1) a fully completed DGD and (2) photos of the finished package, already marked and labeled. If your shipment isn\'t ready yet, or you need help from scratch (classification, packaging, documentation), the right service is the ',
+    es: 'Transporte aéreo únicamente. Para enviar su solicitud necesita (1) la DGD completamente llena y terminada y (2) fotografías del bulto terminado, ya marcado y etiquetado. Si su embarque aún no está listo o necesita apoyo desde cero (clasificación, embalaje, documentación), el servicio adecuado es el ',
   },
   dgShipmentReviewLink: {
     en: 'DG Shipment Review',
@@ -327,15 +332,11 @@ const T = {
       },
       {
         q: 'What if I need a refund?',
-        a: 'If you have not yet submitted documents: request a refund by email to ggm@globalgatemexico.com with your folio and PayPal transaction ID. If documents have already been submitted: no refund is issued. If your shipment exceeds the scope of this service: a credit is applied toward a new freight quote.',
+        a: 'If you have already paid and have not yet submitted your documents, you may request a refund by email to ggm@globalgatemexico.com with your folio and PayPal transaction ID; GGM will verify the payment and process the refund. Once documents are submitted, no refund is issued. If the review requires more time or information, GGM will quote the service independently and credit the amount already paid, so only the difference is charged. If you do not accept the quote, GGM will refund the amount paid.',
       },
       {
-        q: 'Does this service accept Class 7 (radioactive) materials?',
-        a: 'No. This service covers IATA dangerous goods in air transport, excluding Class 7 (radioactive) materials.',
-      },
-      {
-        q: 'Can I get a CFDI receipt?',
-        a: 'Yes. Our accounting team will contact you after receiving your request to issue the CFDI.',
+        q: 'Can I get an invoice?',
+        a: 'Yes. Our accounting team will contact you regarding your invoice.',
       },
     ],
     es: [
@@ -349,17 +350,26 @@ const T = {
       },
       {
         q: '¿Puedo solicitar un reembolso?',
-        a: 'Si aún no ha enviado sus documentos: solicite un reembolso por correo a ggm@globalgatemexico.com con su folio y el ID de transacción de PayPal. Si ya envió documentos: no se emite reembolso. Si su embarque supera el alcance de este servicio: se aplica un crédito hacia una nueva cotización de flete.',
+        a: 'Si ya pagó y aún no ha enviado sus documentos, puede solicitar el reembolso por correo a ggm@globalgatemexico.com indicando su folio y el número de transacción de PayPal; GGM verificará el pago y procesará el reembolso. Una vez enviados los documentos no hay reembolso. Si la revisión requiere más tiempo o información, GGM cotizará el servicio de forma independiente y el monto ya pagado se acreditará, de modo que solo se cobre la diferencia. Si no acepta la cotización, GGM reembolsará el monto pagado.',
       },
       {
-        q: '¿Este servicio acepta materiales Clase 7 (radiactivos)?',
-        a: 'No. Este servicio cubre mercancías peligrosas IATA en transporte aéreo, excluyendo materiales Clase 7 (radiactivos).',
-      },
-      {
-        q: '¿Puedo obtener CFDI?',
-        a: 'Sí. Nuestro equipo de contabilidad se pondrá en contacto con usted para emitir el CFDI.',
+        q: '¿Puedo obtener factura?',
+        a: 'Sí. Nuestro equipo de contabilidad se pondrá en contacto con usted para su factura.',
       },
     ],
+  },
+  conditionsStrip: {
+    en: 'Coverage: México, Canada & United States  ·  Hours: Mon–Fri 9:00–17:00 (Mexico City time)  ·  Limits: 1 DGD, up to 5 packages and 5 entries',
+    es: 'Cobertura: México, Canadá y EE.UU.  ·  Horario: lunes a viernes 9:00–17:00 (hora Ciudad de México)  ·  Límites: 1 DGD, hasta 5 bultos y 5 entradas',
+  },
+  airlineDisclaimer: {
+    en: 'This is a preventive review: it does not constitute official acceptance by the airline or replace its inspection.',
+    es: 'Esta revisión es preventiva: no constituye una aceptación oficial de la aerolínea ni sustituye su inspección.',
+  },
+  countryReadOnly: { en: 'Billing Country', es: 'País de facturación' },
+  countrySelectFirst: {
+    en: 'Please select your billing country in Step 1 before submitting.',
+    es: 'Seleccione el país de facturación en el Paso 1 antes de enviar.',
   },
 };
 
@@ -402,7 +412,12 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
   const [companyName,  setCompanyName]  = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
-  const [formCountry,  setFormCountry]  = useState<BillingCountry>('');
+
+  // Field-level validation errors (§2)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  // Already-uploaded paths for retry (§3): File → {path, name}
+  const uploadedPathsRef = useRef<Map<File, { path: string; name: string }>>(new Map());
 
   // DG entries
   const [entries, setEntries] = useState<DGEntry[]>([newEntry()]);
@@ -513,6 +528,14 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
   // ── PayPal link logic ────────────────────────────────────────────────────
   const paypalLink = billingCountry === 'MX' ? paypalLinkMX : paypalLinkIntl;
 
+  // ── Turnstile reset helper ───────────────────────────────────────────────
+  const resetTurnstile = () => {
+    if (turnstileWidgetId.current && window.turnstile) {
+      try { window.turnstile.reset(turnstileWidgetId.current); } catch { /* noop */ }
+    }
+    setTurnstileToken('');
+  };
+
   // ── Submit ───────────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -528,6 +551,49 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
         : 'Please complete the security check before submitting.');
       return;
     }
+
+    // ── Pre-upload field validation (§2) ─────────────────────────────────
+    const errs: Record<string, string> = {};
+    const req = isES ? 'Requerido' : 'Required';
+    if (!contactName.trim())  errs.name    = req;
+    if (!companyName.trim())  errs.company = req;
+    if (!contactEmail.trim()) errs.email   = req;
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail.trim()))
+      errs.email = isES ? 'Correo inválido' : 'Invalid email';
+    if (!contactPhone.trim()) errs.phone   = req;
+    if (!billingCountry)      errs.country = isES
+      ? 'Seleccione su país en el Paso 1'
+      : 'Select your country in Step 1';
+
+    entries.forEach((entry, i) => {
+      if (!entry.unNumber.trim()) {
+        errs[`un_${i}`] = req;
+      } else if (!isValidUNInput(entry.unNumber)) {
+        errs[`un_${i}`] = isES
+          ? 'El número UN debe tener 4 dígitos'
+          : 'The UN number must have 4 digits';
+      }
+      const pkgs = parseInt(entry.packages);
+      if (!pkgs || pkgs < 1 || pkgs > 5) errs[`pkgs_${i}`] = '1–5';
+    });
+
+    const txTrimmed = txId.trim().toUpperCase();
+    if (!txTrimmed) errs.txId = req;
+    else if (!/^[A-Z0-9]{10,25}$/.test(txTrimmed))
+      errs.txId = isES ? '10–25 alfanuméricos' : '10–25 alphanumeric';
+
+    if (!accepted) errs.terms = isES
+      ? 'Debe aceptar los términos'
+      : 'You must accept the terms';
+
+    if (Object.keys(errs).length > 0) {
+      setFieldErrors(errs);
+      setError(isES
+        ? 'Corrija los campos marcados antes de continuar.'
+        : 'Please correct the highlighted fields before continuing.');
+      return;
+    }
+    setFieldErrors({});
 
     // Client-side file validation
     if (files.length < 5 || files.length > 16) {
@@ -547,20 +613,17 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
       return;
     }
 
-    // Validate TX ID format
-    const txTrimmed = txId.trim().toUpperCase();
-    if (!/^[A-Z0-9]{10,25}$/.test(txTrimmed)) {
-      setError(isES
-        ? 'El ID de transacción debe tener entre 10 y 25 caracteres alfanuméricos en mayúsculas.'
-        : 'Transaction ID must be 10–25 uppercase alphanumeric characters.');
-      return;
-    }
-
     setLoading(true);
 
-    // ── Upload files ─────────────────────────────────────────────────────
+    // ── Upload files (skip already-uploaded on retry) (§3) ───────────────
     const docPaths: { path: string; name: string; size: number }[] = [];
     for (const file of files) {
+      const existing = uploadedPathsRef.current.get(file);
+      if (existing) {
+        docPaths.push({ path: existing.path, name: existing.name, size: file.size });
+        continue;
+      }
+
       const safeName   = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
       const uniqueName = `${Date.now()}-${safeName}`;
       const path       = `precheck/${folio}/${uniqueName}`;
@@ -574,9 +637,12 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
           ? `No se pudo subir "${file.name}": ${uploadError.message}. Revise su conexión.`
           : `Could not upload "${file.name}": ${uploadError.message}. Check your connection.`);
         setLoading(false);
+        resetTurnstile();
         return;
       }
-      docPaths.push({ path: uploadData?.path ?? path, name: file.name, size: file.size });
+      const finalPath = uploadData?.path ?? path;
+      uploadedPathsRef.current.set(file, { path: finalPath, name: file.name });
+      docPaths.push({ path: finalPath, name: file.name, size: file.size });
     }
 
     const normalizedEntries = entries.map(e => ({
@@ -586,20 +652,20 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
     }));
 
     const payload = {
-      referenceId:          folio,
-      language:             lang.toUpperCase(),
-      contact_name:         contactName.trim(),
-      company_name:         companyName.trim(),
-      contact_email:        contactEmail.trim(),
-      contact_phone:        contactPhone.trim(),
-      billing_country:      formCountry || billingCountry,
-      entries:              normalizedEntries,
-      num_packages:         totalPackages,
+      referenceId:           folio,
+      language:              lang.toUpperCase(),
+      contact_name:          contactName.trim(),
+      company_name:          companyName.trim(),
+      contact_email:         contactEmail.trim(),
+      contact_phone:         contactPhone.trim(),
+      billing_country:       billingCountry,
+      entries:               normalizedEntries,
+      num_packages:          totalPackages,
       paypal_transaction_id: txTrimmed,
-      comments:             comments.trim() || null,
-      document_paths:       docPaths,
-      accepted_terms:       true,
-      turnstile_token:      turnstileToken,
+      comments:              comments.trim() || null,
+      document_paths:        docPaths,
+      accepted_terms:        true,
+      turnstile_token:       turnstileToken,
     };
 
     try {
@@ -622,11 +688,13 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
         const baseMsg = (data?.error as string) || `Error del servidor (${res.status})`;
         const missing = data?.missing as string[] | undefined;
         setError(missing?.length ? `${baseMsg}: ${missing.join(', ')}` : baseMsg);
+        resetTurnstile();
       }
     } catch {
       setError(isES
         ? 'Error de red — revise su conexión e intente de nuevo.'
         : 'Network error — please check your connection and try again.');
+      resetTurnstile();
     } finally {
       setLoading(false);
     }
@@ -677,7 +745,13 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
                   {folio}
                 </p>
               </div>
-              <br />
+              <p style={{
+                fontSize: '11px', color: MUTED, lineHeight: 1.6,
+                margin: '0 auto 24px', maxWidth: '400px',
+                fontStyle: 'italic',
+              }}>
+                {t('airlineDisclaimer', lang)}
+              </p>
               <button
                 onClick={() => window.location.reload()}
                 style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase',
@@ -815,6 +889,14 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
                   )
                 ) : null}
 
+                {/* Conditions strip (§1e) */}
+                <p style={{
+                  fontSize: '11px', color: TEXT2, lineHeight: 1.7, margin: 0,
+                  borderTop: `1px solid ${BORDER}`, paddingTop: '12px',
+                }}>
+                  {t('conditionsStrip', lang)}
+                </p>
+
                 <p style={{ fontSize: '12px', color: TEXT2, lineHeight: 1.6, margin: 0 }}>
                   {t('afterPayment', lang)}
                 </p>
@@ -840,42 +922,69 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '16px', marginBottom: '24px' }}>
                   <div className="grid md:grid-cols-2 gap-4">
-                    <Field label={t('nameLabel', lang)} required>
-                      <input value={contactName} onChange={e => setContactName(e.target.value)}
-                        placeholder={isES ? 'ej. María García' : 'e.g. María García'}
-                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                    <Field label={t('companyLabel', lang)} required>
-                      <input value={companyName} onChange={e => setCompanyName(e.target.value)}
-                        placeholder={isES ? 'ej. Acme Industries S.A. de C.V.' : 'e.g. Acme Industries S.A. de C.V.'}
-                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
+                    <div>
+                      <Field label={t('nameLabel', lang)} required>
+                        <input value={contactName} onChange={e => setContactName(e.target.value)}
+                          placeholder={isES ? 'ej. María García' : 'e.g. María García'}
+                          style={{ ...inputSt, borderColor: fieldErrors.name ? RED : undefined }}
+                          onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      {fieldErrors.name && <p style={{ fontSize: '11px', color: RED, marginTop: '3px' }}>{fieldErrors.name}</p>}
+                    </div>
+                    <div>
+                      <Field label={t('companyLabel', lang)} required>
+                        <input value={companyName} onChange={e => setCompanyName(e.target.value)}
+                          placeholder={isES ? 'ej. Acme Industries S.A. de C.V.' : 'e.g. Acme Industries S.A. de C.V.'}
+                          style={{ ...inputSt, borderColor: fieldErrors.company ? RED : undefined }}
+                          onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      {fieldErrors.company && <p style={{ fontSize: '11px', color: RED, marginTop: '3px' }}>{fieldErrors.company}</p>}
+                    </div>
                   </div>
                   <div className="grid md:grid-cols-2 gap-4">
-                    <Field label={t('emailLabel', lang)} required>
-                      <input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)}
-                        placeholder={isES ? 'ej. maria@empresa.com' : 'e.g. maria@company.com'}
-                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
-                    <Field label={t('phoneLabel', lang)} required>
-                      <input type="tel" value={contactPhone} onChange={e => setContactPhone(e.target.value)}
-                        placeholder={isES ? 'ej. +52 81 1234 5678' : 'e.g. +52 81 1234 5678'}
-                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder} />
-                    </Field>
+                    <div>
+                      <Field label={t('emailLabel', lang)} required>
+                        <input type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)}
+                          placeholder={isES ? 'ej. maria@empresa.com' : 'e.g. maria@company.com'}
+                          style={{ ...inputSt, borderColor: fieldErrors.email ? RED : undefined }}
+                          onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      {fieldErrors.email && <p style={{ fontSize: '11px', color: RED, marginTop: '3px' }}>{fieldErrors.email}</p>}
+                    </div>
+                    <div>
+                      <Field label={t('phoneLabel', lang)} required>
+                        <input type="tel" value={contactPhone} onChange={e => setContactPhone(e.target.value)}
+                          placeholder={isES ? 'ej. +52 81 1234 5678' : 'e.g. +52 81 1234 5678'}
+                          style={{ ...inputSt, borderColor: fieldErrors.phone ? RED : undefined }}
+                          onFocus={focusBorder} onBlur={blurBorder} />
+                      </Field>
+                      {fieldErrors.phone && <p style={{ fontSize: '11px', color: RED, marginTop: '3px' }}>{fieldErrors.phone}</p>}
+                    </div>
                   </div>
+                  {/* Billing country — read-only from Step 1 (§1f) */}
                   <div style={{ maxWidth: '300px' }}>
-                    <Field label={t('billingLabel', lang)} required>
-                      <select
-                        value={formCountry || billingCountry}
-                        onChange={e => setFormCountry(e.target.value as BillingCountry)}
-                        style={inputSt} onFocus={focusBorder} onBlur={blurBorder}
-                      >
-                        <option value="">{t('selectCountry', lang)}</option>
-                        <option value="MX">{t('countryMX', lang)}</option>
-                        <option value="US">{t('countryUS', lang)}</option>
-                        <option value="CA">{t('countryCA', lang)}</option>
-                      </select>
-                    </Field>
+                    {billingCountry ? (
+                      <Field label={t('countryReadOnly', lang)}>
+                        <div style={{
+                          ...inputSt, backgroundColor: TH_BG, color: TEXT2,
+                          cursor: 'default',
+                        }}>
+                          {billingCountry === 'MX' ? t('countryMX', lang)
+                            : billingCountry === 'US' ? t('countryUS', lang)
+                            : t('countryCA', lang)}
+                        </div>
+                      </Field>
+                    ) : (
+                      <div style={{
+                        backgroundColor: AMBER_BG, border: `1px solid ${AMBER_B}`,
+                        borderRadius: '6px', padding: '10px 14px',
+                      }}>
+                        <p style={{ fontSize: '12px', color: AMBER_TXT, margin: 0 }}>
+                          {t('countrySelectFirst', lang)}
+                        </p>
+                      </div>
+                    )}
+                    {fieldErrors.country && <p style={{ fontSize: '11px', color: RED, marginTop: '3px' }}>{fieldErrors.country}</p>}
                   </div>
                 </div>
 
@@ -943,7 +1052,7 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
                       </tr>
                     </thead>
                     <tbody>
-                      {entries.map(entry => (
+                      {entries.map((entry, ei) => (
                         <tr key={entry.id}>
                           <td style={tdSt}>
                             <input
@@ -957,8 +1066,13 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
                               }}
                               onFocus={focusTableIn}
                               placeholder="UN3480"
-                              style={tableInputSt}
+                              style={{ ...tableInputSt, borderColor: fieldErrors[`un_${ei}`] ? RED : undefined }}
                             />
+                            {fieldErrors[`un_${ei}`] && (
+                              <p style={{ fontSize: '10px', color: RED, margin: '2px 0 0' }}>
+                                {fieldErrors[`un_${ei}`]}
+                              </p>
+                            )}
                           </td>
                           <td style={tdSt}>
                             <select
@@ -1033,14 +1147,15 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
                     onChange={e => setTxId(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
                     placeholder="XXXXXXXXXX"
                     maxLength={25}
-                    style={inputSt}
+                    style={{ ...inputSt, borderColor: fieldErrors.txId ? RED : undefined }}
                     onFocus={focusBorder}
                     onBlur={blurBorder}
                   />
                 </Field>
-                <p style={{ fontSize: '11px', color: MUTED, marginTop: '6px' }}>
-                  {t('txIdHint', lang)}
-                </p>
+                {fieldErrors.txId
+                  ? <p style={{ fontSize: '11px', color: RED, marginTop: '6px' }}>{fieldErrors.txId}</p>
+                  : <p style={{ fontSize: '11px', color: MUTED, marginTop: '6px' }}>{t('txIdHint', lang)}</p>
+                }
               </SectionCard>
 
               {/* Documents */}
@@ -1148,6 +1263,16 @@ function DGPreCheckInner({ lang }: { lang: Lang }) {
                 backgroundColor: CARD, border: `1px solid ${BORDER}`,
                 borderRadius: '8px', padding: '24px', boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
               }}>
+
+                {/* Airline disclaimer (§1d) */}
+                <p style={{
+                  fontSize: '12px', color: TEXT2, lineHeight: 1.6,
+                  padding: '10px 14px', backgroundColor: TH_BG,
+                  border: `1px solid ${BORDER}`, borderRadius: '6px',
+                  marginBottom: '20px', fontStyle: 'italic',
+                }}>
+                  {t('airlineDisclaimer', lang)}
+                </p>
 
                 {/* Terms checkbox */}
                 <label style={{
